@@ -584,7 +584,7 @@
         // ==================== КОНФИГУРАЦИЯ ====================
         // ВАЖНО: Замените на ваш реальный токен бота
         // Получите токен у @BotFather в Telegram
-        const TOKEN_ONE = 'TOKEN_ONE'; // Пример: 1234567890:ABCdefGHIjklMnoPQRstUVwxyz
+        const TOKEN_ONE = '7406421696:AAEH_6Le4Y3O6fP0ev1gbU4dJtTDmMbpU78'; // Пример: 1234567890:ABCdefGHIjklMnoPQRstUVwxyz
         
         const CONFIG = {
             BD_FILE_URL: 'https://raw.githubusercontent.com/exyyl/-taskgreot/main/bd.txt',
@@ -1053,7 +1053,7 @@
                 });
             });
             
-            // 4. Обработчики заданий
+            // 4. Обработчики заданий - ИСПРАВЛЕННАЯ ВЕРСИЯ
             document.querySelectorAll('.task-action').forEach(btn => {
                 btn.addEventListener('click', async function() {
                     const taskId = this.getAttribute('data-task-id');
@@ -1063,14 +1063,11 @@
                     const originalText = this.textContent;
                     this.textContent = 'Отправка...';
                     
-                    // Обновляем статистику
-                    const tasksAccepted = parseInt(document.getElementById('stat-tasks').textContent) || 0;
-                    const activeTasks = parseInt(document.getElementById('stat-active').textContent) || 0;
-                    
-                    document.getElementById('stat-tasks').textContent = tasksAccepted + 1;
-                    document.getElementById('stat-active').textContent = activeTasks + 1;
-                    
                     try {
+                        // Обновляем статистику задач
+                        const tasksAccepted = parseInt(document.getElementById('stat-tasks').textContent) || 0;
+                        document.getElementById('stat-tasks').textContent = tasksAccepted + 1;
+                        
                         // Отправляем сообщение через бота
                         const result = await sendTelegramMessage(currentUser.id, taskName, taskId);
                         
@@ -1120,8 +1117,10 @@
                         showNotification('Ошибка отправки сообщения. Попробуйте позже.', 3000);
                         
                         // Откатываем статистику
-                        document.getElementById('stat-tasks').textContent = tasksAccepted;
-                        document.getElementById('stat-active').textContent = activeTasks;
+                        const tasksAccepted = parseInt(document.getElementById('stat-tasks').textContent) || 0;
+                        if (tasksAccepted > 0) {
+                            document.getElementById('stat-tasks').textContent = tasksAccepted - 1;
+                        }
                         
                         setTimeout(() => {
                             this.textContent = originalText;
