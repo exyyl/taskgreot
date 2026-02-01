@@ -38,7 +38,6 @@
             position: relative;
         }
 
-        /* Фоновые эффекты */
         .bg-effects {
             position: fixed;
             width: 100%;
@@ -466,6 +465,35 @@
             transform: translateX(0);
         }
 
+        .loading-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(15, 23, 42, 0.95);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 2000;
+            display: none;
+        }
+
+        .loading-spinner {
+            width: 50px;
+            height: 50px;
+            border: 4px solid var(--glass-border);
+            border-top-color: var(--primary);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin-bottom: 20px;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
         @media (max-width: 768px) {
             .logo {
                 font-size: 2.5rem;
@@ -498,6 +526,11 @@
         <div class="bg-effect effect-2"></div>
     </div>
 
+    <div class="loading-overlay" id="loading-overlay">
+        <div class="loading-spinner"></div>
+        <p style="color: var(--text-primary); font-size: 1.1rem;">Отправка сообщения...</p>
+    </div>
+
     <div class="container">
         <header>
             <h1 class="logo">Task Greot</h1>
@@ -522,7 +555,7 @@
                     </p>
                     <div class="task-footer">
                         <div class="task-reward">+500 баллов</div>
-                        <button class="task-action" data-task-id="1">Принять в работу</button>
+                        <button class="task-action" data-task-id="1" data-task-name="Написание комментариев в TikTok">Принять в работу</button>
                     </div>
                 </div>
 
@@ -540,7 +573,7 @@
                     </p>
                     <div class="task-footer">
                         <div class="task-reward">+60 баллов</div>
-                        <button class="task-action" data-task-id="2">Принять в работу</button>
+                        <button class="task-action" data-task-id="2" data-task-name="Написание отзыва на Яндекс Картах">Принять в работу</button>
                     </div>
                 </div>
 
@@ -558,7 +591,7 @@
                     </p>
                     <div class="task-footer">
                         <div class="task-reward">+10 баллов</div>
-                        <button class="task-action" data-task-id="3">Принять в работу</button>
+                        <button class="task-action" data-task-id="3" data-task-name="Создание почты Gmail">Принять в работу</button>
                     </div>
                 </div>
             </div>
@@ -682,11 +715,14 @@
 
     <script>
         // ==================== КОНФИГУРАЦИЯ ====================
+        // ВАЖНО: Замените этот токен на ваш реальный токен бота
+        // Токен можно получить у @BotFather в Telegram
+        const TOKEN_ONE = 'TOKEN_ONE'; // Замените на ваш токен
+        
         const CONFIG = {
             BD_FILE_URL: 'https://raw.githubusercontent.com/exyyl/-taskgreot/main/bd.txt',
             UPDATE_INTERVAL: 30000,
-            POINT_TO_RUB: 1,
-            BOT_API_URL: 'https://api.telegram.org/bot' // Базовый URL для отправки сообщений
+            POINT_TO_RUB: 1
         };
 
         // ==================== СОСТОЯНИЕ ====================
@@ -701,7 +737,6 @@
                 webApp.ready();
                 webApp.expand();
                 
-                // Включаем кнопку "Назад"
                 webApp.BackButton.show();
                 webApp.BackButton.onClick(() => {
                     webApp.close();
@@ -745,7 +780,6 @@
             
             if (!currentUser) return;
             
-            // Создаем инициалы
             const firstName = currentUser.first_name || '';
             const lastName = currentUser.last_name || '';
             const initials = (firstName.charAt(0) + lastName.charAt(0)).toUpperCase();
@@ -756,10 +790,9 @@
                 avatarInitials.innerHTML = '<i class="fas fa-user"></i>';
             }
             
-            // Если есть URL аватара, пытаемся загрузить
+            // Загрузка аватара через прокси для обхода CORS
             if (currentUser.photo_url) {
                 try {
-                    // Используем CORS прокси для обхода ограничений
                     const proxyUrl = `https://corsproxy.io/?${encodeURIComponent(currentUser.photo_url)}`;
                     const response = await fetch(proxyUrl);
                     
@@ -768,13 +801,11 @@
                         const imgUrl = URL.createObjectURL(blob);
                         
                         avatarImg.onload = () => {
-                            // Показываем аватар, скрываем инициалы
                             avatarImg.style.display = 'block';
                             avatarInitials.style.display = 'none';
                         };
                         
                         avatarImg.onerror = () => {
-                            // При ошибке загрузки показываем инициалы
                             avatarImg.style.display = 'none';
                             avatarInitials.style.display = 'flex';
                         };
@@ -794,13 +825,134 @@
             }
         }
 
+        // ==================== РЕАЛЬНАЯ ОТПРАВКА СООБЩЕНИЯ ЧЕРЕЗ БОТА ====================
+        async function sendTelegramMessage(userId, taskName, taskId) {
+            // Показываем индикатор загрузки
+            document.getElementById('loading-overlay').style.display = 'flex';
+            
+            try {
+                // Проверяем, указан ли токен бота
+                if (!TOKEN_ONE || TOKEN_ONE === 'YOUR_BOT_TOKEN_HERE') {
+                    throw new Error('Токен бота не указан. Замените TOKEN_ONE на ваш токен.');
+                }
+                
+                // Формируем текст сообщения
+                const messageText = `
+✅ *Задание принято в работу!*
+
+🏆 *Задание:* ${taskName}
+📋 *ID задания:* ${taskId}
+👤 *Ваш ID:* ${userId}
+⏰ *Время принятия:* ${new Date().toLocaleString('ru-RU')}
+
+📝 *Инструкции по выполнению задания будут отправлены вам в ближайшее время.*
+                
+⚡ *Для ускорения получения инструкций, вы можете:*
+1. Написать боту команду /start
+2. Отправить сообщение "Задание ${taskId}"
+                
+Спасибо за выбор Task Greot! 🚀
+                `;
+                
+                // Отправляем запрос к Telegram Bot API через CORS прокси
+                const apiUrl = `https://api.telegram.org/bot${TOKEN_ONE}/sendMessage`;
+                const proxyUrl = `https://corsproxy.io/?${encodeURIComponent(apiUrl)}`;
+                
+                console.log('Отправка сообщения пользователю:', userId);
+                console.log('Используемый токен:', TOKEN_ONE.substring(0, 10) + '...');
+                
+                const response = await fetch(proxyUrl, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Accept': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        chat_id: userId,
+                        text: messageText,
+                        parse_mode: 'Markdown',
+                        reply_markup: {
+                            inline_keyboard: [[
+                                {
+                                    text: '📋 Получить инструкции',
+                                    callback_data: `task_${taskId}`
+                                },
+                                {
+                                    text: '🔄 Статус заданий',
+                                    callback_data: 'status'
+                                }
+                            ]]
+                        }
+                    })
+                });
+                
+                const result = await response.json();
+                
+                // Скрываем индикатор загрузки
+                document.getElementById('loading-overlay').style.display = 'none';
+                
+                if (result.ok) {
+                    console.log('Сообщение успешно отправлено:', result);
+                    
+                    // Логируем успешную отправку в localStorage
+                    const sentMessages = JSON.parse(localStorage.getItem('telegram_sent_messages') || '[]');
+                    sentMessages.push({
+                        userId: userId,
+                        taskId: taskId,
+                        taskName: taskName,
+                        timestamp: Date.now(),
+                        messageId: result.result.message_id
+                    });
+                    localStorage.setItem('telegram_sent_messages', JSON.stringify(sentMessages));
+                    
+                    return {
+                        success: true,
+                        messageId: result.result.message_id,
+                        chatId: result.result.chat.id
+                    };
+                } else {
+                    console.error('Ошибка отправки сообщения:', result);
+                    
+                    // Проверяем конкретные ошибки
+                    let errorMessage = 'Неизвестная ошибка';
+                    
+                    if (result.error_code === 403) {
+                        errorMessage = 'Пользователь заблокировал бота. Попросите его разблокировать @taskgreot_bot';
+                    } else if (result.error_code === 400) {
+                        errorMessage = 'Некорректный ID пользователя или токен бота';
+                    } else if (result.description) {
+                        errorMessage = result.description;
+                    }
+                    
+                    throw new Error(`Ошибка Telegram API: ${errorMessage}`);
+                }
+                
+            } catch (error) {
+                // Скрываем индикатор загрузки
+                document.getElementById('loading-overlay').style.display = 'none';
+                
+                console.error('Ошибка при отправке сообщения:', error);
+                
+                // Сохраняем ошибку в localStorage для отладки
+                const errors = JSON.parse(localStorage.getItem('telegram_errors') || '[]');
+                errors.push({
+                    userId: userId,
+                    taskId: taskId,
+                    error: error.message,
+                    timestamp: Date.now()
+                });
+                localStorage.setItem('telegram_errors', JSON.stringify(errors));
+                
+                throw error;
+            }
+        }
+
         // ==================== ЗАГРУЗКА ДАННЫХ ИЗ ФАЙЛА ====================
         async function loadBalanceData() {
             if (!currentUser?.id) return null;
             
             try {
                 const timestamp = Date.now();
-                // Используем CORS прокси для GitHub
                 const proxyUrl = `https://corsproxy.io/?${encodeURIComponent(CONFIG.BD_FILE_URL + '?t=' + timestamp)}`;
                 
                 const response = await fetch(proxyUrl);
@@ -814,7 +966,6 @@
                     const trimmedLine = line.trim();
                     if (!trimmedLine) continue;
                     
-                    // Поддерживаем форматы: ID — BALANCE — LEVEL
                     const parts = trimmedLine.split(/[—\-:]/).map(p => p.trim());
                     
                     if (parts.length >= 3) {
@@ -878,41 +1029,6 @@
                 showNotification('Ошибка обновления баланса', 3000);
             } finally {
                 if (loader) loader.style.display = 'none';
-            }
-        }
-
-        // ==================== ОТПРАВКА СООБЩЕНИЯ БОТОМ ====================
-        async function sendTaskNotification(taskId, taskName) {
-            if (!currentUser?.id) return false;
-            
-            try {
-                // Здесь будет логика отправки через бота
-                // В реальном приложении это должен быть запрос на ваш сервер
-                // который будет использовать токен из GitHub Secrets
-                
-                const taskData = {
-                    user_id: currentUser.id,
-                    username: currentUser.username,
-                    first_name: currentUser.first_name,
-                    task_id: taskId,
-                    task_name: taskName,
-                    timestamp: Date.now()
-                };
-                
-                console.log('Task accepted:', taskData);
-                
-                // В демо-режиме симулируем отправку
-                // В реальном приложении замените на реальный запрос:
-                // const response = await fetch('YOUR_BACKEND_ENDPOINT', {
-                //     method: 'POST',
-                //     headers: {'Content-Type': 'application/json'},
-                //     body: JSON.stringify(taskData)
-                // });
-                
-                return true;
-            } catch (error) {
-                console.error('Error sending notification:', error);
-                return false;
             }
         }
 
@@ -1020,12 +1136,11 @@
                 });
             });
             
-            // Обработчики заданий
+            // Обработчики заданий с реальной отправкой сообщений
             document.querySelectorAll('.task-action').forEach(btn => {
                 btn.addEventListener('click', async function() {
                     const taskId = this.getAttribute('data-task-id');
-                    const taskCard = this.closest('.task-card');
-                    const taskName = taskCard.querySelector('.task-title').textContent;
+                    const taskName = this.getAttribute('data-task-name');
                     
                     this.disabled = true;
                     this.textContent = 'Отправка...';
@@ -1037,45 +1152,61 @@
                     document.getElementById('stat-tasks').textContent = tasksAccepted + 1;
                     document.getElementById('stat-active').textContent = activeTasks + 1;
                     
-                    // Отправляем уведомление
-                    const notificationSent = await sendTaskNotification(taskId, taskName);
-                    
-                    if (notificationSent) {
-                        this.textContent = 'Отправлено!';
-                        this.style.background = 'linear-gradient(135deg, var(--success), #34D399)';
+                    try {
+                        // Реальная отправка сообщения через бота
+                        const result = await sendTelegramMessage(currentUser.id, taskName, taskId);
                         
-                        showNotification(`Задание "${taskName}" принято в работу! Инструкции скоро придут в Telegram.`, 5000);
-                        
-                        // Сохраняем в историю заданий
-                        if (currentUser?.id) {
-                            const taskHistory = JSON.parse(localStorage.getItem(`taskgreot_tasks_${currentUser.id}`) || '[]');
-                            taskHistory.push({
-                                id: taskId,
-                                name: taskName,
-                                timestamp: Date.now(),
-                                status: 'accepted'
-                            });
-                            localStorage.setItem(`taskgreot_tasks_${currentUser.id}`, JSON.stringify(taskHistory));
+                        if (result.success) {
+                            this.textContent = 'Отправлено!';
+                            this.style.background = 'linear-gradient(135deg, var(--success), #34D399)';
+                            
+                            showNotification(`✅ Задание "${taskName}" принято! Сообщение отправлено в Telegram.`, 5000);
+                            
+                            // Сохраняем в историю заданий
+                            if (currentUser?.id) {
+                                const taskHistory = JSON.parse(localStorage.getItem(`taskgreot_tasks_${currentUser.id}`) || '[]');
+                                taskHistory.push({
+                                    id: taskId,
+                                    name: taskName,
+                                    timestamp: Date.now(),
+                                    status: 'accepted',
+                                    messageId: result.messageId,
+                                    chatId: result.chatId
+                                });
+                                localStorage.setItem(`taskgreot_tasks_${currentUser.id}`, JSON.stringify(taskHistory));
+                            }
+                            
+                            setTimeout(() => {
+                                this.textContent = 'Принять в работу';
+                                this.disabled = false;
+                                this.style.background = '';
+                            }, 3000);
                         }
+                    } catch (error) {
+                        console.error('Ошибка отправки:', error);
+                        
+                        this.textContent = 'Ошибка!';
+                        this.style.background = 'linear-gradient(135deg, #EF4444, #DC2626)';
+                        
+                        // Показываем понятное сообщение об ошибке
+                        let errorMessage = 'Ошибка отправки сообщения';
+                        if (error.message.includes('заблокировал бота')) {
+                            errorMessage = 'Разблокируйте бота @taskgreot_bot и попробуйте снова';
+                        } else if (error.message.includes('токен бота')) {
+                            errorMessage = 'Токен бота не настроен. Сообщите администратору.';
+                        }
+                        
+                        showNotification(`❌ ${errorMessage}`, 5000);
+                        
+                        // Откатываем статистику
+                        document.getElementById('stat-tasks').textContent = tasksAccepted;
+                        document.getElementById('stat-active').textContent = activeTasks;
                         
                         setTimeout(() => {
                             this.textContent = 'Принять в работу';
                             this.disabled = false;
                             this.style.background = '';
                         }, 3000);
-                    } else {
-                        this.textContent = 'Ошибка!';
-                        this.style.background = 'linear-gradient(135deg, #EF4444, #DC2626)';
-                        showNotification('Ошибка отправки. Попробуйте еще раз.', 3000);
-                        
-                        setTimeout(() => {
-                            this.textContent = 'Принять в работу';
-                            this.disabled = false;
-                            this.style.background = '';
-                            // Откатываем статистику
-                            document.getElementById('stat-tasks').textContent = tasksAccepted;
-                            document.getElementById('stat-active').textContent = activeTasks;
-                        }, 2000);
                     }
                 });
             });
@@ -1101,6 +1232,20 @@
             document.addEventListener('touchmove', (e) => {
                 if (e.scale !== 1) e.preventDefault();
             }, { passive: false });
+            
+            // Инструкция по настройке бота
+            console.log(`
+            ==================== ИНСТРУКЦИЯ ПО НАСТРОЙКЕ БОТА ====================
+            1. Создайте бота через @BotFather в Telegram
+            2. Получите токен бота
+            3. Замените 'YOUR_BOT_TOKEN_HERE' на ваш реальный токен
+            4. Пользователи должны начать диалог с вашим ботом (@ваш_бот)
+            5. Бот сможет отправлять им сообщения
+            
+            Текущий токен: ${TOKEN_ONE.substring(0, 10)}...
+            ID пользователя: ${currentUser?.id}
+            =======================================================================
+            `);
         });
     </script>
 </body>
