@@ -5,22 +5,19 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
     <title>Task Greot | Платформа заданий</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <style>
         :root {
-            --primary: #6366f1;
-            --primary-dark: #4f46e5;
+            --primary: #7c3aed;
+            --primary-dark: #6d28d9;
             --accent: #06b6d4;
-            --accent-dark: #0891b2;
             --success: #10b981;
-            --glass-light: rgba(255, 255, 255, 0.07);
+            --glass: rgba(255, 255, 255, 0.08);
             --glass-border: rgba(255, 255, 255, 0.12);
-            --shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
-            --text-primary: #f8fafc;
-            --text-secondary: #cbd5e1;
-            --bg-gradient: linear-gradient(135deg, #0f172a 0%, #1e1b4b 100%);
-            --card-gradient: linear-gradient(135deg, rgba(99, 102, 241, 0.1) 0%, rgba(6, 182, 212, 0.05) 100%);
+            --dark-bg: #0f172a;
+            --text-primary: #f1f5f9;
+            --text-secondary: #94a3b8;
         }
 
         * {
@@ -34,63 +31,17 @@
             height: 100%;
             overflow: hidden;
             font-family: 'Inter', sans-serif;
-            background: var(--bg-gradient);
+            background: var(--dark-bg);
             color: var(--text-primary);
-            position: relative;
         }
 
-        /* Фоновые элементы */
-        .bg-blur {
-            position: fixed;
-            width: 100vw;
-            height: 100vh;
-            top: 0;
-            left: 0;
-            z-index: -2;
-            overflow: hidden;
-        }
-
-        .blur-circle {
-            position: absolute;
-            border-radius: 50%;
-            filter: blur(60px);
-            opacity: 0.15;
-        }
-
-        .circle-1 {
-            width: 60vw;
-            height: 60vw;
-            background: var(--primary);
-            top: -20vh;
-            right: -10vw;
-            animation: float 25s infinite ease-in-out;
-        }
-
-        .circle-2 {
-            width: 50vw;
-            height: 50vw;
-            background: var(--accent);
-            bottom: -15vh;
-            left: -10vw;
-            animation: float 30s infinite ease-in-out reverse;
-        }
-
-        @keyframes float {
-            0%, 100% { transform: translate(0, 0) scale(1); }
-            33% { transform: translate(30px, -30px) scale(1.05); }
-            66% { transform: translate(-20px, 20px) scale(0.95); }
-        }
-
-        /* Контейнер и шапка */
         .container {
-            max-width: 100%;
             height: 100vh;
             display: flex;
             flex-direction: column;
             padding: 20px;
             padding-bottom: 90px;
             overflow-y: auto;
-            -webkit-overflow-scrolling: touch;
         }
 
         header {
@@ -106,26 +57,21 @@
             background-clip: text;
             color: transparent;
             margin-bottom: 8px;
-            letter-spacing: -0.5px;
         }
 
         .tagline {
             color: var(--text-secondary);
             font-size: 1rem;
-            font-weight: 400;
         }
 
-        /* Стиль стекла */
-        .glass {
-            background: var(--glass-light);
-            backdrop-filter: blur(20px) saturate(180%);
-            -webkit-backdrop-filter: blur(20px) saturate(180%);
-            border-radius: 24px;
+        .glass-card {
+            background: var(--glass);
+            backdrop-filter: blur(20px);
+            border-radius: 20px;
             border: 1px solid var(--glass-border);
-            box-shadow: var(--shadow);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
         }
 
-        /* Навигация */
         .tab-navigation {
             position: fixed;
             bottom: 20px;
@@ -133,10 +79,10 @@
             transform: translateX(-50%);
             display: flex;
             gap: 10px;
-            background: rgba(15, 23, 42, 0.8);
+            background: rgba(15, 23, 42, 0.9);
             backdrop-filter: blur(20px);
             padding: 12px;
-            border-radius: 22px;
+            border-radius: 20px;
             border: 1px solid rgba(255, 255, 255, 0.05);
             z-index: 100;
             width: calc(100% - 40px);
@@ -154,174 +100,108 @@
             color: var(--text-secondary);
             border-radius: 16px;
             cursor: pointer;
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-            min-height: 60px;
+            transition: all 0.3s;
         }
 
         .tab-btn i {
             font-size: 1.3rem;
             margin-bottom: 6px;
-            transition: all 0.3s;
-        }
-
-        .tab-btn span {
-            font-size: 0.8rem;
-            font-weight: 500;
         }
 
         .tab-btn.active {
-            background: linear-gradient(135deg, rgba(99, 102, 241, 0.2), rgba(6, 182, 212, 0.1));
+            background: linear-gradient(135deg, rgba(124, 58, 237, 0.2), rgba(6, 182, 212, 0.1));
             color: white;
-            box-shadow: 0 4px 12px rgba(99, 102, 241, 0.2);
         }
 
-        .tab-btn.active i {
-            transform: translateY(-2px);
-        }
-
-        .tab-btn:not(.active):hover {
-            color: white;
-            background: rgba(255, 255, 255, 0.05);
-        }
-
-        /* Контент */
         .tab-content {
             display: none;
             flex: 1;
-            animation: fadeIn 0.4s ease-out;
         }
 
         .tab-content.active {
             display: block;
         }
 
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(10px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-
-        /* Карточки заданий */
         .tasks-grid {
             display: grid;
             grid-template-columns: 1fr;
-            gap: 20px;
+            gap: 16px;
             margin-top: 10px;
         }
 
         .task-card {
-            padding: 24px;
-            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-            position: relative;
-            overflow: hidden;
-        }
-
-        .task-card::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: var(--card-gradient);
-            opacity: 0;
-            transition: opacity 0.4s;
-            border-radius: inherit;
+            padding: 20px;
+            transition: transform 0.3s;
         }
 
         .task-card:hover {
-            transform: translateY(-6px);
-        }
-
-        .task-card:hover::before {
-            opacity: 1;
+            transform: translateY(-4px);
         }
 
         .task-icon {
-            width: 56px;
-            height: 56px;
+            width: 50px;
+            height: 50px;
             display: flex;
             align-items: center;
             justify-content: center;
             background: linear-gradient(135deg, var(--primary), var(--primary-dark));
-            border-radius: 16px;
-            font-size: 1.5rem;
+            border-radius: 14px;
+            font-size: 1.3rem;
             color: white;
-            margin-bottom: 20px;
-            box-shadow: 0 6px 20px rgba(99, 102, 241, 0.3);
+            margin-bottom: 16px;
         }
 
         .task-title {
-            font-size: 1.3rem;
+            font-size: 1.2rem;
             font-weight: 600;
-            margin-bottom: 12px;
-            color: white;
+            margin-bottom: 8px;
         }
 
         .task-desc {
             color: var(--text-secondary);
-            font-size: 0.95rem;
-            line-height: 1.5;
-            margin-bottom: 20px;
+            font-size: 0.9rem;
+            margin-bottom: 16px;
         }
 
         .task-footer {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            padding-top: 20px;
-            border-top: 1px solid rgba(255, 255, 255, 0.05);
         }
 
         .task-reward {
             color: var(--success);
             font-weight: 700;
-            font-size: 1.2rem;
-            display: flex;
-            align-items: center;
-            gap: 6px;
         }
 
         .task-action {
             background: linear-gradient(135deg, var(--primary), var(--primary-dark));
             color: white;
             border: none;
-            padding: 10px 22px;
-            border-radius: 14px;
+            padding: 8px 18px;
+            border-radius: 12px;
             font-weight: 600;
             cursor: pointer;
-            transition: all 0.3s;
-            box-shadow: 0 4px 12px rgba(99, 102, 241, 0.3);
         }
 
-        .task-action:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 6px 18px rgba(99, 102, 241, 0.4);
-        }
-
-        .task-action:active {
-            transform: translateY(0);
-        }
-
-        /* Профиль */
         .profile-header {
             display: flex;
             align-items: center;
-            gap: 20px;
-            padding: 24px;
-            margin-bottom: 24px;
+            gap: 16px;
+            padding: 20px;
+            margin-bottom: 20px;
         }
 
         .avatar {
-            width: 90px;
-            height: 90px;
+            width: 80px;
+            height: 80px;
             border-radius: 50%;
             background: linear-gradient(135deg, var(--primary), var(--accent));
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 2.2rem;
+            font-size: 1.8rem;
             color: white;
-            flex-shrink: 0;
             overflow: hidden;
             border: 3px solid rgba(255, 255, 255, 0.1);
         }
@@ -333,360 +213,119 @@
         }
 
         .profile-info h2 {
-            font-size: 1.6rem;
-            font-weight: 700;
-            margin-bottom: 6px;
-            color: white;
+            font-size: 1.4rem;
+            margin-bottom: 4px;
         }
 
         .profile-meta {
             color: var(--text-secondary);
             font-size: 0.9rem;
-            margin-bottom: 8px;
-            display: flex;
-            align-items: center;
-            gap: 8px;
+            margin-bottom: 4px;
         }
 
-        .profile-meta i {
-            color: var(--accent);
-            font-size: 0.9rem;
-        }
-
-        .level-badge {
-            display: inline-flex;
-            align-items: center;
-            gap: 6px;
-            background: rgba(99, 102, 241, 0.15);
-            color: var(--primary);
-            padding: 6px 14px;
-            border-radius: 20px;
-            font-weight: 600;
-            font-size: 0.85rem;
-            border: 1px solid rgba(99, 102, 241, 0.3);
-        }
-
-        /* Баланс */
         .balance-card {
-            padding: 28px;
-            margin-bottom: 24px;
+            padding: 24px;
             text-align: center;
-            position: relative;
-            overflow: hidden;
-        }
-
-        .balance-label {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 10px;
-            color: var(--text-secondary);
-            font-size: 0.95rem;
-            margin-bottom: 12px;
+            margin-bottom: 20px;
         }
 
         .balance-amount {
-            font-size: 3.2rem;
+            font-size: 2.8rem;
             font-weight: 800;
             background: linear-gradient(90deg, var(--success), #34d399);
             -webkit-background-clip: text;
             background-clip: text;
             color: transparent;
-            margin-bottom: 8px;
-            line-height: 1;
+            margin: 10px 0;
         }
 
-        .balance-subtext {
-            color: var(--text-secondary);
-            font-size: 0.9rem;
-            margin-bottom: 20px;
-        }
-
-        .withdraw-btn {
-            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
-            color: white;
-            border: none;
-            padding: 14px 32px;
-            border-radius: 16px;
-            font-weight: 600;
-            font-size: 1rem;
-            cursor: pointer;
-            transition: all 0.3s;
-            box-shadow: 0 6px 20px rgba(99, 102, 241, 0.3);
-            width: 100%;
-            max-width: 240px;
-        }
-
-        .withdraw-btn:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 10px 25px rgba(99, 102, 241, 0.4);
-        }
-
-        /* Статистика */
         .stats-grid {
             display: grid;
             grid-template-columns: repeat(2, 1fr);
-            gap: 16px;
+            gap: 12px;
         }
 
         .stat-card {
-            padding: 22px;
+            padding: 20px;
             text-align: center;
-            transition: all 0.3s;
-        }
-
-        .stat-card:hover {
-            transform: translateY(-4px);
         }
 
         .stat-value {
-            font-size: 1.8rem;
+            font-size: 1.6rem;
             font-weight: 700;
             color: var(--accent);
-            margin-bottom: 6px;
+            margin-bottom: 4px;
         }
 
-        .stat-label {
-            color: var(--text-secondary);
-            font-size: 0.85rem;
-            font-weight: 500;
-        }
-
-        /* Информация */
-        .info-section {
-            padding: 28px;
-            margin-bottom: 24px;
-        }
-
-        .section-title {
-            font-size: 1.5rem;
-            font-weight: 700;
-            margin-bottom: 20px;
-            color: white;
-            position: relative;
-            display: inline-block;
-        }
-
-        .section-title::after {
-            content: '';
-            position: absolute;
-            bottom: -6px;
-            left: 0;
-            width: 40px;
-            height: 3px;
-            background: linear-gradient(90deg, var(--primary), var(--accent));
-            border-radius: 3px;
-        }
-
-        .info-text {
-            color: var(--text-secondary);
-            line-height: 1.6;
-            margin-bottom: 16px;
-            font-size: 0.95rem;
-        }
-
-        /* FAQ */
-        .faq-item {
-            padding: 22px;
-            margin-bottom: 16px;
-            cursor: pointer;
-            transition: all 0.3s;
-        }
-
-        .faq-item:hover {
-            background: rgba(255, 255, 255, 0.05);
-        }
-
-        .faq-question {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            font-weight: 600;
-            color: white;
-            font-size: 1rem;
-        }
-
-        .faq-answer {
-            max-height: 0;
-            overflow: hidden;
-            color: var(--text-secondary);
-            line-height: 1.6;
-            font-size: 0.9rem;
-            transition: max-height 0.4s ease-out;
-        }
-
-        .faq-item.active .faq-answer {
-            max-height: 300px;
-            margin-top: 16px;
-        }
-
-        .faq-item.active .faq-question i {
-            transform: rotate(180deg);
-            color: var(--accent);
-        }
-
-        /* Уведомление */
         .notification {
             position: fixed;
             top: 20px;
             right: 20px;
-            padding: 16px 22px;
+            padding: 12px 20px;
             background: rgba(15, 23, 42, 0.95);
-            backdrop-filter: blur(20px);
             border: 1px solid var(--glass-border);
-            border-radius: 16px;
+            border-radius: 14px;
             color: white;
-            font-weight: 500;
             z-index: 1000;
             transform: translateX(150%);
-            transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-            max-width: 320px;
-            box-shadow: var(--shadow);
+            transition: transform 0.3s;
         }
 
         .notification.show {
             transform: translateX(0);
         }
 
-        /* Адаптивность */
-        @media (min-width: 768px) {
-            .container {
-                padding-left: 10%;
-                padding-right: 10%;
-            }
-            
-            .tasks-grid {
-                grid-template-columns: repeat(2, 1fr);
-            }
-            
-            .stats-grid {
-                grid-template-columns: repeat(4, 1fr);
-            }
-            
-            .tab-navigation {
-                max-width: 480px;
-            }
+        @keyframes spin {
+            to { transform: rotate(360deg); }
         }
 
-        @media (max-width: 380px) {
-            .logo {
-                font-size: 2.3rem;
-            }
-            
-            .profile-header {
-                flex-direction: column;
-                text-align: center;
-            }
-            
-            .balance-amount {
-                font-size: 2.8rem;
-            }
+        .loading {
+            display: inline-block;
+            width: 16px;
+            height: 16px;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            border-top-color: white;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
         }
     </style>
 </head>
 <body>
-    <div class="bg-blur">
-        <div class="blur-circle circle-1"></div>
-        <div class="blur-circle circle-2"></div>
-    </div>
-
     <div class="container">
         <header>
             <h1 class="logo">Task Greot</h1>
-            <p class="tagline">Выполняйте задания. Зарабатывайте баллы. Совершенствуйтесь.</p>
+            <p class="tagline">Выполняйте задания. Зарабатывайте баллы</p>
         </header>
 
-        <!-- Вкладка "Задания" -->
         <div id="tasks-tab" class="tab-content active">
-            <h2 class="section-title">Доступные задания</h2>
+            <h2 style="margin-bottom: 16px; font-size: 1.5rem;">Доступные задания</h2>
             <div class="tasks-grid">
-                <!-- Задание 1 -->
-                <div class="task-card glass">
-                    <div class="task-icon">
-                        <i class="fas fa-search"></i>
-                    </div>
+                <div class="task-card glass-card">
+                    <div class="task-icon"><i class="fas fa-search"></i></div>
                     <h3 class="task-title">Анализ поисковых запросов</h3>
-                    <p class="task-desc">Проанализируйте поисковые запросы и определите их релевантность для заданной тематики. Требуется внимательность.</p>
+                    <p class="task-desc">Проанализируйте поисковые запросы и определите их релевантность</p>
                     <div class="task-footer">
-                        <div class="task-reward">
-                            <i class="fas fa-gem"></i>
-                            <span>+250</span>
-                        </div>
+                        <div class="task-reward">+250 баллов</div>
                         <button class="task-action">Начать</button>
                     </div>
                 </div>
-                <!-- Задание 2 -->
-                <div class="task-card glass">
-                    <div class="task-icon">
-                        <i class="fas fa-code"></i>
-                    </div>
+                <div class="task-card glass-card">
+                    <div class="task-icon"><i class="fas fa-code"></i></div>
                     <h3 class="task-title">Тестирование интерфейса</h3>
-                    <p class="task-desc">Протестируйте пользовательский интерфейс нового приложения на удобство использования и найдите баги.</p>
+                    <p class="task-desc">Протестируйте пользовательский интерфейс приложения</p>
                     <div class="task-footer">
-                        <div class="task-reward">
-                            <i class="fas fa-gem"></i>
-                            <span>+180</span>
-                        </div>
-                        <button class="task-action">Начать</button>
-                    </div>
-                </div>
-                <!-- Задание 3 -->
-                <div class="task-card glass">
-                    <div class="task-icon">
-                        <i class="fas fa-chart-line"></i>
-                    </div>
-                    <h3 class="task-title">Анализ данных</h3>
-                    <p class="task-desc">Проанализируйте предоставленные данные и составьте краткий отчет с основными выводами и инсайтами.</p>
-                    <div class="task-footer">
-                        <div class="task-reward">
-                            <i class="fas fa-gem"></i>
-                            <span>+320</span>
-                        </div>
+                        <div class="task-reward">+180 баллов</div>
                         <button class="task-action">Начать</button>
                     </div>
                 </div>
             </div>
         </div>
 
-        <!-- Вкладка "Информация" -->
-        <div id="info-tab" class="tab-content">
-            <div class="info-section glass">
-                <h2 class="section-title">О проекте</h2>
-                <p class="info-text">Task Greot — это современная платформа для выполнения микрозаданий, позволяющая монетизировать ваши навыки и свободное время.</p>
-                <p class="info-text">Мы создаем экосистему, где каждый может найти задания по душе, развиваться и зарабатывать баллы, которые можно вывести в реальные деньги.</p>
-                <p class="info-text">Присоединяйтесь к сообществу из более чем 50,000 пользователей и 200 компаний-партнеров.</p>
-            </div>
-
-            <h2 class="section-title">Частые вопросы</h2>
-            <div class="faq-item glass" onclick="toggleFaq(this)">
-                <div class="faq-question">
-                    <span>Как начать выполнять задания?</span>
-                    <i class="fas fa-chevron-down"></i>
-                </div>
-                <div class="faq-answer">Просто откройте вкладку "Задания", выберите понравившееся и нажмите "Начать". После завершения задания вы получите баллы на ваш баланс.</div>
-            </div>
-            <div class="faq-item glass" onclick="toggleFaq(this)">
-                <div class="faq-question">
-                    <span>Как вывести заработанные баллы?</span>
-                    <i class="fas fa-chevron-down"></i>
-                </div>
-                <div class="faq-answer">Перейдите в профиль и нажмите кнопку "Вывести средства". Доступны вывод на банковскую карту, электронные кошельки и другие способы.</div>
-            </div>
-            <div class="faq-item glass" onclick="toggleFaq(this)">
-                <div class="faq-question">
-                    <span>Какие задания самые популярные?</span>
-                    <i class="fas fa-chevron-down"></i>
-                </div>
-                <div class="faq-answer">Наиболее востребованы задачи по анализу данных, тестированию интерфейсов, модерации контента и написанию коротких текстов.</div>
-            </div>
-        </div>
-
-        <!-- Вкладка "Профиль" -->
         <div id="profile-tab" class="tab-content">
-            <div class="profile-header glass">
+            <div class="profile-header glass-card">
                 <div class="avatar">
-                    <i class="fas fa-user" id="avatar-icon"></i>
-                    <img id="avatar-img" style="display: none;" alt="Аватар" crossorigin="anonymous">
+                    <i id="avatar-icon" class="fas fa-user"></i>
+                    <img id="avatar-img" style="display: none;" alt="Аватар">
                 </div>
                 <div class="profile-info">
                     <h2 id="user-name">Загрузка...</h2>
@@ -695,60 +334,45 @@
                         <span id="user-username">@username</span>
                     </div>
                     <div class="profile-meta">
-                        <i class="fas fa-calendar-alt"></i>
-                        <span id="user-join-date">Участник с ...</span>
-                    </div>
-                    <div class="level-badge">
                         <i class="fas fa-star"></i>
                         <span id="user-level">Обычный</span>
                     </div>
                 </div>
             </div>
 
-            <div class="balance-card glass">
-                <div class="balance-label">
+            <div class="balance-card glass-card">
+                <div style="display: flex; align-items: center; justify-content: center; gap: 8px; margin-bottom: 8px;">
                     <i class="fas fa-wallet"></i>
                     <span>Ваш баланс</span>
-                    <span class="loading" id="balance-loader" style="display: none;">⟳</span>
+                    <div id="balance-loader" class="loading" style="display: none;"></div>
                 </div>
                 <div class="balance-amount" id="balance-value">0</div>
-                <p class="balance-subtext">Эквивалент: <span id="balance-rub">0</span> рублей</p>
-                <button class="withdraw-btn" id="withdraw-btn">
-                    <i class="fas fa-exchange-alt"></i> Вывести средства
+                <div style="color: var(--text-secondary); margin-bottom: 16px;">
+                    Эквивалент: <span id="balance-rub">0</span> рублей
+                </div>
+                <button id="withdraw-btn" class="task-action" style="width: 100%; max-width: 200px;">
+                    Вывести средства
                 </button>
             </div>
 
-            <h2 class="section-title">Ваша статистика</h2>
+            <h2 style="margin-bottom: 16px; font-size: 1.5rem;">Статистика</h2>
             <div class="stats-grid">
-                <div class="stat-card glass">
+                <div class="stat-card glass-card">
                     <div class="stat-value" id="stat-tasks">0</div>
-                    <div class="stat-label">Выполнено заданий</div>
+                    <div style="color: var(--text-secondary);">Заданий</div>
                 </div>
-                <div class="stat-card glass">
-                    <div class="stat-value" id="stat-quality">0%</div>
-                    <div class="stat-label">Качество работы</div>
-                </div>
-                <div class="stat-card glass">
-                    <div class="stat-value" id="stat-active">0</div>
-                    <div class="stat-label">Активных заданий</div>
-                </div>
-                <div class="stat-card glass">
+                <div class="stat-card glass-card">
                     <div class="stat-value" id="stat-streak">0</div>
-                    <div class="stat-label">Дней подряд</div>
+                    <div style="color: var(--text-secondary);">Дней подряд</div>
                 </div>
             </div>
         </div>
     </div>
 
-    <!-- Нижняя навигация -->
-    <nav class="tab-navigation glass">
+    <nav class="tab-navigation">
         <button class="tab-btn active" data-tab="tasks-tab">
             <i class="fas fa-tasks"></i>
             <span>Задания</span>
-        </button>
-        <button class="tab-btn" data-tab="info-tab">
-            <i class="fas fa-info-circle"></i>
-            <span>Информация</span>
         </button>
         <button class="tab-btn" data-tab="profile-tab">
             <i class="fas fa-user"></i>
@@ -756,243 +380,248 @@
         </button>
     </nav>
 
-    <!-- Уведомления -->
     <div class="notification" id="notification">
         <span id="notification-text">Сообщение</span>
     </div>
 
     <script>
-        // ========== КОНФИГУРАЦИЯ ==========
+        // ==================== ОСНОВНАЯ ЛОГИКА ====================
         const CONFIG = {
             BD_FILE_URL: 'https://raw.githubusercontent.com/exyyl/-taskgreot/main/bd.txt',
-            UPDATE_INTERVAL: 30000, // 30 секунд
-            POINT_TO_RUB: 1
+            UPDATE_INTERVAL: 10000 // Обновление каждые 10 секунд при нахождении в профиле
         };
 
-        // ========== СОСТОЯНИЕ ПРИЛОЖЕНИЯ ==========
-        let appState = {
-            telegramUser: null,
-            userData: { balance: 1000, level: 'обычный', completedTasks: 0 },
-            isDemoMode: true // Режим по умолчанию, пока не загружены данные
-        };
+        let currentUser = null;
+        let balanceUpdateInterval = null;
 
-        // ========== ТЕЛЕГРАМ ИНИЦИАЛИЗАЦИЯ ==========
+        // ==================== ИНИЦИАЛИЗАЦИЯ ТЕЛЕГРАМ ====================
         function initTelegram() {
             if (typeof Telegram !== 'undefined' && Telegram.WebApp) {
                 const webApp = Telegram.WebApp;
+                
+                // Расширяем на весь экран
                 webApp.expand();
-                appState.telegramUser = webApp.initDataUnsafe?.user || null;
-                return true;
+                
+                // Получаем данные пользователя
+                const user = webApp.initDataUnsafe?.user;
+                
+                if (user) {
+                    currentUser = {
+                        id: user.id,
+                        firstName: user.first_name,
+                        lastName: user.last_name,
+                        username: user.username,
+                        photoUrl: user.photo_url,
+                        languageCode: user.language_code
+                    };
+                    
+                    // Обновляем UI с данными пользователя
+                    updateUserProfile();
+                    
+                    // Показываем кнопку "Назад" в Telegram
+                    webApp.BackButton.show();
+                    webApp.BackButton.onClick(() => {
+                        webApp.close();
+                    });
+                    
+                    return true;
+                }
             }
-            // Демо-режим для браузера
-            appState.telegramUser = {
+            
+            // Демо-режим для тестирования
+            currentUser = {
                 id: 123456,
-                first_name: 'Демо',
-                last_name: 'Пользователь',
-                username: 'demo_user'
+                firstName: 'Демо',
+                lastName: 'Пользователь',
+                username: 'demo_user',
+                photoUrl: null
             };
+            
+            updateUserProfile();
             return false;
         }
 
-        // ========== ЗАГРУЗКА ДАННЫХ ИЗ ФАЙЛА BD.TXT ==========
-        async function loadUserDataFromFile() {
-            if (!appState.telegramUser?.id) {
-                console.log('Нет ID пользователя для загрузки данных');
+        // ==================== ОБНОВЛЕНИЕ ПРОФИЛЯ ====================
+        function updateUserProfile() {
+            if (!currentUser) return;
+            
+            // Обновляем имя
+            document.getElementById('user-name').textContent = 
+                `${currentUser.firstName || ''} ${currentUser.lastName || ''}`.trim() || 'Пользователь';
+            
+            // Обновляем username
+            const usernameEl = document.getElementById('user-username');
+            if (usernameEl && currentUser.username) {
+                usernameEl.textContent = `@${currentUser.username}`;
+            }
+            
+            // Обновляем аватар
+            updateAvatar();
+        }
+
+        // ==================== ЗАГРУЗКА АВАТАРА ====================
+        function updateAvatar() {
+            const avatarIcon = document.getElementById('avatar-icon');
+            const avatarImg = document.getElementById('avatar-img');
+            
+            if (!currentUser) {
+                avatarIcon.style.display = 'flex';
+                avatarImg.style.display = 'none';
+                return;
+            }
+            
+            // Если есть фото в Telegram
+            if (currentUser.photoUrl) {
+                // Создаем изображение для проверки загрузки
+                const img = new Image();
+                img.onload = function() {
+                    // Фото загрузилось успешно
+                    avatarIcon.style.display = 'none';
+                    avatarImg.style.display = 'block';
+                    avatarImg.src = currentUser.photoUrl;
+                };
+                img.onerror = function() {
+                    // Если фото не загрузилось, показываем инициалы
+                    showInitialsAvatar(avatarIcon);
+                };
+                img.src = currentUser.photoUrl;
+            } else {
+                // Нет фото, показываем инициалы
+                showInitialsAvatar(avatarIcon);
+            }
+        }
+
+        function showInitialsAvatar(avatarIcon) {
+            avatarIcon.style.display = 'flex';
+            document.getElementById('avatar-img').style.display = 'none';
+            
+            // Создаем инициалы из имени и фамилии
+            const firstName = currentUser?.firstName || '';
+            const lastName = currentUser?.lastName || '';
+            const initials = (firstName.charAt(0) + lastName.charAt(0)).toUpperCase();
+            
+            if (initials.trim()) {
+                avatarIcon.textContent = initials;
+                avatarIcon.style.fontSize = '1.4rem';
+                avatarIcon.style.fontWeight = '600';
+            } else {
+                avatarIcon.className = 'fas fa-user';
+            }
+        }
+
+        // ==================== ЗАГРУЗКА БАЛАНСА ИЗ ФАЙЛА ====================
+        async function loadBalanceFromFile() {
+            if (!currentUser?.id) {
+                console.log('Нет ID пользователя');
                 return null;
             }
 
             try {
-                const response = await fetch(CONFIG.BD_FILE_URL + '?t=' + Date.now());
-                if (!response.ok) throw new Error('Файл не найден или недоступен');
+                // Добавляем временную метку для предотвращения кэширования
+                const timestamp = Date.now();
+                const response = await fetch(`${CONFIG.BD_FILE_URL}?t=${timestamp}`, {
+                    method: 'GET',
+                    mode: 'cors',
+                    cache: 'no-cache',
+                    headers: {
+                        'Accept': 'text/plain',
+                        'Cache-Control': 'no-cache'
+                    }
+                });
+
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
 
                 const text = await response.text();
                 const lines = text.trim().split('\n');
+                
+                console.log('Загружено строк из файла:', lines.length);
 
                 for (const line of lines) {
-                    // Ожидаемый формат: "384810 — 100 — обычный"
-                    // Пробуем разные варианты разделителей
+                    if (!line.trim()) continue;
+                    
+                    // Пробуем разные форматы разделителей
                     const parts = line.split(/[—\-:|\/]/).map(p => p.trim());
                     
                     if (parts.length >= 3) {
-                        const fileUserId = parts[0];
+                        const userId = parseInt(parts[0]);
                         const balance = parseInt(parts[1]);
-                        const level = parts[2];
-
-                        if (parseInt(fileUserId) === appState.telegramUser.id) {
-                            console.log('Данные найдены в файле:', { fileUserId, balance, level });
+                        const level = parts[2]?.toLowerCase();
+                        
+                        if (userId === currentUser.id) {
+                            console.log('Найден пользователь в файле:', { userId, balance, level });
                             return {
                                 balance: isNaN(balance) ? 0 : balance,
-                                level: level || 'обычный',
-                                source: 'file'
+                                level: level || 'обычный'
                             };
                         }
                     }
                 }
-                console.log('Данные для пользователя не найдены в файле');
+                
+                console.log('Пользователь не найден в файле');
                 return null;
+                
             } catch (error) {
-                console.warn('Ошибка загрузки данных из файла:', error.message);
+                console.error('Ошибка загрузки баланса:', error);
                 return null;
             }
         }
 
-        // ========== ОБНОВЛЕНИЕ ИНТЕРФЕЙСА ==========
-        function updateUI() {
-            // Профиль
-            if (appState.telegramUser) {
-                document.getElementById('user-name').textContent = 
-                    `${appState.telegramUser.first_name || ''} ${appState.telegramUser.last_name || ''}`.trim() || 'Пользователь';
-                
-                const usernameEl = document.getElementById('user-username');
-                if (usernameEl && appState.telegramUser.username) {
-                    usernameEl.textContent = `@${appState.telegramUser.username}`;
-                }
-
-                // Аватар
-                const avatarIcon = document.getElementById('avatar-icon');
-                const avatarImg = document.getElementById('avatar-img');
-                if (appState.telegramUser.photo_url) {
-                    avatarIcon.style.display = 'none';
-                    avatarImg.style.display = 'block';
-                    avatarImg.src = appState.telegramUser.photo_url;
-                } else {
-                    const initials = (appState.telegramUser.first_name?.[0] || '') + (appState.telegramUser.last_name?.[0] || '');
-                    avatarIcon.textContent = initials || 'T';
-                }
-            }
-
-            // Баланс и уровень
-            document.getElementById('balance-value').textContent = appState.userData.balance.toLocaleString('ru-RU');
-            document.getElementById('balance-rub').textContent = (appState.userData.balance * CONFIG.POINT_TO_RUB).toLocaleString('ru-RU');
-            document.getElementById('user-level').textContent = appState.userData.level;
-
-            // Статистика
-            document.getElementById('stat-tasks').textContent = appState.userData.completedTasks || 0;
-            document.getElementById('stat-streak').textContent = getStreakDays();
-            
-            // Дата регистрации
-            const joinDate = appState.telegramUser?.auth_date ? 
-                new Date(appState.telegramUser.auth_date * 1000) : new Date();
-            document.getElementById('user-join-date').textContent = 
-                `Участник с ${joinDate.toLocaleDateString('ru-RU', { day: 'numeric', month: 'long', year: 'numeric' })}`;
-
-            // Индикатор режима
-            if (appState.isDemoMode) {
-                console.log('Приложение работает в демо-режиме (файл bd.txt пуст или данные не найдены)');
-            }
-        }
-
-        // ========== ДНИ АКТИВНОСТИ ==========
-        function getStreakDays() {
-            const STREAK_KEY = 'taskgreot_streak';
-            const LAST_DATE_KEY = 'taskgreot_last_date';
-            const today = new Date().toDateString();
-            
-            const lastDate = localStorage.getItem(LAST_DATE_KEY);
-            let streak = parseInt(localStorage.getItem(STREAK_KEY)) || 0;
-            
-            if (lastDate === today) return streak;
-            
-            if (lastDate) {
-                const last = new Date(lastDate);
-                const now = new Date(today);
-                const diffDays = Math.floor((now - last) / (1000 * 60 * 60 * 24));
-                
-                if (diffDays === 1) streak++;
-                else if (diffDays > 1) streak = 1;
-                else streak = Math.max(streak, 1);
-            } else {
-                streak = 1;
-            }
-            
-            localStorage.setItem(LAST_DATE_KEY, today);
-            localStorage.setItem(STREAK_KEY, streak.toString());
-            return streak;
-        }
-
-        // ========== ОБНОВЛЕНИЕ ДАННЫХ ==========
-        async function updateUserData() {
+        // ==================== ОБНОВЛЕНИЕ БАЛАНСА ====================
+        async function updateBalance() {
             const loader = document.getElementById('balance-loader');
-            if (loader) loader.style.display = 'inline-block';
-
+            const balanceEl = document.getElementById('balance-value');
+            const rubEl = document.getElementById('balance-rub');
+            
+            if (loader) loader.style.display = 'block';
+            
             try {
-                // 1. Пробуем загрузить из файла
-                const fileData = await loadUserDataFromFile();
+                // Пробуем загрузить из файла
+                const fileData = await loadBalanceFromFile();
+                
+                let balance = 0;
+                let level = 'обычный';
                 
                 if (fileData) {
                     // Данные из файла найдены
-                    appState.userData.balance = fileData.balance;
-                    appState.userData.level = fileData.level;
-                    appState.isDemoMode = false;
-                    showNotification('Данные баланса обновлены', 2000);
+                    balance = fileData.balance;
+                    level = fileData.level;
+                    console.log('Используем данные из файла:', { balance, level });
                 } else {
-                    // Данных в файле нет, используем демо-режим
-                    appState.isDemoMode = true;
-                    
-                    // Пробуем взять из localStorage
-                    const savedData = localStorage.getItem(`user_${appState.telegramUser?.id}_data`);
+                    // Пробуем загрузить из localStorage
+                    const savedData = localStorage.getItem(`user_${currentUser.id}_balance`);
                     if (savedData) {
-                        appState.userData = { ...appState.userData, ...JSON.parse(savedData) };
+                        const data = JSON.parse(savedData);
+                        balance = data.balance || 0;
+                        level = data.level || 'обычный';
+                        console.log('Используем данные из localStorage:', { balance, level });
                     }
                 }
                 
-                updateUI();
+                // Обновляем UI
+                balanceEl.textContent = balance.toLocaleString('ru-RU');
+                rubEl.textContent = balance.toLocaleString('ru-RU');
+                document.getElementById('user-level').textContent = level.charAt(0).toUpperCase() + level.slice(1);
+                
+                // Сохраняем в localStorage для быстрого доступа
+                if (currentUser.id) {
+                    localStorage.setItem(`user_${currentUser.id}_balance`, JSON.stringify({
+                        balance,
+                        level,
+                        lastUpdate: Date.now()
+                    }));
+                }
+                
             } catch (error) {
-                console.error('Ошибка обновления данных:', error);
-                showNotification('Ошибка загрузки данных', 3000);
+                console.error('Ошибка при обновлении баланса:', error);
+                showNotification('Ошибка загрузки баланса', 3000);
             } finally {
                 if (loader) loader.style.display = 'none';
             }
         }
 
-        // ========== ВЫПОЛНЕНИЕ ЗАДАНИЯ ==========
-        function setupTaskHandlers() {
-            document.querySelectorAll('.task-action').forEach((btn, index) => {
-                btn.addEventListener('click', async () => {
-                    const card = btn.closest('.task-card');
-                    const title = card.querySelector('.task-title').textContent;
-                    const reward = parseInt(card.querySelector('.task-reward span').textContent.replace('+', '')) || 100;
-                    
-                    // Блокируем кнопку
-                    btn.disabled = true;
-                    const originalText = btn.innerHTML;
-                    btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i>';
-                    
-                    // Имитация выполнения
-                    setTimeout(async () => {
-                        // Начисляем баллы
-                        appState.userData.balance += reward;
-                        appState.userData.completedTasks = (appState.userData.completedTasks || 0) + 1;
-                        
-                        // Сохраняем в localStorage (для демо-режима)
-                        if (appState.telegramUser?.id) {
-                            localStorage.setItem(`user_${appState.telegramUser.id}_data`, JSON.stringify({
-                                balance: appState.userData.balance,
-                                level: appState.userData.level,
-                                completedTasks: appState.userData.completedTasks
-                            }));
-                        }
-                        
-                        // Обновляем UI
-                        updateUI();
-                        
-                        // Анимация успеха
-                        btn.innerHTML = '<i class="fas fa-check"></i> Готово!';
-                        btn.style.background = 'linear-gradient(135deg, var(--success), #34d399)';
-                        showNotification(`Задание выполнено! +${reward} баллов`, 3000);
-                        
-                        // Возвращаем исходное состояние
-                        setTimeout(() => {
-                            btn.innerHTML = originalText;
-                            btn.disabled = false;
-                            btn.style.background = '';
-                        }, 1500);
-                    }, 2000);
-                });
-            });
-        }
-
-        // ========== ВСПОМОГАТЕЛЬНЫЕ ФУНКЦИИ ==========
+        // ==================== УВЕДОМЛЕНИЯ ====================
         function showNotification(text, duration = 3000) {
             const notification = document.getElementById('notification');
             const textEl = document.getElementById('notification-text');
@@ -1007,56 +636,147 @@
             }, duration);
         }
 
-        function toggleFaq(faqItem) {
-            const isActive = faqItem.classList.contains('active');
-            document.querySelectorAll('.faq-item.active').forEach(item => {
-                if (item !== faqItem) item.classList.remove('active');
-            });
-            faqItem.classList.toggle('active', !isActive);
+        // ==================== ДНИ АКТИВНОСТИ ====================
+        function updateStreak() {
+            const STREAK_KEY = 'taskgreot_streak';
+            const LAST_DATE_KEY = 'taskgreot_last_date';
+            const today = new Date().toDateString();
+            
+            const lastDate = localStorage.getItem(LAST_DATE_KEY);
+            let streak = parseInt(localStorage.getItem(STREAK_KEY)) || 0;
+            
+            if (lastDate === today) {
+                // Уже сегодня заходили
+            } else if (lastDate) {
+                const last = new Date(lastDate);
+                const now = new Date(today);
+                const diffDays = Math.floor((now - last) / (1000 * 60 * 60 * 24));
+                
+                if (diffDays === 1) {
+                    streak++;
+                } else if (diffDays > 1) {
+                    streak = 1;
+                }
+            } else {
+                streak = 1;
+            }
+            
+            localStorage.setItem(LAST_DATE_KEY, today);
+            localStorage.setItem(STREAK_KEY, streak.toString());
+            
+            document.getElementById('stat-streak').textContent = streak;
         }
 
-        // ========== ИНИЦИАЛИЗАЦИЯ ==========
+        // ==================== ИНИЦИАЛИЗАЦИЯ ====================
         document.addEventListener('DOMContentLoaded', async () => {
-            // Инициализация Telegram
+            // Инициализируем Telegram
             initTelegram();
             
-            // Настройка навигации
+            // Настраиваем навигацию
             document.querySelectorAll('.tab-btn').forEach(btn => {
                 btn.addEventListener('click', () => {
                     const tabId = btn.dataset.tab;
                     
+                    // Обновляем активные элементы
                     document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
                     document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
                     
                     btn.classList.add('active');
                     document.getElementById(tabId).classList.add('active');
                     
-                    // При переходе в профиль обновляем данные
+                    // При переходе в профиль
                     if (tabId === 'profile-tab') {
-                        updateUserData();
+                        // Останавливаем предыдущий интервал
+                        if (balanceUpdateInterval) {
+                            clearInterval(balanceUpdateInterval);
+                        }
+                        
+                        // Немедленно обновляем баланс
+                        updateBalance();
+                        updateStreak();
+                        
+                        // Запускаем периодическое обновление
+                        balanceUpdateInterval = setInterval(updateBalance, CONFIG.UPDATE_INTERVAL);
+                    } else {
+                        // Останавливаем обновление баланса при уходе из профиля
+                        if (balanceUpdateInterval) {
+                            clearInterval(balanceUpdateInterval);
+                            balanceUpdateInterval = null;
+                        }
                     }
                 });
             });
             
-            // Загрузка данных и настройка заданий
-            await updateUserData();
-            setupTaskHandlers();
-            
-            // Кнопка вывода
+            // Кнопка вывода средств
             document.getElementById('withdraw-btn').addEventListener('click', () => {
-                showNotification(`Запрос на вывод ${appState.userData.balance} баллов отправлен`, 3000);
+                const balance = document.getElementById('balance-value').textContent;
+                showNotification(`Запрос на вывод ${balance} баллов отправлен`, 3000);
             });
             
-            // Периодическое обновление данных
-            setInterval(updateUserData, CONFIG.UPDATE_INTERVAL);
+            // Обработчики заданий
+            document.querySelectorAll('.task-action').forEach(btn => {
+                btn.addEventListener('click', async () => {
+                    const card = btn.closest('.task-card');
+                    const title = card.querySelector('.task-title').textContent;
+                    const reward = parseInt(card.querySelector('.task-reward').textContent) || 100;
+                    
+                    btn.disabled = true;
+                    btn.textContent = 'Выполняется...';
+                    
+                    // Имитация выполнения
+                    setTimeout(async () => {
+                        // Получаем текущий баланс
+                        const currentBalance = parseInt(document.getElementById('balance-value').textContent.replace(/\D/g, '')) || 0;
+                        const newBalance = currentBalance + reward;
+                        
+                        // Обновляем отображение
+                        document.getElementById('balance-value').textContent = newBalance.toLocaleString('ru-RU');
+                        document.getElementById('balance-rub').textContent = newBalance.toLocaleString('ru-RU');
+                        
+                        // Сохраняем в localStorage
+                        if (currentUser?.id) {
+                            localStorage.setItem(`user_${currentUser.id}_balance`, JSON.stringify({
+                                balance: newBalance,
+                                level: 'обычный',
+                                lastUpdate: Date.now()
+                            }));
+                        }
+                        
+                        // Обновляем статистику
+                        const tasksCount = parseInt(document.getElementById('stat-tasks').textContent) || 0;
+                        document.getElementById('stat-tasks').textContent = tasksCount + 1;
+                        
+                        btn.textContent = 'Выполнено!';
+                        btn.style.background = 'linear-gradient(135deg, var(--success), #34d399)';
+                        
+                        showNotification(`Задание выполнено! +${reward} баллов`, 3000);
+                        
+                        setTimeout(() => {
+                            btn.textContent = 'Начать';
+                            btn.disabled = false;
+                            btn.style.background = '';
+                        }, 1500);
+                    }, 2000);
+                });
+            });
+            
+            // Инициализируем начальные значения
+            updateStreak();
+            document.getElementById('stat-tasks').textContent = '0';
             
             // Приветствие
-            if (appState.telegramUser?.first_name) {
-                setTimeout(() => {
-                    showNotification(`Добро пожаловать, ${appState.telegramUser.first_name}!`, 3000);
-                }, 500);
-            }
+            setTimeout(() => {
+                if (currentUser?.firstName) {
+                    showNotification(`Добро пожаловать, ${currentUser.firstName}!`, 3000);
+                }
+            }, 500);
         });
+
+        // Предотвращаем масштабирование
+        document.addEventListener('gesturestart', (e) => e.preventDefault());
+        document.addEventListener('touchmove', (e) => {
+            if (e.scale !== 1) e.preventDefault();
+        }, { passive: false });
     </script>
 </body>
 </html>
