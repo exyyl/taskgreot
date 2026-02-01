@@ -423,20 +423,29 @@
             <h2 style="margin-bottom: 16px; font-size: 1.5rem;">Доступные задания</h2>
             <div class="tasks-grid">
                 <div class="task-card glass-card">
-                    <div class="task-icon"><i class="fas fa-search"></i></div>
-                    <h3 class="task-title">Анализ поисковых запросов</h3>
-                    <p class="task-desc">Проанализируйте поисковые запросы и определите их релевантность</p>
+                    <div class="task-icon"><i class="fab fa-tiktok"></i></div>
+                    <h3 class="task-title">Написание комментариев в «ТикТок»</h3>
+                    <p class="task-desc">Написание комментариев под тематическими видео в «ТикТок». За каждых 100 комментариев - 50 баллов</p>
                     <div class="task-footer">
-                        <div class="task-reward">+250 баллов</div>
+                        <div class="task-reward">+500 баллов</div>
                         <button class="task-action">Начать</button>
                     </div>
                 </div>
                 <div class="task-card glass-card">
-                    <div class="task-icon"><i class="fas fa-code"></i></div>
-                    <h3 class="task-title">Тестирование интерфейса</h3>
-                    <p class="task-desc">Протестируйте пользовательский интерфейс приложения</p>
+                    <div class="task-icon"><i class="fas fa-map-marker-alt"></i></div>
+                    <h3 class="task-title">Написание отзыва на Яндекс Картах</h3>
+                    <p class="task-desc">Готовый отзыв в Яндекс Картах по предоставленному шаблону</p>
                     <div class="task-footer">
-                        <div class="task-reward">+180 баллов</div>
+                        <div class="task-reward">+60 баллов</div>
+                        <button class="task-action">Начать</button>
+                    </div>
+                </div>
+                <div class="task-card glass-card">
+                    <div class="task-icon"><i class="fas fa-envelope"></i></div>
+                    <h3 class="task-title">Создание почты Gmail</h3>
+                    <p class="task-desc">Очень быстрое задание на минуты: создать почту Gmail по нашим данным</p>
+                    <div class="task-footer">
+                        <div class="task-reward">+10 баллов</div>
                         <button class="task-action">Начать</button>
                     </div>
                 </div>
@@ -509,7 +518,7 @@
             <div class="stats-grid">
                 <div class="stat-card glass-card">
                     <div class="stat-value" id="stat-tasks">0</div>
-                    <div class="stat-label">Заданий выполнено</div>
+                    <div class="stat-label">Заданий принято в работу</div>
                 </div>
                 <div class="stat-card glass-card">
                     <div class="stat-value" id="stat-streak">0</div>
@@ -605,8 +614,8 @@
             return false;
         }
 
-        // ==================== ЗАГРУЗКА АВАТАРА ====================
-        function loadAvatar() {
+        // ==================== ЗАГРУЗКА АВАТАРА ЧЕРЕЗ TELEGRAM WEB API ====================
+        async function loadAvatar() {
             const avatarIcon = document.getElementById('avatar-icon');
             const avatarImg = document.getElementById('avatar-img');
             
@@ -618,21 +627,38 @@
             
             console.log('Загрузка аватара для пользователя:', currentUser.first_name);
             
-            // Всегда показываем инициалы, т.к. аватарки Telegram блокируются CORS
-            avatarIcon.style.display = 'flex';
-            avatarImg.style.display = 'none';
-            
-            const firstName = currentUser.first_name || '';
-            const lastName = currentUser.last_name || '';
-            const initials = (firstName.charAt(0) + lastName.charAt(0)).toUpperCase();
-            
-            if (initials.trim()) {
-                avatarIcon.textContent = initials;
-                avatarIcon.style.fontSize = '1.8rem';
-                avatarIcon.style.fontWeight = '600';
+            // Пробуем загрузить аватар через Telegram Web App API
+            if (typeof Telegram !== 'undefined' && Telegram.WebApp && currentUser.photo_url) {
+                try {
+                    // Telegram Web App API предоставляет доступ к фото пользователя
+                    avatarImg.src = currentUser.photo_url;
+                    avatarImg.style.display = 'block';
+                    avatarIcon.style.display = 'none';
+                    console.log('Аватар загружен через Telegram Web App API');
+                } catch (error) {
+                    console.log('Не удалось загрузить аватар через Telegram API:', error);
+                    showInitials();
+                }
             } else {
-                avatarIcon.className = 'fas fa-user';
-                avatarIcon.style.fontSize = '2rem';
+                showInitials();
+            }
+            
+            function showInitials() {
+                avatarIcon.style.display = 'flex';
+                avatarImg.style.display = 'none';
+                
+                const firstName = currentUser.first_name || '';
+                const lastName = currentUser.last_name || '';
+                const initials = (firstName.charAt(0) + lastName.charAt(0)).toUpperCase();
+                
+                if (initials.trim()) {
+                    avatarIcon.textContent = initials;
+                    avatarIcon.style.fontSize = '1.8rem';
+                    avatarIcon.style.fontWeight = '600';
+                } else {
+                    avatarIcon.className = 'fas fa-user';
+                    avatarIcon.style.fontSize = '2rem';
+                }
             }
         }
 
@@ -750,13 +776,13 @@
                 
                 let balance = 0;
                 let level = 'обычный';
-                let source = 'localStorage';
+                let source = 'локальное хранилище';
                 
                 if (fileData) {
                     console.log('Используем данные из файла:', fileData);
                     balance = fileData.balance;
                     level = fileData.level;
-                    source = 'GitHub файл';
+                    source = 'внешний источник';
                 } else {
                     console.log('Файл не найден, используем localStorage');
                     
@@ -777,10 +803,10 @@
                 document.getElementById('balance-rub').textContent = (balance * CONFIG.POINT_TO_RUB).toLocaleString('ru-RU');
                 document.getElementById('user-level').textContent = level;
                 
-                // Обновляем источник данных в интерфейсе
+                // Обновляем информацию о времени обновления
                 const sourceElement = document.querySelector('.balance-subtext + div');
                 if (sourceElement) {
-                    sourceElement.innerHTML = `<i class="fas fa-info-circle"></i> Данные: ${source} | Обновлено: ${new Date().toLocaleTimeString('ru-RU', {hour: '2-digit', minute:'2-digit'})}`;
+                    sourceElement.innerHTML = `<i class="fas fa-info-circle"></i> Обновлено: ${new Date().toLocaleTimeString('ru-RU', {hour: '2-digit', minute:'2-digit'})}`;
                 }
                 
                 // Сохраняем в localStorage
@@ -788,15 +814,14 @@
                     localStorage.setItem(`taskgreot_user_${currentUser.id}`, JSON.stringify({
                         balance,
                         level,
-                        updated: Date.now(),
-                        source: source
+                        updated: Date.now()
                     }));
                 }
                 
-                console.log('Баланс успешно обновлен:', balance, '(', source, ')');
+                console.log('Баланс успешно обновлен:', balance);
                 
-                if (showNotification && source === 'GitHub файл') {
-                    showNotificationMessage('Баланс обновлен из GitHub', 2000);
+                if (showNotification) {
+                    showNotificationMessage('Баланс обновлен', 2000);
                 }
                 
                 return balance;
@@ -952,8 +977,7 @@
                             localStorage.setItem(`taskgreot_user_${currentUser.id}`, JSON.stringify({
                                 balance: newBalance,
                                 level: 'обычный',
-                                updated: Date.now(),
-                                source: 'localStorage'
+                                updated: Date.now()
                             }));
                         }
                         
@@ -965,7 +989,7 @@
                         btn.textContent = 'Выполнено!';
                         btn.style.background = 'linear-gradient(135deg, var(--success), #34D399)';
                         
-                        showNotificationMessage(`Задание выполнено! +${reward} баллов`, 3000);
+                        showNotificationMessage(`Задание принято в работу! +${reward} баллов`, 3000);
                         
                         setTimeout(() => {
                             btn.textContent = 'Начать';
