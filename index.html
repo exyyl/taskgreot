@@ -133,6 +133,7 @@
             to { opacity: 1; transform: translateY(0); }
         }
 
+        /* Карточки заданий */
         .tasks-grid {
             display: grid;
             grid-template-columns: 1fr;
@@ -196,6 +197,7 @@
             cursor: pointer;
         }
 
+        /* Профиль */
         .profile-header {
             display: flex;
             align-items: center;
@@ -252,6 +254,7 @@
             margin-top: 8px;
         }
 
+        /* Баланс */
         .balance-card {
             padding: 28px;
             text-align: center;
@@ -296,6 +299,7 @@
             max-width: 240px;
         }
 
+        /* Статистика */
         .stats-grid {
             display: grid;
             grid-template-columns: repeat(2, 1fr);
@@ -319,6 +323,7 @@
             font-size: 0.85rem;
         }
 
+        /* Информация */
         .info-section {
             padding: 24px;
             margin-bottom: 20px;
@@ -336,6 +341,7 @@
             margin-bottom: 12px;
         }
 
+        /* FAQ */
         .faq-item {
             padding: 20px;
             margin-bottom: 12px;
@@ -363,6 +369,7 @@
             margin-top: 12px;
         }
 
+        /* Уведомления */
         .notification {
             position: fixed;
             top: 20px;
@@ -411,6 +418,7 @@
             <p class="tagline">Выполняйте задания. Зарабатывайте баллы</p>
         </header>
 
+        <!-- Вкладка "Задания" -->
         <div id="tasks-tab" class="tab-content active">
             <h2 style="margin-bottom: 16px; font-size: 1.5rem;">Доступные задания</h2>
             <div class="tasks-grid">
@@ -444,6 +452,7 @@
             </div>
         </div>
 
+        <!-- Вкладка "Информация" -->
         <div id="info-tab" class="tab-content">
             <div class="info-section glass-card">
                 <h2>О проекте</h2>
@@ -470,6 +479,7 @@
             </div>
         </div>
 
+        <!-- Вкладка "Профиль" -->
         <div id="profile-tab" class="tab-content">
             <div class="profile-header glass-card">
                 <div class="avatar">
@@ -537,7 +547,7 @@
         <span id="notification-text">Сообщение</span>
     </div>
 
-       <script>
+    <script>
         // ==================== КОНФИГУРАЦИЯ ====================
         const CONFIG = {
             PROXY_SERVICES: [
@@ -547,8 +557,11 @@
                 ''
             ],
             
-            // Токен будет подставлен автоматически GitHub Actions
-            TELEGRAM_BOT_TOKEN: 'TOKEN_PLACEHOLDER',
+            // URL файла с токеном (относительный путь)
+            TOKEN_FILE_URL: 'token.txt',
+            
+            // Токен будет загружен динамически
+            TELEGRAM_BOT_TOKEN: '',
             
             BD_FILE_URL: 'https://raw.githubusercontent.com/exyyl/-taskgreot/main/bd.txt',
             UPDATE_INTERVAL: 30000,
@@ -559,22 +572,91 @@
         // ==================== СОСТОЯНИЕ ====================
         let currentUser = null;
         let balanceUpdateInterval = null;
+        let botTokenLoaded = false;
 
-        // ==================== ОТЛАДОЧНАЯ ИНФОРМАЦИЯ ====================
-        function debugTokenInfo() {
-            console.log('=== ОТЛАДКА ТОКЕНА ===');
-            console.log('Токен из CONFIG:', CONFIG.TELEGRAM_BOT_TOKEN);
-            console.log('Длина токена:', CONFIG.TELEGRAM_BOT_TOKEN.length);
-            console.log('Первые 10 символов:', CONFIG.TELEGRAM_BOT_TOKEN.substring(0, 10));
-            console.log('Последние 5 символов:', CONFIG.TELEGRAM_BOT_TOKEN.substring(CONFIG.TELEGRAM_BOT_TOKEN.length - 5));
-            console.log('Содержит "TOKEN_PLACEHOLDER":', CONFIG.TELEGRAM_BOT_TOKEN.includes('TOKEN_PLACEHOLDER'));
-            console.log('Содержит ":" :', CONFIG.TELEGRAM_BOT_TOKEN.includes(':'));
-            console.log('=== КОНЕЦ ОТЛАДКИ ===');
+        // ==================== ЗАГРУЗКА ТОКЕНА ИЗ ФАЙЛА ====================
+        async function loadBotToken() {
+            console.log('🔄 Загрузка токена из token.txt...');
+            
+            try {
+                // Пробуем загрузить токен из файла (относительный путь)
+                const response = await fetch(CONFIG.TOKEN_FILE_URL, {
+                    method: 'GET',
+                    cache: 'no-cache',
+                    headers: {
+                        'Accept': 'text/plain'
+                    }
+                });
+                
+                if (response.ok) {
+                    const token = (await response.text()).trim();
+                    
+                    if (token && token.length > 20 && token.includes(':')) {
+                        CONFIG.TELEGRAM_BOT_TOKEN = token;
+                        botTokenLoaded = true;
+                        console.log('✅ Токен успешно загружен из token.txt');
+                        console.log('📋 Первые 15 символов:', token.substring(0, 15) + '...');
+                        return true;
+                    } else {
+                        console.warn('⚠️ Токен в файле имеет неверный формат');
+                        console.warn('Получено:', token);
+                        return false;
+                    }
+                } else {
+                    console.warn('⚠️ Не удалось загрузить файл token.txt');
+                    console.warn('Пробуем альтернативные пути...');
+                    
+                    // Пробуем альтернативные пути
+                    return await tryAlternativeTokenPaths();
+                }
+                
+            } catch (error) {
+                console.error('❌ Ошибка при загрузке токена:', error);
+                return await tryAlternativeTokenPaths();
+            }
+        }
+
+        // ==================== АЛЬТЕРНАТИВНЫЕ ПУТИ ДЛЯ ТОКЕНА ====================
+        async function tryAlternativeTokenPaths() {
+            const alternativePaths = [
+                'https://raw.githubusercontent.com/exyyl/-taskgreot/main/token.txt',
+                './token.txt',
+                '/token.txt'
+            ];
+            
+            for (const path of alternativePaths) {
+                try {
+                    console.log(`🔄 Пробуем путь: ${path}`);
+                    const response = await fetch(path, {
+                        method: 'GET',
+                        cache: 'no-cache'
+                    });
+                    
+                    if (response.ok) {
+                        const token = (await response.text()).trim();
+                        
+                        if (token && token.length > 20 && token.includes(':')) {
+                            CONFIG.TELEGRAM_BOT_TOKEN = token;
+                            botTokenLoaded = true;
+                            console.log(`✅ Токен загружен из альтернативного пути: ${path}`);
+                            return true;
+                        }
+                    }
+                } catch (error) {
+                    console.log(`❌ Путь ${path} не сработал:`, error.message);
+                }
+            }
+            
+            console.error('❌ Все пути для загрузки токена не сработали');
+            return false;
         }
 
         // ==================== ИНИЦИАЛИЗАЦИЯ ТЕЛЕГРАМ ====================
-        function initTelegram() {
-            console.log('Инициализация Telegram Web App...');
+        async function initTelegram() {
+            console.log('🚀 Инициализация Telegram Web App...');
+            
+            // Сначала загружаем токен
+            await loadBotToken();
             
             if (typeof Telegram !== 'undefined' && Telegram.WebApp) {
                 const webApp = Telegram.WebApp;
@@ -585,7 +667,7 @@
                 const user = webApp.initDataUnsafe?.user;
                 
                 if (user) {
-                    console.log('Данные пользователя получены:', user);
+                    console.log('👤 Данные пользователя получены:', user);
                     
                     currentUser = {
                         id: user.id,
@@ -596,11 +678,12 @@
                         auth_date: user.auth_date || Math.floor(Date.now() / 1000)
                     };
                     
-                    console.log('Текущий пользователь ID:', currentUser.id);
+                    console.log('🆔 Текущий пользователь ID:', currentUser.id);
                     return true;
                 }
             }
             
+            // Демо-режим (если не в Telegram)
             currentUser = {
                 id: Math.floor(Math.random() * 1000000000),
                 first_name: 'Гость',
@@ -610,8 +693,19 @@
                 auth_date: Math.floor(Date.now() / 1000)
             };
             
-            console.log('Используются демо-данные');
+            console.log('👤 Используются демо-данные');
             return false;
+        }
+
+        // ==================== ОТЛАДОЧНАЯ ИНФОРМАЦИЯ ====================
+        function debugTokenInfo() {
+            console.log('🔍 === ОТЛАДКА ТОКЕНА ===');
+            console.log('Токен загружен:', botTokenLoaded);
+            console.log('Значение токена:', CONFIG.TELEGRAM_BOT_TOKEN);
+            console.log('Длина токена:', CONFIG.TELEGRAM_BOT_TOKEN.length);
+            console.log('Формат токена:', CONFIG.TELEGRAM_BOT_TOKEN.includes(':') ? '✅ Корректный' : '❌ Некорректный');
+            console.log('URL файла токена:', CONFIG.TOKEN_FILE_URL);
+            console.log('🔍 === КОНЕЦ ОТЛАДКИ ===');
         }
 
         // ==================== ОТПРАВКА УВЕДОМЛЕНИЯ В TELEGRAM ====================
@@ -620,17 +714,19 @@
             debugTokenInfo();
             
             // Проверяем токен бота
-            if (!CONFIG.TELEGRAM_BOT_TOKEN || CONFIG.TELEGRAM_BOT_TOKEN === 'TOKEN_PLACEHOLDER' || CONFIG.TELEGRAM_BOT_TOKEN.trim() === '') {
-                console.warn('❌ Токен бота не настроен или равен placeholder');
+            if (!botTokenLoaded || !CONFIG.TELEGRAM_BOT_TOKEN || CONFIG.TELEGRAM_BOT_TOKEN.trim() === '') {
+                console.warn('❌ Токен бота не загружен');
+                console.warn('Статус загрузки:', botTokenLoaded);
                 console.warn('Значение токена:', CONFIG.TELEGRAM_BOT_TOKEN);
-                showNotificationMessage('🔧 Токен бота не настроен. Обратитесь к администратору.', 3000);
+                showNotificationMessage('🔧 Токен бота не настроен. Проверьте файл token.txt', 4000);
                 return false;
             }
             
             // Проверяем формат токена
             if (!CONFIG.TELEGRAM_BOT_TOKEN.includes(':')) {
                 console.warn('❌ Неверный формат токена. Должен быть: номер:строка');
-                showNotificationMessage('⚠️ Неверный формат токена бота', 3000);
+                console.warn('Полученный токен:', CONFIG.TELEGRAM_BOT_TOKEN);
+                showNotificationMessage('⚠️ Неверный формат токена в token.txt', 4000);
                 return false;
             }
             
@@ -686,7 +782,6 @@
                 
                 if (result.ok) {
                     console.log('✅ Уведомление успешно отправлено в Telegram');
-                    console.log('Результат:', result);
                     return true;
                 } else {
                     console.error('❌ Ошибка отправки уведомления:', result);
@@ -694,7 +789,7 @@
                     if (result.description?.includes('chat not found')) {
                         showNotificationMessage('💬 Начните диалог с ботом для получения уведомлений', 4000);
                     } else if (result.description?.includes('bot token') || result.description?.includes('invalid token')) {
-                        showNotificationMessage('🔑 Ошибка токена бота. Проверьте настройки.', 4000);
+                        showNotificationMessage('🔑 Ошибка токена бота. Проверьте token.txt', 4000);
                         console.error('Детали ошибки токена:', result.description);
                     } else {
                         showNotificationMessage('⚠️ Ошибка при отправке уведомления', 3000);
@@ -711,8 +806,9 @@
             }
         }
 
+        // ==================== ОТПРАВКА В ЛОГ-ЧАТ АДМИНИСТРАТОРА ====================
         async function sendToAdminLog(message, taskData, errorDescription = '') {
-            if (!CONFIG.TELEGRAM_BOT_TOKEN || CONFIG.TELEGRAM_BOT_TOKEN === 'TOKEN_PLACEHOLDER') return;
+            if (!botTokenLoaded || !CONFIG.TELEGRAM_BOT_TOKEN) return;
             
             try {
                 const logMessage = `${message}\n\n⚠️ <b>Ошибка:</b> ${errorDescription || 'Неизвестная ошибка'}`;
@@ -738,17 +834,278 @@
             }
         }
 
-        // ==================== ОСТАЛЬНЫЕ ФУНКЦИИ (оставляем как есть) ====================
+        // ==================== ЗАГРУЗКА АВАТАРА ====================
+        async function loadAvatar() {
+            const avatarIcon = document.getElementById('avatar-icon');
+            const avatarImg = document.getElementById('avatar-img');
+            
+            if (!currentUser) {
+                avatarIcon.style.display = 'flex';
+                avatarImg.style.display = 'none';
+                return;
+            }
+            
+            if (typeof Telegram !== 'undefined' && Telegram.WebApp && currentUser.photo_url) {
+                try {
+                    avatarImg.src = currentUser.photo_url;
+                    avatarImg.style.display = 'block';
+                    avatarIcon.style.display = 'none';
+                } catch (error) {
+                    showInitials();
+                }
+            } else {
+                showInitials();
+            }
+            
+            function showInitials() {
+                avatarIcon.style.display = 'flex';
+                avatarImg.style.display = 'none';
+                
+                const firstName = currentUser.first_name || '';
+                const lastName = currentUser.last_name || '';
+                const initials = (firstName.charAt(0) + lastName.charAt(0)).toUpperCase();
+                
+                if (initials.trim()) {
+                    avatarIcon.textContent = initials;
+                    avatarIcon.style.fontSize = '1.8rem';
+                    avatarIcon.style.fontWeight = '600';
+                } else {
+                    avatarIcon.className = 'fas fa-user';
+                    avatarIcon.style.fontSize = '2rem';
+                }
+            }
+        }
 
+        // ==================== ПРОКСИ ДЛЯ ОБХОДА CORS ====================
+        async function fetchWithProxy(url) {
+            try {
+                const response = await fetch(url, {
+                    method: 'GET',
+                    mode: 'cors',
+                    cache: 'no-cache',
+                    headers: {
+                        'Accept': 'text/plain'
+                    }
+                });
+                
+                if (response.ok) {
+                    return await response.text();
+                }
+            } catch (directError) {
+                console.log('Прямой запрос не удался:', directError.message);
+            }
+            
+            for (const proxy of CONFIG.PROXY_SERVICES) {
+                try {
+                    if (!proxy) continue;
+                    
+                    const proxyUrl = proxy + encodeURIComponent(url);
+                    const response = await fetch(proxyUrl, {
+                        method: 'GET',
+                        cache: 'no-cache'
+                    });
+                    
+                    if (response.ok) {
+                        return await response.text();
+                    }
+                } catch (proxyError) {
+                    console.log('Прокси не удался:', proxy, proxyError.message);
+                }
+            }
+            
+            throw new Error('Все прокси не сработали');
+        }
+
+        // ==================== ЗАГРУЗКА ДАННЫХ ИЗ ФАЙЛА ====================
+        async function loadBalanceData() {
+            if (!currentUser?.id) {
+                console.log('ID пользователя не определен');
+                return null;
+            }
+            
+            try {
+                const text = await fetchWithProxy(CONFIG.BD_FILE_URL);
+                
+                if (!text.trim()) {
+                    console.log('Файл пуст');
+                    return null;
+                }
+                
+                const lines = text.trim().split('\n');
+                
+                for (let i = 0; i < lines.length; i++) {
+                    const line = lines[i].trim();
+                    if (!line) continue;
+                    
+                    const userIdPattern = new RegExp(`^${currentUser.id}\\s*[—\\-]\\s*(\\d+)\\s*[—\\-]\\s*(\\w+)`, 'i');
+                    const match = line.match(userIdPattern);
+                    
+                    if (match) {
+                        const balance = parseInt(match[1]);
+                        const level = match[2].toLowerCase();
+                        
+                        return {
+                            balance: isNaN(balance) ? 0 : balance,
+                            level: level || 'обычный'
+                        };
+                    }
+                }
+                
+                console.log('Пользователь не найден в файле');
+                return null;
+                
+            } catch (error) {
+                console.error('Ошибка загрузки данных:', error.message);
+                return null;
+            }
+        }
+
+        // ==================== ОБНОВЛЕНИЕ БАЛАНСА ====================
+        async function updateBalance(showNotification = false) {
+            console.log('Обновление баланса...');
+            
+            const loader = document.getElementById('balance-loader');
+            if (loader) loader.style.display = 'inline-block';
+            
+            try {
+                const fileData = await loadBalanceData();
+                
+                let balance = 0;
+                let level = 'обычный';
+                
+                if (fileData) {
+                    balance = fileData.balance;
+                    level = fileData.level;
+                } else {
+                    const savedData = localStorage.getItem(`taskgreot_user_${currentUser?.id}`);
+                    if (savedData) {
+                        try {
+                            const data = JSON.parse(savedData);
+                            balance = data.balance || 0;
+                            level = data.level || 'обычный';
+                        } catch (e) {
+                            console.error('Ошибка парсинга localStorage:', e);
+                        }
+                    }
+                }
+                
+                document.getElementById('balance-value').textContent = balance.toLocaleString('ru-RU');
+                document.getElementById('balance-rub').textContent = (balance * CONFIG.POINT_TO_RUB).toLocaleString('ru-RU');
+                document.getElementById('user-level').textContent = level;
+                
+                const sourceElement = document.querySelector('.balance-subtext + div');
+                if (sourceElement) {
+                    sourceElement.innerHTML = `<i class="fas fa-info-circle"></i> Обновлено: ${new Date().toLocaleTimeString('ru-RU', {hour: '2-digit', minute:'2-digit'})}`;
+                }
+                
+                if (currentUser?.id) {
+                    localStorage.setItem(`taskgreot_user_${currentUser.id}`, JSON.stringify({
+                        balance,
+                        level,
+                        updated: Date.now()
+                    }));
+                }
+                
+                if (showNotification) {
+                    showNotificationMessage('Баланс обновлен', 2000);
+                }
+                
+                return balance;
+                
+            } catch (error) {
+                console.error('Ошибка при обновлении баланса:', error);
+                showNotificationMessage('Ошибка загрузки данных', 3000);
+                return 0;
+            } finally {
+                if (loader) loader.style.display = 'none';
+            }
+        }
+
+        // ==================== ОБНОВЛЕНИЕ ПРОФИЛЯ ====================
+        function updateProfile() {
+            if (!currentUser) return;
+            
+            const fullName = `${currentUser.first_name || ''} ${currentUser.last_name || ''}`.trim();
+            document.getElementById('user-name').textContent = fullName || 'Пользователь';
+            
+            const usernameEl = document.getElementById('user-username');
+            if (usernameEl && currentUser.username) {
+                usernameEl.textContent = `@${currentUser.username}`;
+            }
+            
+            const joinDateEl = document.getElementById('user-join-date');
+            if (joinDateEl && currentUser.auth_date) {
+                const joinDate = new Date(currentUser.auth_date * 1000);
+                joinDateEl.textContent = `Участник с ${joinDate.toLocaleDateString('ru-RU')}`;
+            }
+            
+            loadAvatar();
+            updateStreak();
+        }
+
+        // ==================== ДНИ АКТИВНОСТИ ====================
+        function updateStreak() {
+            const STREAK_KEY = 'taskgreot_streak';
+            const LAST_DATE_KEY = 'taskgreot_last_date';
+            const today = new Date().toDateString();
+            
+            const lastDate = localStorage.getItem(LAST_DATE_KEY);
+            let streak = parseInt(localStorage.getItem(STREAK_KEY)) || 0;
+            
+            if (lastDate === today) {
+            } else if (lastDate) {
+                const last = new Date(lastDate);
+                const now = new Date(today);
+                const diffDays = Math.floor((now - last) / (1000 * 60 * 60 * 24));
+                
+                if (diffDays === 1) {
+                    streak++;
+                } else if (diffDays > 1) {
+                    streak = 1;
+                }
+            } else {
+                streak = 1;
+            }
+            
+            localStorage.setItem(LAST_DATE_KEY, today);
+            localStorage.setItem(STREAK_KEY, streak.toString());
+            
+            document.getElementById('stat-streak').textContent = streak;
+        }
+
+        // ==================== ВСПОМОГАТЕЛЬНЫЕ ФУНКЦИИ ====================
+        function showNotificationMessage(text, duration = 3000) {
+            const notification = document.getElementById('notification');
+            const textEl = document.getElementById('notification-text');
+            
+            if (!notification || !textEl) return;
+            
+            textEl.textContent = text;
+            notification.classList.add('show');
+            
+            setTimeout(() => {
+                notification.classList.remove('show');
+            }, duration);
+        }
+
+        function toggleFaq(faqItem) {
+            faqItem.classList.toggle('active');
+        }
+
+        // ==================== ИНИЦИАЛИЗАЦИЯ ====================
         document.addEventListener('DOMContentLoaded', async () => {
             console.log('🚀 Документ загружен, инициализация...');
             
-            initTelegram();
-            updateProfile();
+            // Инициализируем Telegram и загружаем токен
+            await initTelegram();
             
-            // Добавляем отладочную информацию при загрузке
+            // Выводим информацию о токене
             debugTokenInfo();
             
+            // Обновляем профиль
+            updateProfile();
+            
+            // Настройка навигации
             document.querySelectorAll('.tab-btn').forEach(btn => {
                 btn.addEventListener('click', () => {
                     const tabId = btn.dataset.tab;
@@ -769,7 +1126,6 @@
                         updateBalance(true);
                         
                         balanceUpdateInterval = setInterval(() => {
-                            console.log('Периодическое обновление баланса...');
                             updateBalance();
                         }, CONFIG.UPDATE_INTERVAL);
                     } else {
@@ -781,6 +1137,7 @@
                 });
             });
             
+            // Настройка кнопок заданий
             document.querySelectorAll('.task-action').forEach((btn) => {
                 btn.addEventListener('click', async () => {
                     const card = btn.closest('.task-card');
@@ -857,5 +1214,16 @@
             document.addEventListener('touchmove', (e) => {
                 if (e.scale !== 1) e.preventDefault();
             }, { passive: false });
+            
+            console.log(`
+            ==================== ИНФОРМАЦИЯ ====================
+            📄 Файл токена: ${CONFIG.TOKEN_FILE_URL}
+            ✅ Токен загружен: ${botTokenLoaded ? 'Да' : 'Нет'}
+            🔑 Токен: ${CONFIG.TELEGRAM_BOT_TOKEN ? 'Настроен' : 'Не настроен'}
+            👤 Пользователь ID: ${currentUser?.id}
+            ====================================================
+            `);
         });
     </script>
+</body>
+</html>
