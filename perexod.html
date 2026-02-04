@@ -1,1 +1,25 @@
-
+<!DOCTYPE html>
+<html>
+<head>
+    <script src="https://telegram.org/js/telegram-web-app.js?66"></script>
+</head>
+<body>
+    <script>
+        const tg = window.Telegram.WebApp;
+        const targetUrl = 'https://t.me/taskGreot_bot?startapp';
+        
+        // Если в Telegram WebView - открываем и закрываемся
+        if (tg.initData) {
+            tg.openTelegramLink(targetUrl);
+            setTimeout(() => tg.close(), 300);
+        } 
+        // Если в браузере - обычный редирект
+        else {
+            window.location.href = `tg://resolve?domain=hguhhtf_bot&startapp`;
+            setTimeout(() => {
+                window.location.href = targetUrl;
+            }, 50);
+        }
+    </script>
+</body>
+</html>
