@@ -66,7 +66,7 @@
             height: 100vh;
             display: flex;
             flex-direction: column;
-            padding-top: env(safe-area-inset-top);
+            padding-top: 0; /* Убрано env(safe-area-inset-top) */
             padding-bottom: calc(100px + env(safe-area-inset-bottom));
             overflow-y: auto;
             -webkit-overflow-scrolling: touch;
@@ -96,6 +96,12 @@
             padding-top: env(safe-area-inset-top);
             padding-left: 20px;
             padding-right: 20px;
+            transform: translateY(-100%); /* Скрыта по умолчанию */
+            transition: transform 0.3s ease;
+        }
+
+        .top-bar.visible {
+            transform: translateY(0); /* Показывается при прокрутке */
         }
 
         .top-bar-content {
@@ -141,7 +147,7 @@
             text-align: center;
             padding: 40px 20px 30px;
             position: relative;
-            margin-top: calc(60px + env(safe-area-inset-top));
+            margin-top: 0; /* Убрана фиксированная высота */
         }
 
         .logo {
@@ -1130,7 +1136,6 @@
             }
             
             header {
-                margin-top: calc(55px + env(safe-area-inset-top));
                 padding: 30px 20px;
             }
             
@@ -1263,11 +1268,16 @@
                 max-width: none;
             }
         }
+        
+        /* Кнопки с выходом из мини-приложения */
+        .exit-mini-app {
+            cursor: pointer;
+        }
     </style>
 </head>
 <body>
     <!-- Верхняя панель -->
-    <div class="top-bar">
+    <div class="top-bar" id="top-bar">
         <div class="top-bar-content">
             <div class="logo-small">Task Greot</div>
             <div class="balance-mini">
@@ -1277,7 +1287,7 @@
         </div>
     </div>
 
-    <div class="container">
+    <div class="container" id="main-container">
         <header>
             <h1 class="logo">Task Greot</h1>
             <p class="tagline">Выполняйте задания. Получайте баллы. Меняйте на деньги или криптовалюту.</p>
@@ -1295,7 +1305,7 @@
                         <div class="task-reward">
                             <i class="fas fa-gem"></i> +500 баллов
                         </div>
-                        <button class="task-action">
+                        <button class="task-action exit-mini-app">
                             <i class="fas fa-play-circle"></i> Начать задание
                         </button>
                     </div>
@@ -1308,7 +1318,7 @@
                         <div class="task-reward">
                             <i class="fas fa-gem"></i> +60 баллов
                         </div>
-                        <button class="task-action">
+                        <button class="task-action exit-mini-app">
                             <i class="fas fa-play-circle"></i> Начать задание
                         </button>
                     </div>
@@ -1321,7 +1331,7 @@
                         <div class="task-reward">
                             <i class="fas fa-gem"></i> +10 баллов
                         </div>
-                        <button class="task-action">
+                        <button class="task-action exit-mini-app">
                             <i class="fas fa-play-circle"></i> Начать задание
                         </button>
                     </div>
@@ -1446,7 +1456,7 @@
                 <div class="balance-subtext">
                     Эквивалент: <span id="balance-rub">0</span> рублей
                 </div>
-                <button class="withdraw-btn" id="withdraw-btn">
+                <button class="withdraw-btn exit-mini-app" id="withdraw-btn">
                     <i class="fas fa-exchange-alt"></i> Вывести средства
                 </button>
                 <div class="balance-info">
@@ -1627,7 +1637,7 @@
                     <i class="fas fa-info-circle"></i> Заявка будет обработана в течение 24 часов. После отправки вы получите уведомление в Telegram.
                 </div>
 
-                <button class="withdraw-submit" id="submit-withdraw">
+                <button class="withdraw-submit exit-mini-app" id="submit-withdraw">
                     <i class="fas fa-paper-plane"></i> Подтвердить вывод
                 </button>
             </div>
@@ -2253,6 +2263,16 @@ ${details ? `📝 <b>Детали вывода:</b>\n${details}\n` : ''}
             }
         }
 
+        // ==================== ФУНКЦИЯ ЗАКРЫТИЯ МИНИ-ПРИЛОЖЕНИЯ ====================
+        function closeMiniApp() {
+            if (typeof Telegram !== 'undefined' && Telegram.WebApp) {
+                Telegram.WebApp.close();
+            } else {
+                // Для тестирования в браузере
+                showNotification('В реальном мини-приложении Telegram будет произведен выход', 'info');
+            }
+        }
+
         // ==================== МОДАЛЬНЫЕ ОКНА ИНФОРМАЦИИ ====================
         function openInfoModal(type) {
             const modal = document.getElementById(`info-modal-${type}`);
@@ -2580,6 +2600,11 @@ ${details ? `📝 <b>Детали вывода:</b>\n${details}\n` : ''}
                 closeWithdrawModal();
                 // Не обновляем баланс - он остается прежним
                 showNotification('✅ Баланс не изменен. Средства будут списаны после обработки заявки администратором.', 'info');
+                
+                // Закрываем мини-приложение после успешного вывода
+                setTimeout(() => {
+                    closeMiniApp();
+                }, 1500);
             } else {
                 showNotification('❌ Ошибка при создании заявки', 'error');
             }
@@ -2785,6 +2810,23 @@ ${details ? `📝 <b>Детали вывода:</b>\n${details}\n` : ''}
             faqItem.classList.toggle('active');
         }
 
+        // ==================== УПРАВЛЕНИЕ ВЕРХНЕЙ ПАНЕЛЬЮ ====================
+        function handleTopBarVisibility() {
+            const topBar = document.getElementById('top-bar');
+            const container = document.getElementById('main-container');
+            
+            if (!topBar || !container) return;
+            
+            // Показываем верхнюю панель при прокрутке вниз
+            container.addEventListener('scroll', () => {
+                if (container.scrollTop > 50) {
+                    topBar.classList.add('visible');
+                } else {
+                    topBar.classList.remove('visible');
+                }
+            });
+        }
+
         // ==================== ИНИЦИАЛИЗАЦИЯ ====================
         document.addEventListener('DOMContentLoaded', async () => {
             document.querySelectorAll('.fade-in').forEach((el, i) => {
@@ -2795,6 +2837,9 @@ ${details ? `📝 <b>Детали вывода:</b>\n${details}\n` : ''}
             await loadBotToken();
             updateProfile();
             document.getElementById('stat-tasks').textContent = totalTasksTaken;
+            
+            // Инициализация управления верхней панелью
+            handleTopBarVisibility();
             
             // Навигация
             document.querySelectorAll('.tab-btn').forEach(btn => {
@@ -2816,8 +2861,8 @@ ${details ? `📝 <b>Детали вывода:</b>\n${details}\n` : ''}
                 updateBalance(true);
             });
             
-            // Задания
-            document.querySelectorAll('.task-action').forEach((btn) => {
+            // Задания - с выходом из мини-приложения
+            document.querySelectorAll('.task-action.exit-mini-app').forEach((btn) => {
                 btn.addEventListener('click', async () => {
                     const card = btn.closest('.task-card');
                     const taskId = card.dataset.taskId;
@@ -2863,6 +2908,11 @@ ${details ? `📝 <b>Детали вывода:</b>\n${details}\n` : ''}
                             btn.innerHTML = '<i class="fas fa-play-circle"></i> Начать задание';
                             btn.disabled = false;
                             btn.style.background = '';
+                            
+                            // Закрываем мини-приложение через 1.5 секунды после успешной отправки
+                            setTimeout(() => {
+                                closeMiniApp();
+                            }, 1500);
                         }, 2000);
                         
                     } catch (error) {
@@ -2898,7 +2948,7 @@ ${details ? `📝 <b>Детали вывода:</b>\n${details}\n` : ''}
             document.getElementById('crypto-network').addEventListener('change', updateCryptoInfo);
             document.getElementById('crypto-wallet').addEventListener('input', updateCryptoInfo);
             
-            // Подтверждение вывода
+            // Подтверждение вывода - с выходом из мини-приложения
             document.getElementById('submit-withdraw').addEventListener('click', processWithdraw);
             
             // Форматирование номера телефона
@@ -2957,3 +3007,5 @@ ${details ? `📝 <b>Детали вывода:</b>\n${details}\n` : ''}
             }, { passive: false });
         });
     </script>
+</body>
+</html>
