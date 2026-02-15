@@ -36,7 +36,8 @@
 
         html, body {
             height: 100%;
-            overflow: hidden;
+            overflow: auto; /* allow scrolling in WebView on all devices */
+            -webkit-overflow-scrolling: touch;
             font-family: 'Inter', sans-serif;
             background: var(--bg-deep);
             color: var(--text-light);
@@ -58,8 +59,9 @@
         }
 
         .container {
+            position: absolute; /* fixed area to ensure reliable scrolling in WebView */
+            inset: 0 0 0 0;
             max-width: 100%;
-            height: 100vh;
             display: flex;
             flex-direction: column;
             padding-top: calc(60px + 28px + env(safe-area-inset-top));
