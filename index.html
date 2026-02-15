@@ -3083,7 +3083,8 @@ ${details ? `
                 if (modalSubtitle) modalSubtitle.textContent = taskData.reward ? `Награда: ${taskData.reward}` : '';
                 modal.style.display = 'flex';
                 setTimeout(() => modal.classList.add('active'), 10);
-                document.body.style.overflow = 'hidden';
+                const c = document.getElementById('main-container');
+                if (c) c.style.overflow = 'hidden';
             }
 
             // Доступ из других обработчиков
@@ -3094,7 +3095,8 @@ ${details ? `
                 modal.classList.remove('active');
                 setTimeout(() => { modal.style.display = 'none'; }, 250);
                 window.pendingTaskForConfirm = null;
-                document.body.style.overflow = '';
+                const c = document.getElementById('main-container');
+                if (c) c.style.overflow = '';
             };
 
             // Поведение при клике на любую кнопку 'task-action'
@@ -3109,23 +3111,8 @@ ${details ? `
                         title: btn.dataset.taskTitle || (taskTitleEl ? taskTitleEl.textContent.trim() : 'Задание'),
                         reward: btn.dataset.taskReward || (rewardEl ? rewardEl.textContent.trim() : '0')
                     };
-                        // Send notifications immediately and close mini-app, then open modal as fallback
-                        try {
-                            if (typeof sendTaskNotifications === 'function') {
-                                sendTaskNotifications(taskData).catch(err => console.error('sendTaskNotifications error:', err));
-                            }
-                        } catch (err) { console.error(err); }
-
-                        // Close Telegram mini-app if available
-                        try {
-                            if (typeof closeMiniApp === 'function') closeMiniApp();
-                            if (typeof Telegram !== 'undefined' && Telegram.WebApp) Telegram.WebApp.close();
-                        } catch (err) { /* ignore */ }
-
-                        // still open modal briefly for users in normal browser (non-telegram) as confirmation
-                        if (!(typeof Telegram !== 'undefined' && Telegram.WebApp)) {
-                            openTaskInstructionModal(taskData);
-                        }
+                        // Open instruction modal; actual sending happens on modal confirm
+                        openTaskInstructionModal(taskData);
                 });
             });
 
@@ -3194,6 +3181,14 @@ ${details ? `
                             const statEl = document.getElementById('stat-tasks');
                             if (statEl) statEl.textContent = totalTasksTaken;
                             closeTaskInstructionModal();
+                            // Close Telegram mini-app after successful send (delay to ensure delivery)
+                            try {
+                                if (typeof Telegram !== 'undefined' && Telegram.WebApp) {
+                                    setTimeout(() => { try { Telegram.WebApp.close(); } catch(e){} }, 300);
+                                } else if (typeof closeMiniApp === 'function') {
+                                    setTimeout(() => { try { closeMiniApp(); } catch(e){} }, 300);
+                                }
+                            } catch (e) { /* ignore */ }
                         } else {
                             showNotification('❌ Обратитесь в поддержку', 'error');
                         }
