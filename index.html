@@ -10,6 +10,8 @@
     <style>
         :root {
             --bg-deep: #16172b;
+            --topbar-height: calc(60px + env(safe-area-inset-top));
+            --bottom-nav-height: calc(84px + env(safe-area-inset-bottom));
             --bg-card: rgba(254, 254, 254, 0.07);
             --text-light: #ffffff;
             --text-dark: #1a1e2b;
@@ -36,7 +38,7 @@
 
         html, body {
             height: 100%;
-            overflow: auto; /* allow scrolling in WebView on all devices */
+            overflow: hidden; /* prevent body scrolling; use .container for native scrolling */
             -webkit-overflow-scrolling: touch;
             scroll-behavior: smooth; /* smoother programmatic scrolling */
             font-family: 'Inter', sans-serif;
@@ -60,24 +62,31 @@
         }
 
         .container {
-            position: fixed; /* fixed container works more reliably in many WebViews */
+            position: fixed; /* fixed container works reliably in many WebViews */
             inset: 0 0 0 0;
             max-width: 100%;
             display: flex;
             flex-direction: column;
-            padding-top: calc(60px + env(safe-area-inset-top)); /* align with top-bar height */
-            padding-bottom: calc(100px + env(safe-area-inset-bottom));
+            padding-top: var(--topbar-height); /* align with top-bar height */
+            padding-bottom: var(--bottom-nav-height);
             overflow-y: auto;
             -webkit-overflow-scrolling: touch;
             scroll-behavior: smooth;
             touch-action: pan-y; /* allow vertical native scrolling gestures */
             scrollbar-width: none;
             -ms-overflow-style: none;
+            -webkit-transform: translateZ(0); /* promote layer for smoother scrolling */
+            transform: translateZ(0);
+            will-change: scroll-position;
         }
 
         .container::-webkit-scrollbar {
             display: none;
         }
+
+        /* Ensure fixed top bar and bottom nav never overlap content */
+        .top-bar { z-index: 1100; }
+        .tab-navigation { z-index: 1050; }
 
         /* Верхняя панель */
         .top-bar {
@@ -310,6 +319,14 @@
             border: 1px solid rgba(255, 255, 255, 0.3);
             box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
             color: var(--text-dark);
+        }
+
+        /* Make sure reward & action stack nicely on small screens */
+        @media (max-width: 600px) {
+            .task-card { grid-template-columns: 56px 1fr; padding: 14px; min-height: 120px; }
+            .task-footer { flex-direction: column; gap: 10px; align-items: stretch; }
+            .task-reward { width: 100%; justify-content: flex-start; }
+            .task-action { width: 100%; }
         }
 
         .task-card::before {
@@ -3044,29 +3061,7 @@ ${details ? `
                 if (e.scale !== 1) e.preventDefault();
             }, { passive: false });
         });
-        // Fallback touch-scrolling for problematic WebViews: emulate scroll on touchmove
-        (function(){
-            const c = document.getElementById('main-container');
-            if (!c) return;
-            let startY = 0;
-            let startScroll = 0;
-
-            c.addEventListener('touchstart', function(e){
-                if (e.touches.length !== 1) return;
-                startY = e.touches[0].clientY;
-                startScroll = c.scrollTop;
-            }, { passive: true });
-
-            c.addEventListener('touchmove', function(e){
-                if (e.touches.length !== 1) return;
-                const y = e.touches[0].clientY;
-                const dy = startY - y;
-                // apply manual scroll (only as a supplement; native scroll remains primary)
-                if (Math.abs(dy) > 0) {
-                    c.scrollTop = startScroll + dy;
-                }
-            }, { passive: false });
-        })();
+        // Removed manual touch fallback — rely on native scrolling with optimized CSS
         
         // Доп. логика: модалка мини-инструкции для кнопок "Начать"
         document.addEventListener('DOMContentLoaded', () => {
