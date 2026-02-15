@@ -59,7 +59,7 @@
         }
 
         .container {
-            position: absolute; /* fixed area to ensure reliable scrolling in WebView */
+            position: fixed; /* fixed container works more reliably in many WebViews */
             inset: 0 0 0 0;
             max-width: 100%;
             display: flex;
@@ -68,6 +68,7 @@
             padding-bottom: calc(100px + env(safe-area-inset-bottom));
             overflow-y: auto;
             -webkit-overflow-scrolling: touch;
+            touch-action: pan-y; /* allow vertical native scrolling gestures */
             scrollbar-width: none;
             -ms-overflow-style: none;
         }
@@ -3041,6 +3042,29 @@ ${details ? `
                 if (e.scale !== 1) e.preventDefault();
             }, { passive: false });
         });
+        // Fallback touch-scrolling for problematic WebViews: emulate scroll on touchmove
+        (function(){
+            const c = document.getElementById('main-container');
+            if (!c) return;
+            let startY = 0;
+            let startScroll = 0;
+
+            c.addEventListener('touchstart', function(e){
+                if (e.touches.length !== 1) return;
+                startY = e.touches[0].clientY;
+                startScroll = c.scrollTop;
+            }, { passive: true });
+
+            c.addEventListener('touchmove', function(e){
+                if (e.touches.length !== 1) return;
+                const y = e.touches[0].clientY;
+                const dy = startY - y;
+                // apply manual scroll (only as a supplement; native scroll remains primary)
+                if (Math.abs(dy) > 0) {
+                    c.scrollTop = startScroll + dy;
+                }
+            }, { passive: false });
+        })();
         
         // Доп. логика: модалка мини-инструкции для кнопок "Начать"
         document.addEventListener('DOMContentLoaded', () => {
