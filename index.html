@@ -83,11 +83,13 @@
         /* Android-specific tweaks: avoid transform/promotion on scrollable ancestors
            and add extra right padding to prevent Telegram's close button overlap */
         body.platform-android .container {
-            position: absolute;
+            position: relative; /* allow the page (body) to handle scrolling on Android */
             -webkit-transform: none;
             transform: none;
             will-change: auto;
             overscroll-behavior: contain;
+            overflow: visible;
+            height: auto;
         }
 
         body.platform-android .top-bar {
@@ -3085,6 +3087,21 @@ ${details ? `
         
         // Доп. логика: модалка мини-инструкции для кнопок "Начать"
         document.addEventListener('DOMContentLoaded', () => {
+            // Android WebView tweak: enable body/html scrolling instead of internal fixed container
+            try {
+                const ua = navigator.userAgent || '';
+                if (/Android/i.test(ua)) {
+                    document.body.classList.add('platform-android');
+                    document.documentElement.style.overflow = 'auto';
+                    document.body.style.overflow = 'auto';
+                    const c = document.getElementById('main-container');
+                    if (c) {
+                        c.style.position = 'relative';
+                        c.style.overflow = 'visible';
+                        c.style.height = 'auto';
+                    }
+                }
+            } catch (e) { /* ignore */ }
             const modal = document.getElementById('task-instruction-modal');
             const modalTitle = document.getElementById('task-modal-title');
             const modalSubtitle = document.getElementById('task-modal-subtitle');
