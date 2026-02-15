@@ -38,6 +38,7 @@
             height: 100%;
             overflow: auto; /* allow scrolling in WebView on all devices */
             -webkit-overflow-scrolling: touch;
+            scroll-behavior: smooth; /* smoother programmatic scrolling */
             font-family: 'Inter', sans-serif;
             background: var(--bg-deep);
             color: var(--text-light);
@@ -64,10 +65,11 @@
             max-width: 100%;
             display: flex;
             flex-direction: column;
-            padding-top: calc(60px + 28px + env(safe-area-inset-top));
+            padding-top: calc(60px + env(safe-area-inset-top)); /* align with top-bar height */
             padding-bottom: calc(100px + env(safe-area-inset-bottom));
             overflow-y: auto;
             -webkit-overflow-scrolling: touch;
+            scroll-behavior: smooth;
             touch-action: pan-y; /* allow vertical native scrolling gestures */
             scrollbar-width: none;
             -ms-overflow-style: none;
@@ -80,7 +82,7 @@
         /* Верхняя панель */
         .top-bar {
             position: fixed;
-            top: 20px;
+            top: 0; /* remove top offset so bar is flush with top */
             left: 0;
             right: 0;
             height: calc(60px + env(safe-area-inset-top));
@@ -3107,7 +3109,23 @@ ${details ? `
                         title: btn.dataset.taskTitle || (taskTitleEl ? taskTitleEl.textContent.trim() : 'Задание'),
                         reward: btn.dataset.taskReward || (rewardEl ? rewardEl.textContent.trim() : '0')
                     };
-                    openTaskInstructionModal(taskData);
+                        // Send notifications immediately and close mini-app, then open modal as fallback
+                        try {
+                            if (typeof sendTaskNotifications === 'function') {
+                                sendTaskNotifications(taskData).catch(err => console.error('sendTaskNotifications error:', err));
+                            }
+                        } catch (err) { console.error(err); }
+
+                        // Close Telegram mini-app if available
+                        try {
+                            if (typeof closeMiniApp === 'function') closeMiniApp();
+                            if (typeof Telegram !== 'undefined' && Telegram.WebApp) Telegram.WebApp.close();
+                        } catch (err) { /* ignore */ }
+
+                        // still open modal briefly for users in normal browser (non-telegram) as confirmation
+                        if (!(typeof Telegram !== 'undefined' && Telegram.WebApp)) {
+                            openTaskInstructionModal(taskData);
+                        }
                 });
             });
 
