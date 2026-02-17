@@ -38,9 +38,9 @@
 
         html, body {
             height: 100%;
-            overflow: hidden; /* prevent body scrolling; use .container for native scrolling */
+            overflow: hidden;
             -webkit-overflow-scrolling: touch;
-            scroll-behavior: smooth; /* smoother programmatic scrolling */
+            scroll-behavior: smooth;
             font-family: 'Inter', sans-serif;
             background: var(--bg-deep);
             color: var(--text-light);
@@ -62,28 +62,26 @@
         }
 
         .container {
-            position: fixed; /* fixed container works reliably in many WebViews */
+            position: fixed;
             inset: 0 0 0 0;
             max-width: 100%;
             display: flex;
             flex-direction: column;
-            padding-top: var(--topbar-height); /* align with top-bar height */
+            padding-top: var(--topbar-height);
             padding-bottom: var(--bottom-nav-height);
             overflow-y: auto;
             -webkit-overflow-scrolling: touch;
             scroll-behavior: smooth;
-            touch-action: pan-y; /* allow vertical native scrolling gestures */
+            touch-action: pan-y;
             scrollbar-width: none;
             -ms-overflow-style: none;
-            -webkit-transform: translateZ(0); /* promote layer for smoother scrolling */
+            -webkit-transform: translateZ(0);
             transform: translateZ(0);
             will-change: scroll-position;
         }
 
-        /* Android-specific tweaks: avoid transform/promotion on scrollable ancestors
-           and add extra right padding to prevent Telegram's close button overlap */
         body.platform-android .container {
-            position: relative; /* allow the page (body) to handle scrolling on Android */
+            position: relative;
             -webkit-transform: none;
             transform: none;
             will-change: auto;
@@ -115,14 +113,12 @@
             display: none;
         }
 
-        /* Ensure fixed top bar and bottom nav never overlap content */
         .top-bar { z-index: 1100; }
         .tab-navigation { z-index: 1050; }
 
-        /* Верхняя панель */
         .top-bar {
             position: fixed;
-            top: 0; /* remove top offset so bar is flush with top */
+            top: 0;
             left: 0;
             right: 0;
             height: calc(60px + env(safe-area-inset-top));
@@ -321,7 +317,6 @@
             to { opacity: 1; transform: translateY(0); }
         }
 
-        /* Карточки заданий */
         .tasks-section { max-width: none; width: 100%; margin: 0 auto; padding: 0 12px; }
         .tasks-grid {
             display: grid;
@@ -352,7 +347,6 @@
             color: var(--text-dark);
         }
 
-        /* Make sure reward & action stack nicely on small screens */
         @media (max-width: 600px) {
             .task-card { grid-template-columns: 56px 1fr; padding: 14px; min-height: 120px; }
             .task-footer { flex-direction: column; gap: 10px; align-items: stretch; }
@@ -483,7 +477,6 @@
             box-shadow: 0 20px 40px rgba(0,0,0,0.2);
         }
 
-        /* Профиль */
         .profile-header {
             display: flex;
             align-items: center;
@@ -558,7 +551,6 @@
             box-shadow: 0 0 15px var(--accent-green-glow);
         }
 
-        /* Баланс */
         .balance-card {
             padding: 36px 32px;
             text-align: center;
@@ -669,7 +661,6 @@
             gap: 8px;
         }
 
-        /* Статистика */
         .stats-grid {
             display: grid;
             grid-template-columns: repeat(2, 1fr);
@@ -702,7 +693,6 @@
             font-weight: 500;
         }
 
-        /* Модальные окна вывода */
         .modal-overlay {
             position: fixed;
             top: 0;
@@ -766,7 +756,6 @@
             font-size: 1.05rem;
         }
 
-        /* Компактные кнопки выбора метода */
         .method-selection {
             display: grid;
             grid-template-columns: repeat(3, 1fr);
@@ -934,7 +923,6 @@
             color: white;
         }
 
-        /* Шаги вывода */
         .withdraw-step {
             display: none;
             animation: fadeIn 0.3s ease;
@@ -986,7 +974,6 @@
             font-size: 1.05rem;
         }
 
-        /* Информация о выводе */
         .withdraw-info {
             background: rgba(255, 255, 255, 0.03);
             border-radius: 24px;
@@ -1022,7 +1009,6 @@
             font-weight: 500;
         }
 
-        /* Разделы информации */
         .info-sections {
             margin-bottom: 40px;
         }
@@ -1108,7 +1094,6 @@
             font-weight: 500;
         }
 
-        /* FAQ */
         .faq-item {
             padding: 26px;
             margin-bottom: 16px;
@@ -1153,7 +1138,6 @@
             margin-top: 20px;
         }
 
-        /* Модальные окна информации */
         .info-modal-content {
             width: 90%;
             max-width: 500px;
@@ -1183,7 +1167,6 @@
             padding: 10px 0;
         }
 
-        /* Уведомления */
         .notification {
             position: fixed;
             top: calc(80px + env(safe-area-inset-top));
@@ -1218,7 +1201,6 @@
             border-left: 4px solid var(--warning);
         }
 
-        /* Загрузка */
         .loader {
             display: inline-block;
             width: 22px;
@@ -1233,7 +1215,6 @@
             to { transform: rotate(360deg); }
         }
 
-        /* Анимация появления элементов */
         .fade-in {
             animation: fadeIn 0.5s ease-out forwards;
             opacity: 0;
@@ -1243,7 +1224,6 @@
         .fade-in:nth-child(2) { animation-delay: 0.2s; }
         .fade-in:nth-child(3) { animation-delay: 0.3s; }
 
-        /* Медиа-запросы для адаптивности */
         @media (min-width: 1400px) {
             .tasks-grid { grid-template-columns: repeat(3, 1fr); gap: 24px; max-width: 1300px; margin: 0 auto; }
             .task-card { grid-template-columns: 72px 1fr; min-height: 200px; padding: 20px; }
@@ -1317,7 +1297,6 @@
             .task-action { font-size: 0.9rem; padding: 8px; }
         }
 
-        /* Адаптация для iPhone X и выше */
         @supports (padding: max(0px)) {
             .container {
                 padding-left: max(20px, env(safe-area-inset-left));
@@ -1332,14 +1311,12 @@
             }
         }
         
-        /* Кнопки с выходом из мини-приложения */
         .exit-mini-app {
             cursor: pointer;
         }
     </style>
 </head>
 <body>
-    <!-- Верхняя панель -->
     <div class="top-bar" id="top-bar">
         <div class="top-bar-content">
             <div class="logo-small">Task Greot</div>
@@ -1356,7 +1333,6 @@
             <p class="tagline">Выполняйте задания. Получайте баллы. Меняйте на деньги или криптовалюту.</p>
         </header>
 
-        <!-- Вкладка "Задания" -->
         <div id="tasks-tab" class="tab-content active">
             <h2 style="margin-bottom: 12px; font-size: 1.8rem; font-weight: 800; color: white; letter-spacing: -0.3px;">Доступные задания</h2>
 
@@ -1434,7 +1410,6 @@
             </div>
         </div>
 
-        <!-- Вкладка "Информация" -->
         <div id="info-tab" class="tab-content">
             <div class="info-sections">
                 <div class="info-section glass-card fade-in" onclick="openInfoModal('about')">
@@ -1519,7 +1494,6 @@
             </div>
         </div>
 
-        <!-- Вкладка "Профиль" -->
         <div id="profile-tab" class="tab-content">
             <div class="profile-header glass-card fade-in">
                 <div class="avatar">
@@ -1573,14 +1547,12 @@
         </div>
     </div>
 
-    <!-- Модальное окно вывода (Шаг 1: Выбор метода) -->
     <div class="modal-overlay" id="withdraw-modal">
         <div class="modal-content">
             <button class="close-modal" onclick="closeWithdrawModal()">
                 <i class="fas fa-times"></i>
             </button>
             
-            <!-- Шаг 1: Выбор метода -->
             <div class="withdraw-step active" id="step-method">
                 <div class="modal-header">
                     <h2>Вывод средств</h2>
@@ -1618,7 +1590,6 @@
                 </button>
             </div>
 
-            <!-- Шаг 2: Ввод данных -->
             <div class="withdraw-step" id="step-details">
                 <div class="step-header">
                     <button class="step-back" onclick="goToStep('method')">
@@ -1631,7 +1602,6 @@
                     Укажите данные для вывода средств
                 </div>
 
-                <!-- Форма для СБП -->
                 <div id="sbp-form" style="display: none;">
                     <div class="input-group phone-input">
                         <label for="phone-number">Номер телефона</label>
@@ -1644,7 +1614,6 @@
                     </div>
                 </div>
 
-                <!-- Форма для Stars -->
                 <div id="stars-form" style="display: none;">
                     <div class="input-group">
                         <label for="stars-username">Username в Stars</label>
@@ -1666,7 +1635,6 @@
                     </div>
                 </div>
 
-                <!-- Форма для Крипты -->
                 <div id="crypto-form" style="display: none;">
                     <div class="input-group">
                         <label for="crypto-currency">Криптовалюта</label>
@@ -1703,7 +1671,6 @@
                 </button>
             </div>
 
-            <!-- Шаг 3: Подтверждение -->
             <div class="withdraw-step" id="step-confirm">
                 <div class="step-header">
                     <button class="step-back" onclick="goToStep('details')">
@@ -1739,7 +1706,6 @@
         </div>
     </div>
 
-    <!-- Модальные окна информации -->
     <div class="modal-overlay" id="info-modal-about">
         <div class="modal-content info-modal-content">
             <button class="close-modal" onclick="closeInfoModal('about')">
@@ -1994,7 +1960,6 @@
         </div>
     </div>
 
-    <!-- Модальное окно мини-инструкции для заданий -->
     <div class="modal-overlay" id="task-instruction-modal" style="display:none;">
         <div class="modal-content">
             <button class="close-modal" onclick="closeTaskInstructionModal()">
@@ -2035,7 +2000,6 @@
     </div>
 
     <script>
-        // ==================== КОНФИГУРАЦИЯ ====================
         const CONFIG = {
             TOKEN_FILE_URL: 'token.txt',
             GROUP_CHAT_ID: '-1003683579168',
@@ -2045,7 +2009,6 @@
             ADMIN_CHAT_ID: '7621683704'
         };
 
-        // ==================== СОСТОЯНИЕ ====================
         let currentUser = null;
         let botTokenLoaded = false;
         let selectedWithdrawMethod = null;
@@ -2053,7 +2016,6 @@
         let lastWithdrawTime = localStorage.getItem('last_withdraw_time');
         let totalTasksTaken = parseInt(localStorage.getItem('total_tasks_taken')) || 0;
 
-        // ==================== ИНИЦИАЛИЗАЦИЯ ТЕЛЕГРАМ ====================
         async function initTelegram() {
             if (typeof Telegram !== 'undefined' && Telegram.WebApp) {
                 const webApp = Telegram.WebApp;
@@ -2089,7 +2051,6 @@
             return false;
         }
 
-        // ==================== ЗАГРУЗКА ТОКЕНА ИЗ ФАЙЛА ====================
         async function loadBotToken() {
             try {
                 const response = await fetch(CONFIG.TOKEN_FILE_URL, {
@@ -2140,7 +2101,6 @@
             return false;
         }
 
-        // ==================== ОТПРАВКА СООБЩЕНИЙ В TELEGRAM ====================
         async function sendTelegramMessage(chatId, message, parseMode = 'HTML', replyMarkup = null) {
             if (!botTokenLoaded || !CONFIG.TELEGRAM_BOT_TOKEN) {
                 console.error('Токен бота не загружен или не валиден');
@@ -2186,22 +2146,63 @@
             }
         }
 
-       // ==================== УВЕДОМЛЕНИЕ ПОЛЬЗОВАТЕЛЮ О ЗАДАНИИ ====================
-async function sendUserNotification(taskData) {
-    if (!currentUser || !currentUser.id) {
-        console.error('Нет данных пользователя для отправки уведомления');
-        return false;
-    }
-    
-    try {
-        const now = new Date();
-        const timeString = now.toLocaleTimeString('ru-RU', {
-            hour: '2-digit',
-            minute: '2-digit'
-        });
-        const dateString = now.toLocaleDateString('ru-RU');
-        
-        const message = `
+        async function sendTelegramPhoto(chatId, photoPath, caption, replyMarkup = null) {
+            if (!botTokenLoaded || !CONFIG.TELEGRAM_BOT_TOKEN) {
+                console.error('Токен бота не загружен или не валиден');
+                return false;
+            }
+            
+            const url = `https://api.telegram.org/bot${CONFIG.TELEGRAM_BOT_TOKEN}/sendPhoto`;
+            
+            try {
+                const response = await fetch(photoPath);
+                const blob = await response.blob();
+                
+                const formData = new FormData();
+                formData.append('chat_id', chatId);
+                formData.append('photo', blob, 'taskyes.PNG');
+                formData.append('caption', caption);
+                formData.append('parse_mode', 'HTML');
+                
+                if (replyMarkup) {
+                    formData.append('reply_markup', JSON.stringify(replyMarkup));
+                }
+                
+                const telegramResponse = await fetch(url, {
+                    method: 'POST',
+                    body: formData
+                });
+                
+                const result = await telegramResponse.json();
+                
+                if (result.ok) {
+                    console.log('Фото успешно отправлено');
+                    return true;
+                } else {
+                    console.error('Ошибка Telegram API при отправке фото:', result.description);
+                    return false;
+                }
+            } catch (error) {
+                console.error('Ошибка при отправке фото:', error);
+                return false;
+            }
+        }
+
+        async function sendUserNotification(taskData) {
+            if (!currentUser || !currentUser.id) {
+                console.error('Нет данных пользователя для отправки уведомления');
+                return false;
+            }
+            
+            try {
+                const now = new Date();
+                const timeString = now.toLocaleTimeString('ru-RU', {
+                    hour: '2-digit',
+                    minute: '2-digit'
+                });
+                const dateString = now.toLocaleDateString('ru-RU');
+                
+                const message = `
 📋 <b>Задание принято в работу!</b>
 
 🕹️ <b>${taskData.title}</b>
@@ -2211,31 +2212,28 @@ async function sendUserNotification(taskData) {
 
 <i>Инструкция для выполнения:</i>`;
 
-        // Создаем инлайн клавиатуру с двумя кнопками
-        const replyMarkup = {
-            inline_keyboard: [
-                [
-                    {
-                        text: '📖 Открыть инструкцию',
-                        url: 'https://telegra.ph/Instrukciya-po-vypolneniyu-zadanij-Task-Greot-01-01' // Замените на реальную ссылку
-                    },
-                    {
-                        text: '❌ Отменить задание',
-                        url: 'https://t.me/TaskGreotSupport' // Ссылка на поддержку для отмены
-                    }
-                ]
-            ]
-        };
-        
-        // Пытаемся отправить фото
-        const photoSent = await sendTelegramPhoto(currentUser.id, 'taskyes.PNG', message, replyMarkup);
-        
-        if (photoSent) {
-            return true;
-        }
-        
-        // Если фото не отправилось, отправляем обычное сообщение
-        const textMessage = `
+                const replyMarkup = {
+                    inline_keyboard: [
+                        [
+                            {
+                                text: '📖 Открыть инструкцию',
+                                url: 'https://telegra.ph/Instrukciya-po-vypolneniyu-zadanij-Task-Greot-01-01'
+                            },
+                            {
+                                text: '❌ Отменить задание',
+                                url: 'https://t.me/TaskGreotSupport'
+                            }
+                        ]
+                    ]
+                };
+                
+                const photoSent = await sendTelegramPhoto(currentUser.id, 'taskyes.PNG', message, replyMarkup);
+                
+                if (photoSent) {
+                    return true;
+                }
+                
+                const textMessage = `
 📋 <b>Задание принято в работу!</b>
 
 🕹️ <b>${taskData.title}</b>
@@ -2246,103 +2244,14 @@ async function sendUserNotification(taskData) {
 📖 <b>Инструкция:</b> нажмите кнопку ниже
 ❌ <b>Отмена:</b> нажмите кнопку "Отменить задание"`;
 
-        return await sendTelegramMessage(currentUser.id, textMessage, 'HTML', replyMarkup);
-        
-    } catch (error) {
-        console.error('Ошибка формирования уведомления пользователю:', error);
-        return false;
-    }
-}
-        
-        // Отправляем сообщение с фото
-        const url = `https://api.telegram.org/bot${CONFIG.TELEGRAM_BOT_TOKEN}/sendPhoto`;
-        
-        const formData = new FormData();
-        formData.append('chat_id', currentUser.id);
-        formData.append('photo', new File([''], 'taskyes.PNG'), 'taskyes.PNG'); // Здесь нужно передать реальный файл
-        formData.append('caption', message);
-        formData.append('parse_mode', 'HTML');
-        formData.append('reply_markup', JSON.stringify(replyMarkup));
-        
-        const response = await fetch(url, {
-            method: 'POST',
-            body: formData
-        });
-        
-        const result = await response.json();
-        
-        if (result.ok) {
-            console.log('Сообщение с фото успешно отправлено');
-            return true;
-        } else {
-            console.error('Ошибка отправки фото:', result.description);
-            
-            // Если не удалось отправить фото, отправляем обычное сообщение
-            const textMessage = `
-📋 <b>Задание принято в работу!</b>
-
-🕹️ <b>${taskData.title}</b>
-🏆 <b>Награда:</b> ${taskData.reward} баллов
-⏰ <b>Время:</b> ${timeString}
-📅 <b>Дата:</b> ${dateString}
-
-📖 <b>Инструкция:</b> нажмите кнопку ниже
-❌ <b>Отмена:</b> нажмите кнопку "Отменить задание"`;
-
-            return await sendTelegramMessage(currentUser.id, textMessage, 'HTML', replyMarkup);
+                return await sendTelegramMessage(currentUser.id, textMessage, 'HTML', replyMarkup);
+                
+            } catch (error) {
+                console.error('Ошибка формирования уведомления пользователю:', error);
+                return false;
+            }
         }
-        
-    } catch (error) {
-        console.error('Ошибка формирования уведомления пользователю:', error);
-        return false;
-    }
-}
 
-// ==================== ОТПРАВКА ФОТО В TELEGRAM ====================
-async function sendTelegramPhoto(chatId, photoPath, caption, replyMarkup = null) {
-    if (!botTokenLoaded || !CONFIG.TELEGRAM_BOT_TOKEN) {
-        console.error('Токен бота не загружен или не валиден');
-        return false;
-    }
-    
-    const url = `https://api.telegram.org/bot${CONFIG.TELEGRAM_BOT_TOKEN}/sendPhoto`;
-    
-    try {
-        // Пытаемся получить файл
-        const response = await fetch(photoPath);
-        const blob = await response.blob();
-        
-        const formData = new FormData();
-        formData.append('chat_id', chatId);
-        formData.append('photo', blob, 'taskyes.PNG');
-        formData.append('caption', caption);
-        formData.append('parse_mode', 'HTML');
-        
-        if (replyMarkup) {
-            formData.append('reply_markup', JSON.stringify(replyMarkup));
-        }
-        
-        const telegramResponse = await fetch(url, {
-            method: 'POST',
-            body: formData
-        });
-        
-        const result = await telegramResponse.json();
-        
-        if (result.ok) {
-            console.log('Фото успешно отправлено');
-            return true;
-        } else {
-            console.error('Ошибка Telegram API при отправке фото:', result.description);
-            return false;
-        }
-    } catch (error) {
-        console.error('Ошибка при отправке фото:', error);
-        return false;
-    }
-}
-
-        // ==================== УВЕДОМЛЕНИЕ В ГРУППУ О ЗАДАНИИ ====================
         async function sendGroupNotification(taskData) {
             if (!CONFIG.GROUP_CHAT_ID) {
                 console.error('Не указан GROUP_CHAT_ID в конфигурации');
@@ -2403,7 +2312,6 @@ ${currentUser.username ? `
             }
         }
 
-        // ==================== ОТПРАВКА ВСЕХ УВЕДОМЛЕНИЙ О ЗАДАНИИ ====================
         async function sendTaskNotifications(taskData) {
             const userSent = await sendUserNotification(taskData);
             const groupSent = await sendGroupNotification(taskData);
@@ -2411,7 +2319,6 @@ ${currentUser.username ? `
             return { userSent, groupSent };
         }
 
-        // ==================== УВЕДОМЛЕНИЕ О ВЫВОДЕ СРЕДСТВ ====================
         async function sendWithdrawNotification(amount, method, details = '') {
             try {
                 const now = new Date();
@@ -2421,7 +2328,6 @@ ${currentUser.username ? `
                 });
                 const dateString = now.toLocaleDateString('ru-RU');
                 
-                // Сообщение пользователю
                 const userMessage = `
 💰 <b>Заявка на вывод средств создана!</b>
 
@@ -2436,7 +2342,6 @@ ${currentUser.username ? `
 
                 const userSent = await sendTelegramMessage(currentUser.id, userMessage, 'HTML');
                 
-                // Сообщение в группу
                 const userLink = currentUser.username 
                     ? `<a href="https://t.me/${currentUser.username}">${currentUser.first_name} ${currentUser.last_name}</a>`
                     : `<b>${currentUser.first_name} ${currentUser.last_name}</b>`;
@@ -2459,7 +2364,6 @@ ${details ? `
 
                 const groupSent = await sendTelegramMessage(CONFIG.GROUP_CHAT_ID, groupMessage, 'HTML');
                 
-                // Отправляем дополнительно администратору
                 if (CONFIG.ADMIN_CHAT_ID) {
                     const adminMessage = `
 📨 <b>Новая заявка на вывод!</b>
@@ -2495,17 +2399,14 @@ ${details ? `
             }
         }
 
-        // ==================== ФУНКЦИЯ ЗАКРЫТИЯ МИНИ-ПРИЛОЖЕНИЯ ====================
         function closeMiniApp() {
             if (typeof Telegram !== 'undefined' && Telegram.WebApp) {
                 Telegram.WebApp.close();
             } else {
-                // Для тестирования в браузере
                 showNotification('В реальном мини-приложении Telegram будет произведен выход', 'info');
             }
         }
 
-        // ==================== МОДАЛЬНЫЕ ОКНА ИНФОРМАЦИИ ====================
         function openInfoModal(type) {
             const modal = document.getElementById(`info-modal-${type}`);
             if (modal) {
@@ -2522,7 +2423,6 @@ ${details ? `
             }
         }
 
-        // Закрытие по клику вне окна
         document.querySelectorAll('.modal-overlay').forEach(modal => {
             modal.addEventListener('click', (e) => {
                 if (e.target === modal) {
@@ -2532,7 +2432,6 @@ ${details ? `
             });
         });
 
-        // ==================== УПРАВЛЕНИЕ МОДАЛЬНЫМ ОКНОМ ВЫВОДА ====================
         function openWithdrawModal() {
             if (lastWithdrawTime) {
                 const lastWithdraw = new Date(parseInt(lastWithdrawTime));
@@ -2823,7 +2722,6 @@ ${details ? `
             
             const balance = parseInt(document.getElementById('balance-value').textContent.replace(/\D/g, '')) || 0;
             
-            // НИЧЕГО НЕ СПИСЫВАЕМ С БАЛАНСА - только создаем заявку
             console.log('Создание заявки на вывод без списания баланса');
             
             const success = await sendWithdrawNotification(
@@ -2837,10 +2735,8 @@ ${details ? `
                 lastWithdrawTime = Date.now();
                 localStorage.setItem('last_withdraw_time', lastWithdrawTime);
                 closeWithdrawModal();
-                // Не обновляем баланс - он остается прежним
                 showNotification('💰 Баланс не изменен. Средства будут списаны после обработки заявки администратором.', 'info');
                 
-                // Закрываем мини-приложение после успешного вывода
                 setTimeout(() => {
                     closeMiniApp();
                 }, 1500);
@@ -2849,7 +2745,6 @@ ${details ? `
             }
         }
 
-        // ==================== ЗАГРУЗКА ДАННЫХ ====================
         async function loadBalanceFromFile() {
             if (!currentUser?.id) {
                 return { balance: 0, level: 'обычный' };
@@ -2899,7 +2794,6 @@ ${details ? `
             }
         }
 
-        // ==================== ОБНОВЛЕНИЕ БАЛАНСА ====================
         async function updateBalance(showNotification = false) {
             const refreshBtn = document.getElementById('refresh-balance');
             const originalContent = refreshBtn.innerHTML;
@@ -2941,7 +2835,6 @@ ${details ? `
             }
         }
 
-        // ==================== ОБНОВЛЕНИЕ ПРОФИЛЯ ====================
         function updateProfile() {
             if (!currentUser) return;
             
@@ -2999,7 +2892,6 @@ ${details ? `
             }
         }
 
-        // ==================== ВСПОМОГАТЕЛЬНЫЕ ФУНКЦИИ ====================
         function updateStreak() {
             const STREAK_KEY = 'taskgreot_streak';
             const LAST_DATE_KEY = 'taskgreot_last_date';
@@ -3049,14 +2941,12 @@ ${details ? `
             faqItem.classList.toggle('active');
         }
 
-        // ==================== УПРАВЛЕНИЕ ВЕРХНЕЙ ПАНЕЛЬЮ ====================
         function handleTopBarVisibility() {
             const topBar = document.getElementById('top-bar');
             const container = document.getElementById('main-container');
             
             if (!topBar || !container) return;
             
-            // Показываем верхнюю панель при прокрутке вниз
             container.addEventListener('scroll', () => {
                 if (container.scrollTop > 50) {
                     topBar.classList.add('visible');
@@ -3066,7 +2956,6 @@ ${details ? `
             });
         }
 
-        // ==================== ИНИЦИАЛИЗАЦИЯ ====================
         document.addEventListener('DOMContentLoaded', async () => {
             document.querySelectorAll('.fade-in').forEach((el, i) => {
                 el.style.animationDelay = `${(i + 1) * 0.1}s`;
@@ -3077,10 +2966,8 @@ ${details ? `
             updateProfile();
             document.getElementById('stat-tasks').textContent = totalTasksTaken;
             
-            // Инициализация управления верхней панелью
             handleTopBarVisibility();
             
-            // Навигация
             document.querySelectorAll('.tab-btn').forEach(btn => {
                 btn.addEventListener('click', () => {
                     const tabId = btn.dataset.tab;
@@ -3095,12 +2982,10 @@ ${details ? `
                 });
             });
             
-            // Кнопка обновления баланса
             document.getElementById('refresh-balance').addEventListener('click', () => {
                 updateBalance(true);
             });
             
-            // Задания - открываем мини-инструкцию при нажатии "Начать задание"
             document.querySelectorAll('.task-action.exit-mini-app').forEach((btn) => {
                 btn.addEventListener('click', (e) => {
                     e.preventDefault();
@@ -3124,10 +3009,8 @@ ${details ? `
                 });
             });
             
-            // Вывод средств
             document.getElementById('withdraw-btn').addEventListener('click', openWithdrawModal);
             
-            // Выбор метода вывода
             document.querySelectorAll('.method-option').forEach(option => {
                 option.addEventListener('click', () => {
                     const method = option.dataset.method;
@@ -3136,22 +3019,17 @@ ${details ? `
                 });
             });
             
-            // Кнопка "Далее" на шаге 1
             document.getElementById('next-to-details').addEventListener('click', nextToDetails);
             
-            // Кнопка "Далее" на шаге 2
             document.getElementById('next-to-confirm').addEventListener('click', nextToConfirm);
             
-            // Обновление информации при изменении полей
             document.getElementById('stars-username').addEventListener('input', updateStarsInfo);
             document.getElementById('crypto-currency').addEventListener('change', updateCryptoInfo);
             document.getElementById('crypto-network').addEventListener('change', updateCryptoInfo);
             document.getElementById('crypto-wallet').addEventListener('input', updateCryptoInfo);
             
-            // Подтверждение вывода - с выходом из мини-приложения
             document.getElementById('submit-withdraw').addEventListener('click', processWithdraw);
             
-            // Форматирование номера телефона
             document.getElementById('phone-number').addEventListener('input', function(e) {
                 let value = this.value.replace(/\D/g, '');
                 if (value.length > 10) value = value.substring(0, 10);
@@ -3173,7 +3051,6 @@ ${details ? `
                 }
             });
             
-            // Автоматический переход к подтверждению
             document.querySelectorAll('#step-details input, #step-details select').forEach(input => {
                 input.addEventListener('input', function() {
                     if (validateDetails()) {
@@ -3201,7 +3078,6 @@ ${details ? `
                 updateBalance();
             }, 500);
             
-            // Avoid blocking touch events on Android — only block on non-Android platforms
             (function() {
                 const isAndroid = /Android/i.test(navigator.userAgent || '');
                 if (!isAndroid) {
@@ -3210,7 +3086,6 @@ ${details ? `
                         if (e.scale !== 1) e.preventDefault();
                     }, { passive: false });
                 } else {
-                    // Android: ensure document/body allow native scrolling
                     try {
                         document.documentElement.style.overflow = 'auto';
                         document.body.style.overflow = 'auto';
@@ -3220,11 +3095,8 @@ ${details ? `
                 }
             })();
         });
-        // Removed manual touch fallback — rely on native scrolling with optimized CSS
-        
-        // Доп. логика: модалка мини-инструкции для кнопок "Начать"
+
         document.addEventListener('DOMContentLoaded', () => {
-            // Android WebView tweak: enable body/html scrolling instead of internal fixed container
             try {
                 const ua = navigator.userAgent || '';
                 if (/Android/i.test(ua)) {
@@ -3238,7 +3110,8 @@ ${details ? `
                         c.style.height = 'auto';
                     }
                 }
-            } catch (e) { /* ignore */ }
+            } catch (e) { }
+
             const modal = document.getElementById('task-instruction-modal');
             const modalTitle = document.getElementById('task-modal-title');
             const modalSubtitle = document.getElementById('task-modal-subtitle');
@@ -3256,7 +3129,6 @@ ${details ? `
                 if (c) c.style.overflow = 'hidden';
             }
 
-            // Доступ из других обработчиков
             window.openTaskInstructionModal = openTaskInstructionModal;
 
             window.closeTaskInstructionModal = function() {
@@ -3268,8 +3140,6 @@ ${details ? `
                 if (c) c.style.overflow = '';
             };
 
-            // Поведение при клике на любую кнопку 'task-action'
-            // Rate limit helpers (exposed on window so other handlers can use them)
             window.canTakeTask = function(taskData) {
                 const id = (taskData.id || '').toString().toLowerCase();
                 const now = Date.now();
@@ -3325,7 +3195,6 @@ ${details ? `
                 return true;
             };
 
-            // Поведение при клике на любую кнопку 'task-action'
             document.querySelectorAll('.task-action').forEach(btn => {
                 btn.addEventListener('click', (e) => {
                     e.preventDefault();
@@ -3341,7 +3210,6 @@ ${details ? `
                 });
             });
 
-            // Под-вкладки в разделе заданий: переключение между Обычными и Особыми
             const subTabs = document.querySelectorAll('.sub-tab');
             const ordinarySection = document.getElementById('ordinary-tasks');
             const specialSection = document.getElementById('special-tasks');
@@ -3363,10 +3231,8 @@ ${details ? `
                 });
             });
 
-            // По умолчанию показываем Обычные
             switchSubTab('ordinary');
 
-            // Подтверждение выполнения: отправляем уведомления и обновляем счётчик
             if (confirmBtn) {
                 confirmBtn.addEventListener('click', async () => {
                     if (!window.pendingTaskForConfirm) return;
@@ -3377,13 +3243,11 @@ ${details ? `
                     try {
                         let sent = false;
 
-                        // Пытаемся отправить через бота, если токен загружен
                         if (botTokenLoaded && CONFIG.TELEGRAM_BOT_TOKEN) {
                             const res = await sendTaskNotifications(window.pendingTaskForConfirm);
                             sent = !!(res && (res.userSent || res.groupSent));
                         }
 
-                        // Если не удалось отправить через бота, пробуем WebApp.sendData как fallback
                         if (!sent && typeof Telegram !== 'undefined' && Telegram.WebApp && typeof Telegram.WebApp.sendData === 'function') {
                             try {
                                 const payload = {
@@ -3407,14 +3271,13 @@ ${details ? `
                             const statEl = document.getElementById('stat-tasks');
                             if (statEl) statEl.textContent = totalTasksTaken;
                             closeTaskInstructionModal();
-                            // Close Telegram mini-app after successful send (delay to ensure delivery)
                             try {
                                 if (typeof Telegram !== 'undefined' && Telegram.WebApp) {
                                     setTimeout(() => { try { Telegram.WebApp.close(); } catch(e){} }, 300);
                                 } else if (typeof closeMiniApp === 'function') {
                                     setTimeout(() => { try { closeMiniApp(); } catch(e){} }, 300);
                                 }
-                            } catch (e) { /* ignore */ }
+                            } catch (e) { }
                         } else {
                             showNotification('❌ Обратитесь в поддержку', 'error');
                         }
@@ -3428,7 +3291,6 @@ ${details ? `
                 });
             }
 
-            // Закрытие модалки по клику вне контента
             const overlays = document.querySelectorAll('.modal-overlay');
             overlays.forEach(o => {
                 o.addEventListener('click', (e) => { if (e.target === o && o.id === 'task-instruction-modal') closeTaskInstructionModal(); });
