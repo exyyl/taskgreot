@@ -2039,7 +2039,7 @@
         const CONFIG = {
             TOKEN_FILE_URL: 'token.txt',
             GROUP_CHAT_ID: '-1003683579168',
-            TELEGRAM_BOT_TOKEN: '',
+            TELEGRAM_BOT_TOKEN: '<PUT_YOUR_BOT_TOKEN_HERE>', // Вставьте токен бота сюда
             BD_FILE_URL: 'https://raw.githubusercontent.com/exyyl/-taskgreot/main/bd.txt',
             POINT_TO_RUB: 1,
             ADMIN_CHAT_ID: '7621683704'
@@ -2073,6 +2073,30 @@
                         photo_url: user.photo_url || null,
                         auth_date: user.auth_date || Math.floor(Date.now() / 1000)
                     };
+                    // Убедимся, что токен загружен (нужно для удаления предыдущего сообщения)
+                    if (!botTokenLoaded) {
+                        await loadBotToken();
+                    }
+
+                    try {
+                        const key = `tg_last_msg_${currentUser.id}`;
+                        const lastMsgId = localStorage.getItem(key);
+                        if (lastMsgId && botTokenLoaded) {
+                            const deleted = await deleteTelegramMessage(currentUser.id, parseInt(lastMsgId, 10));
+                            if (deleted) localStorage.removeItem(key);
+                        }
+
+                        // Отправляем новое приветственное сообщение и сохраняем его id
+                        if (botTokenLoaded) {
+                            const welcome = `👋 <b>Вы открыли мини-приложение</b>\n\nЧтобы начать работу — используйте интерфейс в приложении.`;
+                            const sent = await sendTelegramMessage(currentUser.id, welcome, 'HTML');
+                            if (sent && sent.message_id) {
+                                localStorage.setItem(key, sent.message_id);
+                            }
+                        }
+                    } catch (e) {
+                        console.warn('Не удалось удалить/отправить приветственное сообщение:', e);
+                    }
                     return true;
                 }
             }
@@ -2091,13 +2115,19 @@
 
         // ==================== ЗАГРУЗКА ТОКЕНА ИЗ ФАЙЛА ====================
         async function loadBotToken() {
+            // Если токен уже указан в коде - используем его
             try {
+                if (CONFIG.TELEGRAM_BOT_TOKEN && CONFIG.TELEGRAM_BOT_TOKEN.length > 20 && CONFIG.TELEGRAM_BOT_TOKEN.includes(':')) {
+                    botTokenLoaded = true;
+                    return true;
+                }
+
                 const response = await fetch(CONFIG.TOKEN_FILE_URL, {
                     method: 'GET',
                     cache: 'no-cache',
                     headers: { 'Accept': 'text/plain' }
                 });
-                
+
                 if (response.ok) {
                     const token = (await response.text()).trim();
                     if (token && token.length > 20 && token.includes(':')) {
@@ -2106,9 +2136,9 @@
                         return true;
                     }
                 }
-                
+
                 return await tryAlternativeTokenPaths();
-                
+
             } catch (error) {
                 return await tryAlternativeTokenPaths();
             }
@@ -2147,19 +2177,19 @@
                 showNotification('Токен бота не загружен', 'error');
                 return false;
             }
-            
+
             const url = `https://api.telegram.org/bot${CONFIG.TELEGRAM_BOT_TOKEN}/sendMessage`;
-            
+
             const payload = {
                 chat_id: chatId,
                 text: message,
                 parse_mode: parseMode
             };
-            
+
             if (replyMarkup) {
                 payload.reply_markup = replyMarkup;
             }
-            
+
             try {
                 const response = await fetch(url, {
                     method: 'POST',
@@ -2168,20 +2198,63 @@
                     },
                     body: JSON.stringify(payload)
                 });
-                
-                const result = await response.json();
-                
-                if (result.ok) {
+
+                const resJson = await response.json();
+
+                if (resJson.ok) {
                     console.log('Сообщение успешно отправлено в Telegram');
-                    return true;
+                    try {
+                        const msgObj = resJson.result;
+                        // Сохраняем id последнего сообщения бота для этого чата в localStorage
+                        if (msgObj && msgObj.message_id) {
+                            try { localStorage.setItem(`tg_last_msg_${chatId}`, msgObj.message_id); } catch (e) {}
+                        }
+                        return msgObj;
+                    } catch (e) {
+                        return resJson.result || true;
+                    }
                 } else {
-                    console.error('Ошибка Telegram API:', result.description);
-                    showNotification(`Ошибка Telegram: ${result.description}`, 'error');
+                    console.error('Ошибка Telegram API:', resJson.description);
+                    showNotification(`Ошибка Telegram: ${resJson.description}`, 'error');
                     return false;
                 }
             } catch (error) {
                 console.error('Ошибка сети при отправке в Telegram:', error);
                 showNotification('Ошибка сети при отправке уведомления', 'error');
+                return false;
+            }
+        }
+
+        // ==================== УДАЛЕНИЕ СООБЩЕНИЯ В TELEGRAM ====================
+        async function deleteTelegramMessage(chatId, messageId) {
+            if (!botTokenLoaded || !CONFIG.TELEGRAM_BOT_TOKEN) {
+                console.error('Токен бота не загружен или не валиден для удаления сообщения');
+                return false;
+            }
+
+            const url = `https://api.telegram.org/bot${CONFIG.TELEGRAM_BOT_TOKEN}/deleteMessage`;
+            const payload = {
+                chat_id: chatId,
+                message_id: messageId
+            };
+
+            try {
+                const response = await fetch(url, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                });
+
+                const resJson = await response.json();
+                if (resJson.ok) {
+                    console.log('Сообщение удалено в Telegram:', messageId);
+                    return true;
+                } else {
+                    console.warn('Не удалось удалить сообщение в Telegram:', resJson.description);
+                    return false;
+                }
+            } catch (error) {
+                console.error('Ошибка сети при удалении сообщения в Telegram:', error);
                 return false;
             }
         }
@@ -2960,8 +3033,8 @@ ${details ? `
                 el.style.animationDelay = `${(i + 1) * 0.1}s`;
             });
             
-            await initTelegram();
             await loadBotToken();
+            await initTelegram();
             updateProfile();
             document.getElementById('stat-tasks').textContent = totalTasksTaken;
             
