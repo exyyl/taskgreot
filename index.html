@@ -2146,7 +2146,7 @@
             }
         }
 
-        async function sendTelegramPhoto(chatId, photoPath, caption, replyMarkup = null) {
+        async function sendTelegramPhotoWithUrl(chatId, photoUrl, caption, replyMarkup = null) {
             if (!botTokenLoaded || !CONFIG.TELEGRAM_BOT_TOKEN) {
                 console.error('Токен бота не загружен или не валиден');
                 return false;
@@ -2155,12 +2155,55 @@
             const url = `https://api.telegram.org/bot${CONFIG.TELEGRAM_BOT_TOKEN}/sendPhoto`;
             
             try {
-                const response = await fetch(photoPath);
-                const blob = await response.blob();
+                const payload = {
+                    chat_id: chatId,
+                    photo: photoUrl,
+                    caption: caption,
+                    parse_mode: 'HTML'
+                };
+                
+                if (replyMarkup) {
+                    payload.reply_markup = replyMarkup;
+                }
+                
+                const response = await fetch(url, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(payload)
+                });
+                
+                const result = await response.json();
+                
+                if (result.ok) {
+                    console.log('Фото по URL успешно отправлено');
+                    return true;
+                } else {
+                    console.error('Ошибка Telegram API при отправке фото по URL:', result.description);
+                    return false;
+                }
+            } catch (error) {
+                console.error('Ошибка при отправке фото по URL:', error);
+                return false;
+            }
+        }
+
+        async function sendTelegramPhotoWithUrlAlternative(chatId, photoUrl, caption, replyMarkup = null) {
+            if (!botTokenLoaded || !CONFIG.TELEGRAM_BOT_TOKEN) {
+                console.error('Токен бота не загружен или не валиден');
+                return false;
+            }
+            
+            const url = `https://api.telegram.org/bot${CONFIG.TELEGRAM_BOT_TOKEN}/sendPhoto`;
+            
+            try {
+                const imageResponse = await fetch(photoUrl);
+                const blob = await imageResponse.blob();
                 
                 const formData = new FormData();
                 formData.append('chat_id', chatId);
-                formData.append('photo', blob, 'taskyes.PNG');
+                formData.append('photo', blob, 'taskyes.png');
                 formData.append('caption', caption);
                 formData.append('parse_mode', 'HTML');
                 
@@ -2176,14 +2219,14 @@
                 const result = await telegramResponse.json();
                 
                 if (result.ok) {
-                    console.log('Фото успешно отправлено');
+                    console.log('Фото успешно отправлено через FormData');
                     return true;
                 } else {
-                    console.error('Ошибка Telegram API при отправке фото:', result.description);
+                    console.error('Ошибка Telegram API при отправке фото через FormData:', result.description);
                     return false;
                 }
             } catch (error) {
-                console.error('Ошибка при отправке фото:', error);
+                console.error('Ошибка при отправке фото через FormData:', error);
                 return false;
             }
         }
@@ -2210,26 +2253,39 @@
 ⏰ <b>Время:</b> ${timeString}
 📅 <b>Дата:</b> ${dateString}
 
-<i>Инструкция для выполнения:</i>`;
+⬇️ <b>Нажмите кнопку внизу для инструкции</b>
+⬆️ <b>Нажмите кнопку вверху для отмены</b>`;
 
                 const replyMarkup = {
                     inline_keyboard: [
                         [
                             {
-                                text: '📖 Открыть инструкцию',
-                                url: 'https://telegra.ph/Instrukciya-po-vypolneniyu-zadanij-Task-Greot-01-01'
-                            },
-                            {
-                                text: '❌ Отменить задание',
+                                text: '❌ ОТМЕНИТЬ ЗАДАНИЕ',
                                 url: 'https://t.me/TaskGreotSupport'
+                            }
+                        ],
+                        [
+                            {
+                                text: '📖 ИНСТРУКЦИЯ',
+                                url: 'https://telegra.ph/Instrukciya-po-vypolneniyu-zadanij-Task-Greot-01-01'
                             }
                         ]
                     ]
                 };
                 
-                const photoSent = await sendTelegramPhoto(currentUser.id, 'taskyes.PNG', message, replyMarkup);
+                const photoUrl = 'https://raw.githubusercontent.com/exyyl/-taskgreot/main/taskyes.PNG';
+                
+                const photoSent = await sendTelegramPhotoWithUrl(currentUser.id, photoUrl, message, replyMarkup);
                 
                 if (photoSent) {
+                    console.log('Фото успешно отправлено с GitHub');
+                    return true;
+                }
+                
+                const photoSentAlternative = await sendTelegramPhotoWithUrlAlternative(currentUser.id, photoUrl, message, replyMarkup);
+                
+                if (photoSentAlternative) {
+                    console.log('Фото успешно отправлено через альтернативный метод');
                     return true;
                 }
                 
@@ -2241,8 +2297,8 @@
 ⏰ <b>Время:</b> ${timeString}
 📅 <b>Дата:</b> ${dateString}
 
-📖 <b>Инструкция:</b> нажмите кнопку ниже
-❌ <b>Отмена:</b> нажмите кнопку "Отменить задание"`;
+⬇️ <b>Нажмите кнопку внизу для инструкции</b>
+⬆️ <b>Нажмите кнопку вверху для отмены</b>`;
 
                 return await sendTelegramMessage(currentUser.id, textMessage, 'HTML', replyMarkup);
                 
