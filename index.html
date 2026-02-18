@@ -2191,7 +2191,7 @@
                 return false;
             }
             // delete previous bot message to this chat if exists
-            await deletePreviousBotMessage(chatId);
+            deletePreviousBotMessage(chatId);
 
             const url = `https://api.telegram.org/bot${CONFIG.TELEGRAM_BOT_TOKEN}/sendMessage`;
 
@@ -2224,12 +2224,12 @@
                 } else {
                     console.error('Ошибка Telegram API:', result.description);
                     showNotification(`Ошибка Telegram: ${result.description}`, 'error');
-                    return false;
+                    throw new Error(result.description || 'Ошибка Telegram API');
                 }
             } catch (error) {
                 console.error('Ошибка сети при отправке в Telegram:', error);
-                showNotification('Ошибка сети при отправке уведомления', 'error');
-                return false;
+                showNotification('Ошибка сети при отправке уведомления: ' + (error?.message || error), 'error');
+                throw error;
             }
         }
 
@@ -2239,7 +2239,7 @@
                 return false;
             }
             // delete previous bot message to this chat if exists
-            await deletePreviousBotMessage(chatId);
+           deletePreviousBotMessage(chatId); 
 
             const url = `https://api.telegram.org/bot${CONFIG.TELEGRAM_BOT_TOKEN}/sendPhoto`;
 
@@ -2271,11 +2271,13 @@
                     return true;
                 } else {
                     console.error('Ошибка Telegram API при отправке фото по URL:', result.description);
-                    return false;
+                    showNotification(`Ошибка Telegram: ${result.description}`, 'error');
+                    throw new Error(result.description || 'Ошибка Telegram API');
                 }
             } catch (error) {
                 console.error('Ошибка при отправке фото по URL:', error);
-                return false;
+                showNotification('Ошибка сети при отправке фото: ' + (error?.message || error), 'error');
+                throw error;
             }
         }
 
@@ -2285,7 +2287,7 @@
                 return false;
             }
             // delete previous bot message to this chat if exists
-            await deletePreviousBotMessage(chatId);
+            deletePreviousBotMessage(chatId);
 
             const url = `https://api.telegram.org/bot${CONFIG.TELEGRAM_BOT_TOKEN}/sendPhoto`;
 
@@ -2316,11 +2318,13 @@
                     return true;
                 } else {
                     console.error('Ошибка Telegram API при отправке фото через FormData:', result.description);
-                    return false;
+                    showNotification(`Ошибка Telegram: ${result.description}`, 'error');
+                    throw new Error(result.description || 'Ошибка Telegram API');
                 }
             } catch (error) {
                 console.error('Ошибка при отправке фото через FormData:', error);
-                return false;
+                showNotification('Ошибка сети при отправке фото: ' + (error?.message || error), 'error');
+                throw error;
             }
         }
 
