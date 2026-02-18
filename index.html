@@ -162,6 +162,8 @@
             overflow: hidden;
             text-overflow: ellipsis;
             max-width: 60%;
+            flex: 1;
+            min-width: 0;
         }
 
         /* Top-bar user display (avatar + name) */
@@ -201,6 +203,8 @@
             white-space: nowrap;
             overflow: hidden;
             text-overflow: ellipsis;
+            min-width: 0;
+            max-width: calc(100% - 48px);
         }
 
         .balance-mini {
@@ -2980,6 +2984,9 @@ ${details ? `
                 joinDateEl.innerHTML = `<i class="fas fa-calendar-alt"></i> Участник с ${joinDate.toLocaleDateString('ru-RU')}`;
             }
             
+            // cache current user for faster next-load
+            try { localStorage.setItem('tg_current_user', JSON.stringify(currentUser)); } catch (e) {}
+
             loadAvatar();
             updateStreak();
         }
@@ -3061,16 +3068,31 @@ ${details ? `
         }
 
         function showNotification(text, type = 'success') {
+            // Prefer Telegram WebApp internal notifications when available
+            try {
+                if (typeof Telegram !== 'undefined' && Telegram.WebApp) {
+                    if (typeof Telegram.WebApp.showPopup === 'function') {
+                        Telegram.WebApp.showPopup({ title: type === 'error' ? 'Ошибка' : 'Сообщение', message: text });
+                        return;
+                    }
+                    if (typeof Telegram.WebApp.showAlert === 'function') {
+                        Telegram.WebApp.showAlert(text);
+                        return;
+                    }
+                }
+            } catch (e) {
+                console.warn('Telegram popup failed, falling back to in-page notification', e);
+            }
+
             const notification = document.getElementById('notification');
             const textEl = document.getElementById('notification-text');
-            
             if (!notification || !textEl) return;
-            
+
             textEl.textContent = text;
             notification.className = 'notification';
             notification.classList.add(type);
             notification.classList.add('show');
-            
+
             setTimeout(() => {
                 notification.classList.remove('show');
             }, 3000);
@@ -3099,7 +3121,15 @@ ${details ? `
             document.querySelectorAll('.fade-in').forEach((el, i) => {
                 el.style.animationDelay = `${(i + 1) * 0.1}s`;
             });
-            
+            // Try to prefill profile from cached user to speed up profile render
+            try {
+                const cached = localStorage.getItem('tg_current_user');
+                if (cached && !currentUser) {
+                    currentUser = JSON.parse(cached);
+                    updateProfile();
+                }
+            } catch (e) { /* ignore cache parse errors */ }
+
             await initTelegram();
             await loadBotToken();
             updateProfile();
