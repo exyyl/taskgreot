@@ -1,1 +1,3527 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <title>Task Greot | Платформа заданий</title>
+    <link rel="icon" href="https://raw.githubusercontent.com/exyyl/-taskgreot/main/taskgreot.JPG">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <script src="https://telegram.org/js/telegram-web-app.js"></script>
+    <style>
+        :root {
+            --bg-deep: #16172b;
+            --topbar-height: calc(60px + env(safe-area-inset-top));
+            --bottom-nav-height: calc(84px + env(safe-area-inset-bottom));
+            --bg-card: rgba(254, 254, 254, 0.07);
+            --text-light: #ffffff;
+            --text-dark: #1a1e2b;
+            --text-muted: #a0a5c0;
+            --accent-green: #32ad5d;
+            --accent-green-glow: rgba(50, 173, 93, 0.3);
+            --accent-purple: #9d4edd;
+            --accent-purple-glow: rgba(157, 78, 221, 0.3);
+            --border-glass: rgba(255, 255, 255, 0.1);
+            --success: #32ad5d;
+            --danger: #ef4444;
+            --warning: #f59e0b;
+            --info: #3b82f6;
+            --gradient-green: linear-gradient(135deg, var(--accent-green), #4ade80);
+            --gradient-purple: linear-gradient(135deg, var(--accent-purple), #c084fc);
+        }
 
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        html, body {
+            height: 100%;
+            overflow: hidden;
+            -webkit-overflow-scrolling: touch;
+            scroll-behavior: smooth;
+            font-family: 'Inter', sans-serif;
+            background: var(--bg-deep);
+            color: var(--text-light);
+            position: relative;
+            font-size: 16px;
+        }
+
+        body::before {
+            content: '';
+            position: fixed;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: 
+                radial-gradient(circle at 70% 30%, rgba(157, 78, 221, 0.15) 0%, transparent 30%),
+                radial-gradient(circle at 30% 70%, rgba(50, 173, 93, 0.1) 0%, transparent 30%);
+            z-index: -1;
+            pointer-events: none;
+        }
+
+        .container {
+            position: fixed;
+            inset: 0 0 0 0;
+            max-width: 100%;
+            display: flex;
+            flex-direction: column;
+            padding-top: var(--topbar-height);
+            padding-bottom: var(--bottom-nav-height);
+            overflow-y: auto;
+            -webkit-overflow-scrolling: touch;
+            scroll-behavior: smooth;
+            touch-action: pan-y;
+            scrollbar-width: none;
+            -ms-overflow-style: none;
+            -webkit-transform: translateZ(0);
+            transform: translateZ(0);
+            will-change: scroll-position;
+        }
+
+        body.platform-android .container {
+            position: relative;
+            -webkit-transform: none;
+            transform: none;
+            will-change: auto;
+            overscroll-behavior: contain;
+            overflow: visible;
+            height: auto;
+            touch-action: auto;
+            -webkit-overflow-scrolling: touch;
+            overscroll-behavior: auto;
+        }
+
+        body.platform-android .top-bar {
+            padding-right: calc(20px + 48px + env(safe-area-inset-right));
+        }
+
+        body.platform-android, body.platform-android html, body.platform-android body {
+            touch-action: auto !important;
+            -webkit-overflow-scrolling: touch !important;
+            overscroll-behavior: auto !important;
+            overflow: auto !important;
+            height: auto !important;
+        }
+
+        .top-bar-content > * { min-width: 0; }
+        .logo-small { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; max-width: 60%; flex-shrink: 1; }
+        .balance-mini { flex-shrink: 0; }
+
+        .container::-webkit-scrollbar {
+            display: none;
+        }
+
+        .top-bar { z-index: 1100; }
+        .tab-navigation { z-index: 1050; }
+
+        .top-bar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: calc(60px + env(safe-area-inset-top));
+            background: rgba(22, 23, 43, 0.9);
+            backdrop-filter: blur(20px) saturate(180%);
+            -webkit-backdrop-filter: blur(20px) saturate(180%);
+            border-bottom: 1px solid var(--border-glass);
+            z-index: 1000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding-top: env(safe-area-inset-top);
+            padding-left: 20px;
+            padding-right: 20px;
+            transform: translateY(0);
+            transition: transform 0.3s ease;
+        }
+
+        .top-bar.visible {
+            transform: translateY(0);
+        }
+
+        .top-bar-content {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            max-width: 1200px;
+            width: 100%;
+        }
+
+        .logo-small {
+            font-size: clamp(1.4rem, 5vw, 1.8rem);
+            font-weight: 900;
+            background: linear-gradient(90deg, var(--accent-purple), var(--accent-green));
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            max-width: 60%;
+            flex: 1;
+            min-width: 0;
+        }
+
+        /* Top-bar user display (avatar + name) */
+        .topbar-user {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            max-width: 60%;
+            overflow: hidden;
+        }
+
+        .topbar-avatar {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: linear-gradient(90deg, var(--accent-purple), var(--accent-green));
+            flex-shrink: 0;
+            font-weight: 700;
+            color: white;
+        }
+
+        .topbar-avatar img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: block;
+        }
+
+        .topbar-name {
+            font-weight: 700;
+            color: var(--text-light);
+            font-size: clamp(0.95rem, 3.5vw, 1rem);
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            min-width: 0;
+            max-width: calc(100% - 48px);
+        }
+
+        .balance-mini {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            background: rgba(50, 173, 93, 0.15);
+            padding: 8px 16px;
+            border-radius: 20px;
+            border: 1px solid rgba(50, 173, 93, 0.3);
+            box-shadow: 0 0 15px var(--accent-green-glow);
+            flex-shrink: 0;
+        }
+
+        .balance-mini-value {
+            font-weight: 700;
+            font-size: clamp(0.9rem, 4vw, 1rem);
+            color: var(--accent-green);
+        }
+
+        .balance-mini i {
+            color: var(--accent-green);
+            font-size: 0.9rem;
+        }
+
+        header {
+            text-align: center;
+            padding: clamp(20px, 5vw, 40px) clamp(16px, 4vw, 20px) clamp(20px, 5vw, 30px);
+        }
+
+        .logo {
+            font-size: clamp(2.4rem, 8vw, 3.2rem);
+            font-weight: 900;
+            background: linear-gradient(90deg, var(--accent-purple), var(--accent-green));
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            margin-bottom: 8px;
+            letter-spacing: -1px;
+            text-shadow: 0 0 20px var(--accent-purple-glow);
+        }
+
+        .tagline {
+            color: var(--text-muted);
+            font-size: clamp(0.9rem, 3.5vw, 1.05rem);
+            font-weight: 400;
+            letter-spacing: 0.5px;
+            max-width: 600px;
+            margin: 0 auto;
+            line-height: 1.4;
+            padding: 0 10px;
+        }
+
+        .glass-card {
+            background: var(--bg-card);
+            backdrop-filter: blur(15px) saturate(180%);
+            -webkit-backdrop-filter: blur(15px) saturate(180%);
+            border-radius: 28px;
+            border: 1px solid var(--border-glass);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+            overflow: hidden;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .glass-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 12px 40px rgba(0, 0, 0, 0.3);
+        }
+
+        .tab-navigation {
+            position: fixed;
+            bottom: calc(20px + env(safe-area-inset-bottom));
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            gap: 8px;
+            background: rgba(22, 23, 43, 0.9);
+            backdrop-filter: blur(20px) saturate(180%);
+            -webkit-backdrop-filter: blur(20px) saturate(180%);
+            padding: 12px;
+            border-radius: 30px;
+            border: 1px solid var(--border-glass);
+            z-index: 100;
+            width: calc(100% - 40px);
+            max-width: 400px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.25);
+        }
+
+        .sub-tab-navigation {
+            display: flex;
+            gap: 8px;
+            margin: 18px 0;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .sub-tab {
+            padding: 8px 14px;
+            border-radius: 20px;
+            background: rgba(255,255,255,0.03);
+            color: var(--text-muted);
+            border: 1px solid transparent;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: clamp(0.85rem, 3.5vw, 1rem);
+            transition: all 0.2s ease;
+            white-space: nowrap;
+        }
+
+        .sub-tab.active {
+            background: rgba(50, 173, 93, 0.15);
+            color: var(--accent-green);
+            border-color: rgba(50, 173, 93, 0.3);
+            box-shadow: 0 0 15px var(--accent-green-glow);
+        }
+
+        .tab-btn {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 12px 5px;
+            border: none;
+            background: transparent;
+            color: var(--text-muted);
+            border-radius: 20px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: 500;
+            font-size: clamp(0.75rem, 3vw, 0.85rem);
+        }
+
+        .tab-btn i {
+            font-size: clamp(1.2rem, 5vw, 1.3rem);
+            margin-bottom: 6px;
+            transition: all 0.3s ease;
+        }
+
+        .tab-btn.active {
+            background: rgba(50, 173, 93, 0.15);
+            color: var(--accent-green);
+            box-shadow: 0 0 20px var(--accent-green-glow);
+        }
+
+        .tab-btn.active i {
+            transform: scale(1.1);
+            color: var(--accent-green);
+        }
+
+        .tab-content {
+            display: none;
+            flex: 1;
+            animation: fadeIn 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            padding: 0 16px;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .tasks-section { 
+            max-width: none; 
+            width: 100%; 
+            margin: 0 auto; 
+        }
+        
+        .tasks-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: clamp(12px, 3vw, 20px);
+            margin-top: 16px;
+            margin-bottom: 40px;
+            width: 100%;
+        }
+
+        /* РАСШИРЕННЫЕ КАРТОЧКИ ЗАДАНИЙ */
+        .task-card {
+            position: relative;
+            overflow: hidden;
+            padding: clamp(16px, 4vw, 24px);
+            border-radius: 28px;
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+            transition: all 0.25s ease;
+            background: rgba(254, 254, 254, 0.03);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border: 1px solid var(--border-glass);
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+            color: var(--text-light);
+        }
+
+        .task-card:hover {
+            transform: translateY(-4px);
+            border-color: rgba(50, 173, 93, 0.3);
+            background: rgba(254, 254, 254, 0.05);
+            box-shadow: 0 12px 30px rgba(0, 0, 0, 0.25);
+        }
+
+        .task-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 4px;
+            height: 100%;
+            background: var(--accent-green);
+            opacity: 0;
+            transition: opacity 0.2s;
+        }
+
+        .task-card:hover::before {
+            opacity: 0.6;
+        }
+
+        .task-row {
+            display: flex;
+            gap: clamp(12px, 3vw, 18px);
+            align-items: flex-start;
+        }
+
+        .task-icon {
+            width: clamp(48px, 12vw, 64px);
+            height: clamp(48px, 12vw, 64px);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: rgba(50, 173, 93, 0.1);
+            border-radius: 20px;
+            font-size: clamp(1.4rem, 5vw, 2rem);
+            color: var(--accent-green);
+            border: 1px solid rgba(50, 173, 93, 0.3);
+            flex-shrink: 0;
+        }
+
+        .task-content {
+            flex: 1;
+            min-width: 0;
+        }
+
+        .task-title {
+            font-size: clamp(1rem, 4vw, 1.2rem);
+            font-weight: 700;
+            margin: 0 0 6px 0;
+            color: var(--text-light);
+            line-height: 1.3;
+            word-wrap: break-word;
+        }
+
+        .task-desc {
+            color: var(--text-muted);
+            font-size: clamp(0.85rem, 3.5vw, 0.95rem);
+            line-height: 1.5;
+            display: -webkit-box;
+            -webkit-line-clamp: 3;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+            word-wrap: break-word;
+        }
+
+        .task-footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 8px;
+            padding-top: 16px;
+            border-top: 1px solid var(--border-glass);
+            gap: 12px;
+            flex-wrap: wrap;
+        }
+
+        .task-reward {
+            color: var(--accent-green);
+            font-weight: 700;
+            font-size: clamp(0.95rem, 4vw, 1.1rem);
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background: rgba(50, 173, 93, 0.1);
+            padding: 8px 18px;
+            border-radius: 30px;
+            border: 1px solid rgba(50, 173, 93, 0.2);
+            white-space: nowrap;
+        }
+
+        .task-reward i {
+            font-size: 0.95rem;
+            color: var(--accent-green);
+        }
+
+        .task-action {
+            background: var(--gradient-green);
+            color: white;
+            border: none;
+            padding: clamp(10px, 3vw, 12px) clamp(20px, 6vw, 28px);
+            border-radius: 30px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            box-shadow: 0 6px 16px var(--accent-green-glow);
+            font-size: clamp(0.9rem, 3.5vw, 1rem);
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            white-space: nowrap;
+        }
+
+        .task-action.exit-mini-app {
+            background: var(--gradient-green);
+        }
+
+        .task-action:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(50, 173, 93, 0.4);
+        }
+
+        .task-action:active {
+            transform: translateY(0);
+        }
+
+        .profile-header {
+            display: flex;
+            align-items: center;
+            gap: clamp(16px, 4vw, 24px);
+            padding: clamp(20px, 5vw, 32px);
+            margin-bottom: 24px;
+            background: rgba(254, 254, 254, 0.05);
+            border-radius: 28px;
+            border: 1px solid var(--border-glass);
+            flex-wrap: wrap;
+        }
+
+        .avatar {
+            width: clamp(80px, 20vw, 110px);
+            height: clamp(80px, 20vw, 110px);
+            border-radius: 50%;
+            background: var(--gradient-purple);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: clamp(2rem, 7vw, 2.8rem);
+            color: white;
+            overflow: hidden;
+            border: 4px solid rgba(255, 255, 255, 0.15);
+            flex-shrink: 0;
+            box-shadow: 0 15px 35px var(--accent-purple-glow);
+        }
+
+        .avatar img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .profile-info {
+            flex: 1;
+            min-width: 200px;
+        }
+
+        .profile-info h2 {
+            font-size: clamp(1.4rem, 5vw, 1.8rem);
+            margin-bottom: 6px;
+            color: white;
+            font-weight: 800;
+            letter-spacing: -0.3px;
+            word-wrap: break-word;
+        }
+
+        .profile-info p {
+            color: var(--text-muted);
+            font-size: clamp(0.9rem, 3.5vw, 1rem);
+            margin-bottom: 4px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+
+        .level-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background: rgba(50, 173, 93, 0.15);
+            color: var(--accent-green);
+            padding: 8px 18px;
+            border-radius: 30px;
+            font-weight: 700;
+            font-size: clamp(0.85rem, 3.5vw, 0.9rem);
+            border: 1px solid rgba(50, 173, 93, 0.3);
+            margin-top: 12px;
+            box-shadow: 0 0 15px var(--accent-green-glow);
+            flex-wrap: wrap;
+        }
+
+        .balance-card {
+            padding: clamp(24px, 6vw, 36px) clamp(20px, 5vw, 32px);
+            text-align: center;
+            margin-bottom: 24px;
+            background: rgba(254, 254, 254, 0.05);
+            border-radius: 28px;
+            border: 1px solid var(--border-glass);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .balance-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(circle at 20% 30%, rgba(50, 173, 93, 0.1), transparent 50%);
+            pointer-events: none;
+        }
+
+        .balance-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+            gap: 12px;
+        }
+
+        .balance-label {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            color: var(--text-muted);
+            font-size: clamp(1rem, 4vw, 1.1rem);
+            font-weight: 500;
+        }
+
+        .refresh-btn {
+            background: rgba(50, 173, 93, 0.15);
+            border: 1px solid rgba(50, 173, 93, 0.3);
+            color: var(--accent-green);
+            width: clamp(44px, 10vw, 48px);
+            height: clamp(44px, 10vw, 48px);
+            border-radius: 16px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: clamp(1.2rem, 5vw, 1.3rem);
+            transition: all 0.3s ease;
+            box-shadow: 0 0 15px var(--accent-green-glow);
+        }
+
+        .refresh-btn:hover {
+            background: rgba(50, 173, 93, 0.25);
+            transform: rotate(30deg);
+        }
+
+        .refresh-btn.loading {
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        .balance-amount {
+            font-size: clamp(3rem, 12vw, 4.2rem);
+            font-weight: 900;
+            background: var(--gradient-green);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            margin: 15px 0;
+            text-shadow: 0 0 30px var(--accent-green-glow);
+            letter-spacing: -1px;
+            word-wrap: break-word;
+        }
+
+        .balance-subtext {
+            color: var(--text-muted);
+            margin-bottom: 24px;
+            font-size: clamp(0.9rem, 3.5vw, 1rem);
+        }
+
+        .withdraw-btn {
+            background: var(--gradient-green);
+            color: white;
+            border: none;
+            padding: clamp(14px, 4vw, 18px) clamp(24px, 8vw, 36px);
+            border-radius: 40px;
+            font-weight: 600;
+            cursor: pointer;
+            width: 100%;
+            max-width: 280px;
+            font-size: clamp(1rem, 4vw, 1.1rem);
+            letter-spacing: 0.5px;
+            transition: all 0.3s ease;
+            box-shadow: 0 8px 25px var(--accent-green-glow);
+            margin: 0 auto;
+        }
+
+        .withdraw-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 12px 30px rgba(50, 173, 93, 0.5);
+        }
+
+        .balance-info {
+            margin-top: 20px;
+            font-size: 0.85rem;
+            color: var(--text-muted);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: clamp(12px, 3vw, 18px);
+            margin-bottom: 32px;
+        }
+
+        .stat-card {
+            padding: clamp(20px, 5vw, 28px) clamp(16px, 4vw, 22px);
+            text-align: center;
+            transition: all 0.3s ease;
+            background: rgba(254, 254, 254, 0.05);
+            border-radius: 24px;
+            border: 1px solid var(--border-glass);
+        }
+
+        .stat-card:hover {
+            transform: translateY(-3px);
+        }
+
+        .stat-value {
+            font-size: clamp(2rem, 8vw, 2.4rem);
+            font-weight: 800;
+            color: var(--accent-green);
+            margin-bottom: 8px;
+            text-shadow: 0 0 20px var(--accent-green-glow);
+        }
+
+        .stat-label {
+            color: var(--text-muted);
+            font-size: clamp(0.85rem, 3.5vw, 0.95rem);
+            font-weight: 500;
+        }
+
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.9);
+            backdrop-filter: blur(15px) saturate(200%);
+            -webkit-backdrop-filter: blur(15px) saturate(200%);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 2000;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s ease;
+            padding: env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left);
+        }
+
+        .modal-overlay.active {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .modal-content {
+            background: rgba(254, 254, 254, 0.07);
+            backdrop-filter: blur(30px) saturate(180%);
+            -webkit-backdrop-filter: blur(30px) saturate(180%);
+            border-radius: 40px;
+            border: 1px solid var(--border-glass);
+            padding: clamp(24px, 6vw, 36px);
+            width: 90%;
+            max-width: 420px;
+            max-height: 90vh;
+            overflow-y: auto;
+            transform: translateY(20px) scale(0.98);
+            transition: transform 0.3s ease;
+            box-shadow: 0 25px 70px rgba(0, 0, 0, 0.5);
+            margin: auto;
+        }
+
+        .modal-overlay.active .modal-content {
+            transform: translateY(0) scale(1);
+        }
+
+        .modal-header {
+            margin-bottom: 24px;
+            text-align: center;
+        }
+
+        .modal-header h2 {
+            font-size: clamp(1.6rem, 6vw, 2rem);
+            font-weight: 800;
+            color: white;
+            margin-bottom: 10px;
+            letter-spacing: -0.3px;
+        }
+
+        .modal-header p {
+            color: var(--text-muted);
+            font-size: clamp(0.95rem, 4vw, 1.05rem);
+        }
+
+        .method-selection {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: clamp(8px, 2vw, 16px);
+            margin-bottom: 24px;
+        }
+
+        .method-option {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: clamp(12px, 4vw, 22px) clamp(8px, 3vw, 14px);
+            background: rgba(255, 255, 255, 0.03);
+            border: 2px solid var(--border-glass);
+            border-radius: 24px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-align: center;
+        }
+
+        .method-option:hover {
+            background: rgba(255, 255, 255, 0.05);
+            border-color: var(--accent-green);
+            transform: translateY(-2px);
+        }
+
+        .method-option.active {
+            background: rgba(50, 173, 93, 0.1);
+            border-color: var(--accent-green);
+            box-shadow: 0 0 20px var(--accent-green-glow);
+        }
+
+        .method-icon {
+            width: clamp(40px, 10vw, 60px);
+            height: clamp(40px, 10vw, 60px);
+            border-radius: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: clamp(1.5rem, 5vw, 2rem);
+            color: white;
+            margin-bottom: 10px;
+        }
+
+        .sbp-icon {
+            background: linear-gradient(135deg, #1E88E5, #0D47A1);
+        }
+
+        .stars-icon {
+            background: linear-gradient(135deg, #FF6B6B, #FF5252);
+        }
+
+        .crypto-icon {
+            background: linear-gradient(135deg, #FFD93D, #FFB800);
+        }
+
+        .method-name {
+            font-size: clamp(0.9rem, 3.5vw, 1rem);
+            font-weight: 700;
+            color: white;
+            margin-bottom: 4px;
+        }
+
+        .method-min {
+            color: var(--warning);
+            font-size: 0.8rem;
+            font-weight: 600;
+        }
+
+        .input-group {
+            margin-bottom: 20px;
+        }
+
+        .input-group label {
+            display: block;
+            color: var(--text-muted);
+            font-size: clamp(0.9rem, 3.5vw, 1rem);
+            margin-bottom: 8px;
+            font-weight: 500;
+        }
+
+        .input-group input, .input-group select {
+            width: 100%;
+            padding: clamp(12px, 3vw, 16px) clamp(14px, 4vw, 18px);
+            background: rgba(255, 255, 255, 0.05);
+            border: 2px solid var(--border-glass);
+            border-radius: 20px;
+            color: white;
+            font-size: clamp(0.95rem, 4vw, 1.05rem);
+            font-family: 'Inter', sans-serif;
+            transition: all 0.3s ease;
+        }
+
+        .input-group input:focus, .input-group select:focus {
+            outline: none;
+            border-color: var(--accent-green);
+            background: rgba(255, 255, 255, 0.08);
+        }
+
+        .phone-input {
+            position: relative;
+        }
+
+        .phone-prefix {
+            position: absolute;
+            left: 18px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--text-muted);
+            font-size: 1rem;
+            pointer-events: none;
+        }
+
+        .phone-input input {
+            padding-left: 42px;
+        }
+
+        .withdraw-submit {
+            background: var(--gradient-green);
+            color: white;
+            border: none;
+            padding: clamp(14px, 4vw, 18px);
+            border-radius: 40px;
+            font-weight: 600;
+            cursor: pointer;
+            width: 100%;
+            font-size: clamp(1rem, 4vw, 1.1rem);
+            transition: all 0.3s ease;
+            margin-top: 20px;
+            box-shadow: 0 8px 25px var(--accent-green-glow);
+        }
+
+        .withdraw-submit:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(50, 173, 93, 0.5);
+        }
+
+        .withdraw-submit:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+
+        .close-modal {
+            position: absolute;
+            top: max(16px, env(safe-area-inset-top));
+            right: max(16px, env(safe-area-inset-right));
+            background: none;
+            border: none;
+            color: var(--text-muted);
+            font-size: 1.5rem;
+            cursor: pointer;
+            width: 44px;
+            height: 44px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            transition: all 0.3s ease;
+            z-index: 10;
+        }
+
+        .close-modal:hover {
+            background: rgba(255, 255, 255, 0.05);
+            color: white;
+        }
+
+        .withdraw-step {
+            display: none;
+            animation: fadeIn 0.3s ease;
+        }
+
+        .withdraw-step.active {
+            display: block;
+        }
+
+        .step-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .step-back {
+            background: none;
+            border: none;
+            color: var(--text-muted);
+            font-size: 1.2rem;
+            cursor: pointer;
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            transition: all 0.3s ease;
+            margin-right: 12px;
+        }
+
+        .step-back:hover {
+            background: rgba(255, 255, 255, 0.05);
+            color: white;
+        }
+
+        .step-title {
+            flex: 1;
+            font-size: clamp(1.3rem, 5vw, 1.6rem);
+            font-weight: 800;
+            color: white;
+            letter-spacing: -0.2px;
+        }
+
+        .step-description {
+            color: var(--text-muted);
+            margin-bottom: 24px;
+            line-height: 1.5;
+            font-size: clamp(0.95rem, 4vw, 1.05rem);
+        }
+
+        .withdraw-info {
+            background: rgba(255, 255, 255, 0.03);
+            border-radius: 24px;
+            padding: 20px;
+            margin-bottom: 24px;
+        }
+
+        .withdraw-info-item {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 12px;
+            font-size: 1rem;
+        }
+
+        .withdraw-info-item:last-child {
+            margin-bottom: 0;
+        }
+
+        .withdraw-info-label {
+            color: var(--text-muted);
+        }
+
+        .withdraw-info-value {
+            color: white;
+            font-weight: 600;
+        }
+
+        .stars-conversion {
+            color: var(--warning);
+            font-size: 0.9rem;
+            text-align: center;
+            margin-top: 12px;
+            font-weight: 500;
+        }
+
+        .info-sections {
+            margin-bottom: 30px;
+        }
+
+        .info-section {
+            padding: clamp(20px, 5vw, 32px);
+            margin-bottom: 20px;
+            cursor: pointer;
+            background: rgba(254, 254, 254, 0.05);
+            border-radius: 24px;
+            border: 1px solid var(--border-glass);
+        }
+
+        .info-section h2 {
+            font-size: clamp(1.3rem, 5vw, 1.7rem);
+            margin-bottom: 16px;
+            color: white;
+            font-weight: 800;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 12px;
+        }
+
+        .info-section h2 i {
+            color: var(--accent-green);
+            transition: transform 0.3s ease;
+        }
+
+        .info-section:hover h2 i {
+            transform: translateX(5px);
+        }
+
+        .info-content {
+            color: var(--text-muted);
+            line-height: 1.6;
+            font-size: clamp(0.95rem, 3.5vw, 1.05rem);
+        }
+
+        .info-content p {
+            margin-bottom: 16px;
+        }
+
+        .highlight {
+            background: rgba(50, 173, 93, 0.1);
+            border-left: 4px solid var(--accent-green);
+            padding: 16px 20px;
+            border-radius: 12px;
+            margin: 16px 0;
+            color: var(--text-light);
+            font-weight: 500;
+        }
+
+        .faq-item {
+            padding: clamp(16px, 4vw, 26px);
+            margin-bottom: 12px;
+            cursor: pointer;
+            background: rgba(254, 254, 254, 0.05);
+            border-radius: 20px;
+            border: 1px solid var(--border-glass);
+        }
+
+        .faq-item:hover {
+            background: rgba(255, 255, 255, 0.03);
+        }
+
+        .faq-question {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-weight: 700;
+            color: white;
+            font-size: clamp(1rem, 4vw, 1.1rem);
+            gap: 12px;
+        }
+
+        .faq-question i {
+            transition: transform 0.3s ease;
+            color: var(--text-muted);
+        }
+
+        .faq-item.active .faq-question i {
+            transform: rotate(180deg);
+        }
+
+        .faq-answer {
+            max-height: 0;
+            overflow: hidden;
+            color: var(--text-muted);
+            line-height: 1.6;
+            transition: max-height 0.3s ease;
+            font-size: clamp(0.95rem, 3.5vw, 1.05rem);
+        }
+
+        .faq-item.active .faq-answer {
+            max-height: 300px;
+            margin-top: 16px;
+        }
+
+        .info-modal-content {
+            width: 90%;
+            max-width: 500px;
+            max-height: 80vh;
+            overflow-y: auto;
+        }
+
+        .info-modal-header {
+            text-align: center;
+            margin-bottom: 24px;
+            padding-bottom: 16px;
+            border-bottom: 1px solid var(--border-glass);
+        }
+
+        .info-modal-header h2 {
+            font-size: clamp(1.8rem, 6vw, 2.2rem);
+            font-weight: 800;
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+        }
+
+        .info-modal-body {
+            padding: 10px 0;
+        }
+
+        .instruction-list {
+            color: var(--text-muted);
+            line-height: 1.7;
+            padding-left: 20px;
+            font-size: clamp(0.95rem, 4vw, 1.05rem);
+        }
+
+        .instruction-list li {
+            margin-bottom: 12px;
+        }
+
+        .notification {
+            position: fixed;
+            top: calc(80px + env(safe-area-inset-top));
+            right: max(16px, env(safe-area-inset-right));
+            left: max(16px, env(safe-area-inset-left));
+            padding: 16px 24px;
+            background: rgba(22, 23, 43, 0.98);
+            border: 1px solid var(--border-glass);
+            border-radius: 30px;
+            color: white;
+            z-index: 2000;
+            transform: translateX(150%);
+            transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            box-shadow: 0 15px 45px rgba(0, 0, 0, 0.4);
+            max-width: 340px;
+            backdrop-filter: blur(25px) saturate(180%);
+            -webkit-backdrop-filter: blur(25px) saturate(180%);
+            margin: 0 auto;
+            text-align: center;
+        }
+
+        .notification.show {
+            transform: translateX(0);
+        }
+
+        .notification.success {
+            border-left: 4px solid var(--accent-green);
+        }
+
+        .notification.error {
+            border-left: 4px solid var(--danger);
+        }
+
+        .notification.warning {
+            border-left: 4px solid var(--warning);
+        }
+
+        .loader {
+            display: inline-block;
+            width: 22px;
+            height: 22px;
+            border: 3px solid rgba(255, 255, 255, 0.1);
+            border-radius: 50%;
+            border-top-color: var(--accent-green);
+            animation: spin 1s ease-in-out infinite;
+        }
+
+        .fade-in {
+            animation: fadeIn 0.5s ease-out forwards;
+            opacity: 0;
+        }
+
+        .fade-in:nth-child(1) { animation-delay: 0.1s; }
+        .fade-in:nth-child(2) { animation-delay: 0.2s; }
+        .fade-in:nth-child(3) { animation-delay: 0.3s; }
+
+        .exit-mini-app {
+            cursor: pointer;
+        }
+
+        /* Адаптивные медиа-запросы */
+        @media (max-width: 768px) {
+            .logo { font-size: 2.8rem; }
+            .top-bar { height: calc(55px + env(safe-area-inset-top)); }
+            .logo-small { font-size: 1.6rem; }
+            .balance-mini { padding: 6px 14px; }
+            .balance-mini-value { font-size: 0.9rem; }
+            header { padding: 30px 20px; }
+            .profile-header { flex-direction: column; text-align: center; gap: 20px; padding: 24px; }
+            .avatar { width: 95px; height: 95px; font-size: 2.4rem; }
+            .profile-info { text-align: center; }
+            .profile-info p { justify-content: center; }
+            .balance-amount { font-size: 3.6rem; }
+            .tab-navigation { padding: 10px; border-radius: 20px; bottom: calc(16px + env(safe-area-inset-bottom)); }
+            .modal-content { padding: 28px; width: 95%; }
+            .method-selection { gap: 12px; }
+            .method-option { padding: 18px 10px; }
+            .method-icon { width: 52px; height: 52px; font-size: 1.8rem; }
+        }
+
+        @media (max-width: 600px) {
+            .tasks-grid { gap: 12px; }
+            .task-card { padding: 16px; }
+            .task-icon { width: 52px; height: 52px; font-size: 1.6rem; }
+            .task-title { font-size: 1.05rem; }
+            .task-desc { font-size: 0.9rem; }
+        }
+
+        @media (max-width: 480px) {
+            .task-footer {
+                flex-direction: column;
+                align-items: stretch;
+            }
+            
+            .task-reward {
+                width: 100%;
+                justify-content: center;
+            }
+            
+            .task-action {
+                width: 100%;
+                justify-content: center;
+            }
+            
+            .method-selection {
+                grid-template-columns: 1fr;
+            }
+            
+            .method-option {
+                flex-direction: row;
+                text-align: left;
+                padding: 16px;
+                align-items: center;
+                gap: 16px;
+            }
+            
+            .method-icon {
+                margin-bottom: 0;
+            }
+        }
+
+        @media (max-width: 360px) {
+            .task-row {
+                flex-direction: column;
+                align-items: center;
+                text-align: center;
+            }
+            
+            .task-content {
+                text-align: center;
+            }
+        }
+
+        @supports (padding: max(0px)) {
+            .container {
+                padding-left: max(16px, env(safe-area-inset-left));
+                padding-right: max(16px, env(safe-area-inset-right));
+            }
+            
+            .tab-navigation {
+                left: max(16px, env(safe-area-inset-left));
+                right: max(16px, env(safe-area-inset-right));
+                width: auto;
+                transform: none;
+                max-width: none;
+            }
+        }
+        /* Speed up animations/transitions globally for snappier UI */
+        * {
+            transition-duration: 120ms !important;
+            transition-delay: 0s !important;
+            animation-duration: 160ms !important;
+            animation-delay: 0s !important;
+            will-change: auto !important;
+        }
+    </style>
+</head>
+<body>
+    <div class="top-bar" id="top-bar">
+        <div class="top-bar-content">
+            <div class="logo-small">
+                <div class="topbar-user" id="topbar-user">
+                    <div class="topbar-avatar" id="topbar-avatar"><img id="topbar-avatar-img" src="" alt="" style="display:none;"></div>
+                    <div class="topbar-name" id="topbar-name">Пользователь</div>
+                </div>
+            </div>
+            <div class="balance-mini">
+                <i class="fas fa-gem"></i>
+                <span class="balance-mini-value" id="mini-balance">0</span>
+            </div>
+        </div>
+    </div>
+
+    <div class="container" id="main-container">
+        <header>
+            <h1 class="logo"><img src="https://raw.githubusercontent.com/exyyl/-taskgreot/main/taskgreot.JPG" alt="Task Greot" style="max-width: 320px; width: 100%; height: auto; object-fit: contain; display:block; margin: 0 auto;"></h1>
+            <p class="tagline">Выполняйте задания. Получайте баллы. Меняйте на деньги или криптовалюту.</p>
+        </header>
+
+        <div id="tasks-tab" class="tab-content active">
+            <h2 style="margin-bottom: 12px; font-size: clamp(1.4rem, 5vw, 1.8rem); font-weight: 800; color: white; letter-spacing: -0.3px;">Доступные задания</h2>
+
+            <div class="sub-tab-navigation">
+                <button class="sub-tab active" data-sub="ordinary">Обычные</button>
+                <button class="sub-tab" data-sub="special">Особые</button>
+            </div>
+
+            <div id="ordinary-tasks" class="tasks-section">
+                <div class="tasks-grid">
+                    <div class="task-card glass-card fade-in" data-task-id="tiktok_comments" data-task-reward="500">
+                        <div class="task-row">
+                            <div class="task-icon"><i class="fab fa-tiktok"></i></div>
+                            <div class="task-content">
+                                <h3 class="task-title">Комментарии в TikTok</h3>
+                                <p class="task-desc">Напишите 100 комментариев под тематическими видео в TikTok. Мы предоставим готовые шаблоны и темы. Просто копируйте и вставляйте!</p>
+                            </div>
+                        </div>
+                        <div class="task-footer">
+                            <div class="task-reward">
+                                <i class="fas fa-gem"></i> +500 баллов
+                            </div>
+                            <button class="task-action exit-mini-app">
+                                <i class="fas fa-play-circle"></i> Начать задание
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="task-card glass-card fade-in" data-task-id="yandex_reviews" data-task-reward="60">
+                        <div class="task-row">
+                            <div class="task-icon"><i class="fas fa-map-marker-alt"></i></div>
+                            <div class="task-content">
+                                <h3 class="task-title">Отзыв на Яндекс Картах</h3>
+                                <p class="task-desc">Оставьте отзыв в Яндекс Картах по нашему шаблону. Быстро, просто и безопасно. Задание выполняется за 2-3 минуты.</p>
+                            </div>
+                        </div>
+                        <div class="task-footer">
+                            <div class="task-reward">
+                                <i class="fas fa-gem"></i> +60 баллов
+                            </div>
+                            <button class="task-action exit-mini-app">
+                                <i class="fas fa-play-circle"></i> Начать задание
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="task-card glass-card fade-in" data-task-id="gmail_create" data-task-reward="10">
+                        <div class="task-row">
+                            <div class="task-icon"><i class="fas fa-envelope"></i></div>
+                            <div class="task-content">
+                                <h3 class="task-title">Создание почты Gmail</h3>
+                                <p class="task-desc">Создайте почтовый ящик Gmail по нашим данным. Максимально простое задание на 1-2 минуты. Никаких сложных действий.</p>
+                            </div>
+                        </div>
+                        <div class="task-footer">
+                            <div class="task-reward">
+                                <i class="fas fa-gem"></i> +10 баллов
+                            </div>
+                            <button class="task-action exit-mini-app">
+                                <i class="fas fa-play-circle"></i> Начать задание
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div id="special-tasks" class="tasks-section" style="display:none;">
+                <div class="tasks-grid">
+                    <div class="task-card glass-card fade-in" data-task-id="special_verification" data-task-reward="60">
+                        <div class="task-row">
+                            <div class="task-icon"><i class="fas fa-user-shield"></i></div>
+                            <div class="task-content">
+                                <h3 class="task-title">Верификация и опрос партнёра</h3>
+                                <p class="task-desc">Пройдите верификацию в боте партнёра и пройдите один опрос. Оплата: <b>60 баллов</b> + <b>80 ₽</b> от партнёра.</p>
+                            </div>
+                        </div>
+                        <div class="task-footer">
+                            <div class="task-reward">
+                                <i class="fas fa-gem"></i> +60 баллов
+                                <span style="margin-left:10px; color:var(--text-muted); font-weight:700;">+80 ₽</span>
+                            </div>
+                            <button class="task-action exit-mini-app" data-task-id="special_verification" data-task-title="Верификация и опрос партнёра" data-task-reward="60">
+                                <i class="fas fa-play-circle"></i> Начать задание
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="glass-card" style="padding:24px; text-align:center; color:var(--text-muted); margin-top:18px;">
+                    <h3 style="color:white; margin-bottom:8px; font-size:clamp(1.1rem, 4vw, 1.3rem);">Другие особые задания</h3>
+                    <p style="font-size:clamp(0.9rem, 3.5vw, 1rem);">Здесь появятся дополнительные особые задания в будущем.</p>
+                </div>
+            </div>
+        </div>
+
+        <div id="info-tab" class="tab-content">
+            <div class="info-sections">
+                <div class="info-section glass-card fade-in" onclick="openInfoModal('about')">
+                    <h2>
+                        <span><i class="fas fa-info-circle"></i> О проекте</span>
+                        <i class="fas fa-arrow-right"></i>
+                    </h2>
+                    <div class="info-content">
+                        <p><strong>Task Greot</strong> — это современная платформа для выполнения микрозаданий...</p>
+                        <div class="highlight">
+                            💎 1 балл = 1 рубль. Выводите на карту, в Stars или криптовалюту.
+                        </div>
+                        <p style="color: var(--accent-green); margin-top: 10px; font-weight: 500;">
+                            <i class="fas fa-hand-point-up"></i> Нажмите для подробной информации
+                        </p>
+                    </div>
+                </div>
+
+                <div class="info-section glass-card fade-in" onclick="openInfoModal('points')">
+                    <h2>
+                        <span><i class="fas fa-coins"></i> Что такое баллы?</span>
+                        <i class="fas fa-arrow-right"></i>
+                    </h2>
+                    <div class="info-content">
+                        <p><strong>Баллы</strong> — это внутренняя валюта платформы...</p>
+                        <p style="color: var(--accent-green); margin-top: 10px; font-weight: 500;">
+                            <i class="fas fa-hand-point-up"></i> Нажмите для подробной информации
+                        </p>
+                    </div>
+                </div>
+
+                <div class="info-section glass-card fade-in" onclick="openInfoModal('scam')">
+                    <h2>
+                        <span><i class="fas fa-shield-alt"></i> Не скам ли это?</span>
+                        <i class="fas fa-arrow-right"></i>
+                    </h2>
+                    <div class="info-content">
+                        <p><strong>Нет, Task Greot — не скам.</strong> Мы работаем легально и прозрачно...</p>
+                        <p style="color: var(--accent-green); margin-top: 10px; font-weight: 500;">
+                            <i class="fas fa-hand-point-up"></i> Нажмите для подробной информации
+                        </p>
+                    </div>
+                </div>
+
+                <div class="info-section glass-card fade-in" onclick="openInfoModal('benefit')">
+                    <h2>
+                        <span><i class="fas fa-chart-line"></i> Какая наша выгода?</span>
+                        <i class="fas fa-arrow-right"></i>
+                    </h2>
+                    <div class="info-content">
+                        <p>Наша бизнес-модель основана на взаимовыгодном сотрудничестве...</p>
+                        <p style="color: var(--accent-green); margin-top: 10px; font-weight: 500;">
+                            <i class="fas fa-hand-point-up"></i> Нажмите для подробной информации
+                        </p>
+                    </div>
+                </div>
+
+                <div class="info-section glass-card fade-in">
+                    <h2><i class="fas fa-question-circle"></i> Частые вопросы</h2>
+                    <div class="faq-item glass-card" onclick="toggleFaq(this)">
+                        <div class="faq-question">
+                            <span>Как быстро начисляются баллы?</span>
+                            <i class="fas fa-chevron-down"></i>
+                        </div>
+                        <div class="faq-answer">Баллы начисляются сразу после проверки задания модератором. Обычно это занимает от 1 до 3 дней.</div>
+                    </div>
+                    <div class="faq-item glass-card" onclick="toggleFaq(this)">
+                        <div class="faq-question">
+                            <span>Какой минимальный вывод?</span>
+                            <i class="fas fa-chevron-down"></i>
+                        </div>
+                        <div class="faq-answer">Минимальная сумма вывода: 50 баллов для СБП, 75 баллов для Stars, 100 баллов для криптовалюты.</div>
+                    </div>
+                    <div class="faq-item glass-card" onclick="toggleFaq(this)">
+                        <div class="faq-question">
+                            <span>Есть ли комиссия при выводе?</span>
+                            <i class="fas fa-chevron-down"></i>
+                        </div>
+                        <div class="faq-answer">Нет, мы не берем комиссию за вывод. Вы получаете ровно ту сумму, которая указана в вашем балансе.</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div id="profile-tab" class="tab-content">
+            <div class="profile-header glass-card fade-in">
+                <div class="avatar">
+                    <i id="avatar-icon" class="fas fa-user"></i>
+                    <img id="avatar-img" style="display: none;" alt="Аватар">
+                </div>
+                <div class="profile-info">
+                    <h2 id="user-name">Загрузка...</h2>
+                    <p id="user-username"><i class="fas fa-at"></i> @username</p>
+                    <p id="user-join-date"><i class="fas fa-calendar-alt"></i> Участник с ...</p>
+                    <span class="level-badge">
+                        <i class="fas fa-shield-alt"></i>
+                        <span id="user-level">Обычный</span>
+                    </span>
+                </div>
+            </div>
+
+            <div class="balance-card glass-card fade-in">
+                <div class="balance-header">
+                    <div class="balance-label">
+                        <i class="fas fa-wallet"></i>
+                        <span>Ваш баланс</span>
+                    </div>
+                    <button class="refresh-btn" id="refresh-balance" title="Обновить баланс">
+                        <i class="fas fa-sync-alt"></i>
+                    </button>
+                </div>
+                <div class="balance-amount" id="balance-value">0</div>
+                <div class="balance-subtext">
+                    Эквивалент: <span id="balance-rub">0</span> рублей
+                </div>
+                <button class="withdraw-btn exit-mini-app" id="withdraw-btn">
+                    <i class="fas fa-exchange-alt"></i> Вывести средства
+                </button>
+                <div class="balance-info">
+                    <i class="fas fa-info-circle"></i> Нажмите кнопку "Обновить" для актуального баланса
+                </div>
+            </div>
+
+            <h2 style="margin-bottom: 24px; font-size: clamp(1.4rem, 5vw, 1.8rem); font-weight: 800; color: white; letter-spacing: -0.3px;">Ваша статистика</h2>
+            <div class="stats-grid">
+                <div class="stat-card glass-card fade-in">
+                    <div class="stat-value" id="stat-tasks">0</div>
+                    <div class="stat-label">Заданий взятых в работу</div>
+                </div>
+                <div class="stat-card glass-card fade-in">
+                    <div class="stat-value" id="stat-streak">0</div>
+                    <div class="stat-label">Дней активности подряд</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Модальное окно вывода средств -->
+    <div class="modal-overlay" id="withdraw-modal">
+        <div class="modal-content">
+            <button class="close-modal" onclick="closeWithdrawModal()">
+                <i class="fas fa-times"></i>
+            </button>
+            
+            <div class="withdraw-step active" id="step-method">
+                <div class="modal-header">
+                    <h2>Вывод средств</h2>
+                    <p>Выберите удобный способ вывода</p>
+                </div>
+
+                <div class="method-selection">
+                    <div class="method-option" data-method="sbp" data-min="50">
+                        <div class="method-icon sbp-icon">
+                            <i class="fas fa-university"></i>
+                        </div>
+                        <div class="method-name">СБП</div>
+                        <div class="method-min">мин. 50</div>
+                    </div>
+
+                    <div class="method-option" data-method="stars" data-min="75">
+                        <div class="method-icon stars-icon">
+                            <i class="fas fa-star"></i>
+                        </div>
+                        <div class="method-name">Stars</div>
+                        <div class="method-min">мин. 75</div>
+                    </div>
+
+                    <div class="method-option" data-method="crypto" data-min="100">
+                        <div class="method-icon crypto-icon">
+                            <i class="fab fa-bitcoin"></i>
+                        </div>
+                        <div class="method-name">Крипта</div>
+                        <div class="method-min">мин. 100</div>
+                    </div>
+                </div>
+
+                <button class="withdraw-submit" id="next-to-details" disabled>
+                    Далее
+                </button>
+            </div>
+
+            <div class="withdraw-step" id="step-details">
+                <div class="step-header">
+                    <button class="step-back" onclick="goToStep('method')">
+                        <i class="fas fa-arrow-left"></i>
+                    </button>
+                    <div class="step-title" id="step-title">Ввод данных</div>
+                </div>
+                
+                <div class="step-description" id="step-description">
+                    Укажите данные для вывода средств
+                </div>
+
+                <div id="sbp-form" style="display: none;">
+                    <div class="input-group phone-input">
+                        <label for="phone-number">Номер телефона</label>
+                        <span class="phone-prefix">+7</span>
+                        <input type="tel" id="phone-number" placeholder="900 123 45 67" maxlength="10">
+                    </div>
+                    <div class="input-group">
+                        <label for="bank-name">Название банка</label>
+                        <input type="text" id="bank-name" placeholder="Например: Сбербанк, Тинькофф">
+                    </div>
+                </div>
+
+                <div id="stars-form" style="display: none;">
+                    <div class="input-group">
+                        <label for="stars-username">Username в Stars</label>
+                        <input type="text" id="stars-username" placeholder="Ваш username в Stars">
+                    </div>
+                    
+                    <div class="withdraw-info" id="stars-info" style="display: none;">
+                        <div class="withdraw-info-item">
+                            <span class="withdraw-info-label">Ваш баланс:</span>
+                            <span class="withdraw-info-value" id="stars-balance">0</span>
+                        </div>
+                        <div class="withdraw-info-item">
+                            <span class="withdraw-info-label">Будет переведно:</span>
+                            <span class="withdraw-info-value" id="stars-amount">0</span>
+                        </div>
+                        <div class="stars-conversion">
+                            1,5 балла = 1 звезда
+                        </div>
+                    </div>
+                </div>
+
+                <div id="crypto-form" style="display: none;">
+                    <div class="input-group">
+                        <label for="crypto-currency">Криптовалюта</label>
+                        <select id="crypto-currency" class="input-group input">
+                            <option value="">Выберите криптовалюту</option>
+                            <option value="USDT">USDT (Tether)</option>
+                        </select>
+                    </div>
+                    <div class="input-group">
+                        <label for="crypto-network">Сеть</label>
+                        <select id="crypto-network" class="input-group input">
+                            <option value="">Выберите сеть</option>
+                            <option value="TON">TON (The Open Network)</option>
+                        </select>
+                    </div>
+                    <div class="input-group">
+                        <label for="crypto-wallet">Адрес кошелька TON</label>
+                        <input type="text" id="crypto-wallet" placeholder="Введите адрес кошелька TON">
+                    </div>
+                    <div class="withdraw-info" style="margin-top: 20px;">
+                        <div class="withdraw-info-item">
+                            <span class="withdraw-info-label">Курс обмена:</span>
+                            <span class="withdraw-info-value">1 балл = 0.013 USDT</span>
+                        </div>
+                        <div class="withdraw-info-item">
+                            <span class="withdraw-info-label">Будет переведно:</span>
+                            <span class="withdraw-info-value" id="crypto-amount">0 USDT</span>
+                        </div>
+                    </div>
+                </div>
+
+                <button class="withdraw-submit" id="next-to-confirm">
+                    Далее
+                </button>
+            </div>
+
+            <div class="withdraw-step" id="step-confirm">
+                <div class="step-header">
+                    <button class="step-back" onclick="goToStep('details')">
+                        <i class="fas fa-arrow-left"></i>
+                    </button>
+                    <div class="step-title">Подтверждение</div>
+                </div>
+                
+                <div class="step-description">
+                    Проверьте правильность введенных данных
+                </div>
+
+                <div class="withdraw-info">
+                    <div class="withdraw-info-item">
+                        <span class="withdraw-info-label">Метод вывода:</span>
+                        <span class="withdraw-info-value" id="confirm-method">-</span>
+                    </div>
+                    <div class="withdraw-info-item">
+                        <span class="withdraw-info-label">Сумма:</span>
+                        <span class="withdraw-info-value" id="confirm-amount">-</span>
+                    </div>
+                    <div id="confirm-details"></div>
+                </div>
+
+                <div class="step-description" style="font-size: 0.95rem; color: var(--text-muted); margin-top: 24px;">
+                    <i class="fas fa-info-circle"></i> Заявка будет обработана в течение 24 часов. После отправки вы получите уведомление в Telegram.
+                </div>
+
+                <button class="withdraw-submit exit-mini-app" id="submit-withdraw">
+                    <i class="fas fa-paper-plane"></i> Подтвердить вывод
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Модальное окно инструкции по заданию -->
+    <div class="modal-overlay" id="task-instruction-modal" style="display:none;">
+        <div class="modal-content">
+            <button class="close-modal" onclick="closeTaskInstructionModal()">
+                <i class="fas fa-times"></i>
+            </button>
+            <div class="modal-header">
+                <h2 id="task-modal-title">Инструкция по выполнению</h2>
+                <p id="task-modal-subtitle" class="step-description"></p>
+            </div>
+            <div class="info-modal-body">
+                <ol class="instruction-list">
+                    <li>Прочитать полную инструкцию задания.</li>
+                    <li>Написать в чате бота "Подтверждаю" или аналогичное сообщение.</li>
+                    <li>После выполнения отправить скриншоты как доказательство выполнения.</li>
+                </ol>
+            </div>
+            <button id="confirm-task-btn" class="withdraw-submit">НАЧАТЬ</button>
+        </div>
+    </div>
+
+    <!-- Модальные окна информации -->
+    <div class="modal-overlay" id="info-modal-about">
+        <div class="modal-content info-modal-content">
+            <button class="close-modal" onclick="closeInfoModal('about')">
+                <i class="fas fa-times"></i>
+            </button>
+            
+            <div class="info-modal-header">
+                <h2><i class="fas fa-info-circle"></i> О проекте</h2>
+                <p>Вся информация о платформе Task Greot</p>
+            </div>
+            
+            <div class="info-modal-body">
+                <div class="info-content">
+                    <p><strong>Task Greot</strong> — это современная платформа для выполнения микрозаданий, позволяющая монетизировать ваши навыки и свободное время.</p>
+                    
+                    <p>Мы создаем экосистему, где каждый может найти задания по душе, развиваться и зарабатывать реальные деньги или криптовалюту.</p>
+                    
+                    <div class="highlight">
+                        💎 <strong>1 балл = 1 рубль.</strong> Выводите на карту, в Stars или криптовалюту.
+                    </div>
+                    
+                    <h3 style="color: white; margin: 25px 0 15px; font-size: 1.3rem;">Наша миссия</h3>
+                    
+                    <ul class="info-list">
+                        <li>📋 Предоставить доступный способ заработка для всех</li>
+                        <li>⚡ Создать честную и прозрачную платформу</li>
+                        <li>🚀 Развивать краудсорсинговые технологии</li>
+                        <li>🤝 Помогать бизнесам решать задачи через краудсорсинг</li>
+                    </ul>
+                    
+                    <h3 style="color: white; margin: 25px 0 15px; font-size: 1.3rem;">Преимущества</h3>
+                    
+                    <ul class="info-list">
+                        <li>⚡ Быстрые выплаты</li>
+                        <li>🔒 Безопасность данных</li>
+                        <li>🕹️ Удобный интерфейс</li>
+                        <li>👥 Активное сообщество</li>
+                        <li>💬 Поддержка 24/7</li>
+                    </ul>
+                    
+                    <p style="margin-top: 25px;">Присоединяйтесь к Task Greot!</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal-overlay" id="info-modal-points">
+        <div class="modal-content info-modal-content">
+            <button class="close-modal" onclick="closeInfoModal('points')">
+                <i class="fas fa-times"></i>
+            </button>
+            
+            <div class="info-modal-header">
+                <h2><i class="fas fa-coins"></i> Что такое баллы?</h2>
+                <p>Вся информация о внутренней валюте платформы</p>
+            </div>
+            
+            <div class="info-modal-body">
+                <div class="info-content">
+                    <p><strong>Баллы</strong> — это внутренняя валюта платформы, которую вы зарабатываете за выполнение заданий.</p>
+                    
+                    <div class="highlight">
+                        📋 <strong>1 балл = 1 российский рубль</strong>
+                    </div>
+                    
+                    <h3 style="color: white; margin: 25px 0 15px; font-size: 1.3rem;">Как работают баллы?</h3>
+                    
+                    <ul class="info-list">
+                        <li>💰 <strong>Заработок:</strong> Выполняйте задания → получайте баллы</li>
+                        <li>⚡ <strong>Начисление:</strong> Мгновенно после проверки задания</li>
+                        <li>🛡️ <strong>Хранение:</strong> Безопасное хранение на вашем счете</li>
+                        <li>💸 <strong>Вывод:</strong> Меняйте на реальные деньги в любой момент</li>
+                    </ul>
+                    
+                    <h3 style="color: white; margin: 25px 0 15px; font-size: 1.3rem;">Способы вывода</h3>
+                    
+                    <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 15px; margin: 20px 0;">
+                        <div style="background: rgba(30, 136, 229, 0.1); padding: 20px; border-radius: 20px; text-align: center;">
+                            <div style="font-size: 2rem; color: #1E88E5; margin-bottom: 10px;">
+                                <i class="fas fa-university"></i>
+                            </div>
+                            <div style="font-weight: 700; color: white;">СБП</div>
+                            <div style="font-size: 0.9rem; color: var(--text-muted); margin-top: 5px;">от 50 баллов</div>
+                        </div>
+                        
+                        <div style="background: rgba(255, 107, 107, 0.1); padding: 20px; border-radius: 20px; text-align: center;">
+                            <div style="font-size: 2rem; color: #FF6B6B; margin-bottom: 10px;">
+                                <i class="fas fa-star"></i>
+                            </div>
+                            <div style="font-weight: 700; color: white;">Stars</div>
+                            <div style="font-size: 0.9rem; color: var(--text-muted); margin-top: 5px;">от 75 баллов</div>
+                        </div>
+                        
+                        <div style="background: rgba(255, 217, 61, 0.1); padding: 20px; border-radius: 20px; text-align: center;">
+                            <div style="font-size: 2rem; color: #FFD93D; margin-bottom: 10px;">
+                                <i class="fab fa-bitcoin"></i>
+                            </div>
+                            <div style="font-weight: 700; color: white;">Крипта</div>
+                            <div style="font-size: 0.9rem; color: var(--text-muted); margin-top: 5px;">от 100 баллов</div>
+                        </div>
+                    </div>
+                    
+                    <h3 style="color: white; margin: 25px 0 15px; font-size: 1.3rem;">Важная информация</h3>
+                    
+                    <ul class="info-list">
+                        <li>💰 <strong>Без комиссий:</strong> Вы получаете 100% от суммы</li>
+                        <li>⏰ <strong>Быстрые выплаты:</strong> В течение 24 часов</li>
+                        <li>🛡️ <strong>Безопасность:</strong> Защита от мошенничества</li>
+                    </ul>
+                    
+                    <p style="margin-top: 25px; color: var(--accent-green); font-weight: 500;">
+                        <i class="fas fa-lightbulb"></i> Совет: Накопливайте баллы для более крупных выводов!
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal-overlay" id="info-modal-scam">
+        <div class="modal-content info-modal-content">
+            <button class="close-modal" onclick="closeInfoModal('scam')">
+                <i class="fas fa-times"></i>
+            </button>
+            
+            <div class="info-modal-header">
+                <h2><i class="fas fa-shield-alt"></i> Не скам ли это?</h2>
+                <p>Прозрачность и доказательства нашей честности</p>
+            </div>
+            
+            <div class="info-modal-body">
+                <div class="info-content">
+                    <p><strong>Нет, Task Greot — не скам.</strong> Мы работаем легально и прозрачно.</p>
+                    
+                    <h3 style="color: white; margin: 25px 0 15px; font-size: 1.3rem;">Доказательства честности</h3>
+                    
+                    <ul class="info-list">
+                        <li>🔢 <strong>Открытая статистика:</strong> Все выплаты публикуются в нашем Telegram-канале</li>
+                        <li>👤 <strong>Реальные отзывы:</strong> Отзывы от реальных пользователей с подтверждением</li>
+                        <li>💬 <strong>Поддержка 24/7:</strong> Живая техподдержка в Telegram всегда на связи</li>
+                        <li>🔒 <strong>Гарантии:</strong> Ваши средства защищены резервным фондом</li>
+                        <li>📄 <strong>Прозрачные условия:</strong> Все правила и условия публично доступны</li>
+                    </ul>
+                    
+                    <h3 style="color: white; margin: 25px 0 15px; font-size: 1.3rem;">Как мы работаем?</h3>
+                    
+                    <ul class="info-list">
+                        <li>1. Выполняете задание по инструкции</li>
+                        <li>2. Отправляете отчет через бота</li>
+                        <li>3. Модератор проверяет выполнение</li>
+                        <li>4. Получаете баллы на счет</li>
+                        <li>5. Выводите в удобном формате</li>
+                    </ul>
+                    
+                    <h3 style="color: white; margin: 25px 0 15px; font-size: 1.3rem;">Наша репутация</h3>
+                    
+                    <p>Мы заинтересованы в долгосрочном сотрудничестве и развитии сообщества. Наша репутация — наш главный актив, поэтому мы:</p>
+                    
+                    <ul class="info-list">
+                        <li>🌱 Растем вместе с сообществом</li>
+                        <li>⚖️ Ценим каждого пользователя</li>
+                        <li>🚀 Постоянно улучшаем платформу</li>
+                        <li>🤝 Внедряем новые технологии</li>
+                    </ul>
+                    
+                    <div style="background: rgba(16, 185, 129, 0.1); border-left: 4px solid var(--accent-green); padding: 20px; border-radius: 12px; margin: 25px 0;">
+                        <p style="color: var(--accent-green); font-weight: 600; margin-bottom: 10px;">
+                            <i class="fas fa-check-circle"></i> Попробуйте сами!
+                        </p>
+                        <p>Начните с самого простого задания на 10 баллов и убедитесь в нашей честности. Вам нечего терять, но есть что заработать!</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal-overlay" id="info-modal-benefit">
+        <div class="modal-content info-modal-content">
+            <button class="close-modal" onclick="closeInfoModal('benefit')">
+                <i class="fas fa-times"></i>
+            </button>
+            
+            <div class="info-modal-header">
+                <h2><i class="fas fa-chart-line"></i> Какая наша выгода?</h2>
+                <p>Прозрачная бизнес-модель платформы</p>
+            </div>
+            
+            <div class="info-modal-body">
+                <div class="info-content">
+                    <p>Наша бизнес-модель основана на взаимовыгодном сотрудничестве всех участников экосистемы:</p>
+                    
+                    <div class="highlight">
+                        ⚖️ <strong>Win-Win-Win</strong>: Пользователи зарабатывают, бизнесы получают услуги, мы развиваем платформу
+                    </div>
+                    
+                    <h3 style="color: white; margin: 25px 0 15px; font-size: 1.3rem;">Основные источники дохода</h3>
+                    
+                    <ul class="info-list">
+                        <li>📋 <strong>Продвижение бизнесов:</strong> Помогаем компаниям развивать их социальные медиа и онлайн-присутствие</li>
+                        <li>⚡ <strong>Партнерские программы:</strong> Работаем с компаниями над улучшением их репутации и отзывов</li>
+                        <li>🤝 <strong>Технологии краудсорсинга:</strong> Разрабатываем и лицензируем технологии для других платформ</li>
+                    </ul>
+                    
+                    <h3 style="color: white; margin: 25px 0 15px; font-size: 1.3rem;">Как это работает?</h3>
+                    
+                    <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 15px; margin: 20px 0;">
+                        <div style="background: rgba(139, 92, 246, 0.1); padding: 15px; border-radius: 20px; text-align: center;">
+                            <div style="font-size: 1.8rem; color: var(--accent-purple); margin-bottom: 10px;">
+                                👤
+                            </div>
+                            <div style="font-weight: 700; color: white; font-size: 0.9rem;">Пользователь</div>
+                            <div style="font-size: 0.8rem; color: var(--text-muted); margin-top: 5px;">Выполняет задания</div>
+                        </div>
+                        
+                        <div style="background: rgba(6, 214, 160, 0.1); padding: 15px; border-radius: 20px; text-align: center;">
+                            <div style="font-size: 1.8rem; color: var(--accent-green); margin-bottom: 10px;">
+                                🏢
+                            </div>
+                            <div style="font-weight: 700; color: white; font-size: 0.9rem;">Бизнес</div>
+                            <div style="font-size: 0.8rem; color: var(--text-muted); margin-top: 5px;">Получает услуги</div>
+                        </div>
+                        
+                        <div style="background: rgba(59, 130, 246, 0.1); padding: 15px; border-radius: 20px; text-align: center;">
+                            <div style="font-size: 1.8rem; color: var(--info); margin-bottom: 10px;">
+                                🕹️
+                            </div>
+                            <div style="font-weight: 700; color: white; font-size: 0.9rem;">Платформа</div>
+                            <div style="font-size: 0.8rem; color: var(--text-muted); margin-top: 5px;">Создает ценность</div>
+                        </div>
+                    </div>
+                    
+                    <h3 style="color: white; margin: 25px 0 15px; font-size: 1.3rem;">Наши преимущества</h3>
+                    
+                    <ul class="info-list">
+                        <li>🌱 <strong>Масштабируемость:</strong> Чем больше пользователей — тем больше возможностей</li>
+                        <li>👥 <strong>Сетевой эффект:</strong> Растущее сообщество привлекает больше бизнесов</li>
+                        <li>💎 <strong>Мультивалютность:</strong> Работа с разными способами выплат снижает риски</li>
+                        <li>🚀 <strong>Инновации:</strong> Постоянное развитие новых технологий</li>
+                    </ul>
+                    
+                    <div style="background: rgba(139, 92, 246, 0.1); border-left: 4px solid var(--accent-purple); padding: 20px; border-radius: 12px; margin: 25px 0;">
+                        <p style="color: var(--accent-purple); font-weight: 600; margin-bottom: 10px;">
+                            <i class="fas fa-rocket"></i> Наша цель
+                        </p>
+                        <p>Создать крупнейшую платформу микрозаданий в СНГ с честными условиями для всех участников. Мы верим, что технология краудсорсинга может изменить подход к работе и заработку.</p>
+                    </div>
+                    
+                    <p style="text-align: center; margin-top: 30px; color: var(--text-muted); font-style: italic;">
+                        "Мы не берем деньги с пользователей — мы создаем возможности для заработка"
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <nav class="tab-navigation">
+        <button class="tab-btn active" data-tab="tasks-tab">
+            <i class="fas fa-tasks"></i>
+            <span>Задания</span>
+        </button>
+        <button class="tab-btn" data-tab="info-tab">
+            <i class="fas fa-info-circle"></i>
+            <span>Информация</span>
+        </button>
+        <button class="tab-btn" data-tab="profile-tab">
+            <i class="fas fa-user"></i>
+            <span>Профиль</span>
+        </button>
+    </nav>
+
+    <div class="notification" id="notification">
+        <span id="notification-text">Сообщение</span>
+    </div>
+
+    <script>
+        const CONFIG = {
+            TOKEN_FILE_URL: 'token.txt',
+            GROUP_CHAT_ID: '-1003683579168',
+            TELEGRAM_BOT_TOKEN: '',
+            BD_FILE_URL: 'https://raw.githubusercontent.com/exyyl/-taskgreot/main/bd.txt',
+            POINT_TO_RUB: 1,
+            ADMIN_CHAT_ID: '7621683704'
+        };
+
+        let currentUser = null;
+        let botTokenLoaded = false;
+        let selectedWithdrawMethod = null;
+        let withdrawData = {};
+        let lastWithdrawTime = localStorage.getItem('last_withdraw_time');
+
+        // Удаляет предыдущее сообщение бота по chatId, если message_id сохранён в localStorage
+        async function deletePreviousBotMessage(chatId) {
+            try {
+                const token = CONFIG.TELEGRAM_BOT_TOKEN;
+                const messageIdKey = `bot_message_id_${chatId}`;
+                const messageId = localStorage.getItem(messageIdKey);
+                if (!token || !messageId) return;
+                console.log('[TG DEBUG] deletePreviousBotMessage:', { chatId, messageId });
+                const url = `https://api.telegram.org/bot${token}/deleteMessage`;
+                const payload = {
+                    chat_id: chatId,
+                    message_id: messageId
+                };
+                await fetch(url, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                });
+                // Не удаляем ключ из localStorage — новое сообщение перезапишет его
+            } catch (e) {
+                console.warn('Ошибка удаления предыдущего сообщения:', e);
+            }
+        }
+
+        let totalTasksTaken = parseInt(localStorage.getItem('total_tasks_taken')) || 0;
+
+        async function initTelegram() {
+            if (typeof Telegram !== 'undefined' && Telegram.WebApp) {
+                const webApp = Telegram.WebApp;
+                webApp.ready();
+                webApp.expand();
+                webApp.enableClosingConfirmation();
+                webApp.setBackgroundColor('#16172b');
+                
+                const user = webApp.initDataUnsafe?.user;
+                
+                if (user) {
+                    currentUser = {
+                        id: user.id,
+                        first_name: user.first_name || '',
+                        last_name: user.last_name || '',
+                        username: user.username || '',
+                        photo_url: user.photo_url || null,
+                        auth_date: user.auth_date || Math.floor(Date.now() / 1000)
+                    };
+                    return true;
+                }
+            }
+            
+            currentUser = {
+                id: Math.floor(Math.random() * 1000000000),
+                first_name: 'Гость',
+                last_name: '',
+                username: 'guest',
+                photo_url: null,
+                auth_date: Math.floor(Date.now() / 1000)
+            };
+            
+            return false;
+        }
+
+        async function loadBotToken() {
+            try {
+                const response = await fetch(CONFIG.TOKEN_FILE_URL, {
+                    method: 'GET',
+                    cache: 'no-cache',
+                    headers: { 'Accept': 'text/plain' }
+                });
+                
+                if (response.ok) {
+                    const token = (await response.text()).trim();
+                    if (token && token.length > 20 && token.includes(':')) {
+                        CONFIG.TELEGRAM_BOT_TOKEN = token;
+                        botTokenLoaded = true;
+                        return true;
+                    }
+                }
+                
+                return await tryAlternativeTokenPaths();
+                
+            } catch (error) {
+                return await tryAlternativeTokenPaths();
+            }
+        }
+
+        async function tryAlternativeTokenPaths() {
+            const alternativePaths = [
+                'https://raw.githubusercontent.com/exyyl/-taskgreot/main/token.txt',
+                './token.txt',
+                '/token.txt'
+            ];
+            
+            for (const path of alternativePaths) {
+                try {
+                    const response = await fetch(path, { cache: 'no-cache' });
+                    if (response.ok) {
+                        const token = (await response.text()).trim();
+                        if (token && token.length > 20 && token.includes(':')) {
+                            CONFIG.TELEGRAM_BOT_TOKEN = token;
+                            botTokenLoaded = true;
+                            return true;
+                        }
+                    }
+                } catch (error) {
+                    continue;
+                }
+            }
+            
+            return false;
+        }
+
+        async function sendTelegramMessage(chatId, message, parseMode = 'HTML', replyMarkup = null) {
+                        console.log('[TG DEBUG] TOKEN:', CONFIG.TELEGRAM_BOT_TOKEN);
+                        console.log('[TG DEBUG] chat_id:', chatId);
+                        console.log('[TG DEBUG] payload:', { chat_id: chatId, text: message, parse_mode: parseMode, reply_markup: replyMarkup });
+            if (!botTokenLoaded || !CONFIG.TELEGRAM_BOT_TOKEN) {
+                console.error('Токен бота не загружен или не валиден');
+                showNotification('Токен бота не загружен', 'error');
+                return false;
+            }
+            // delete previous bot message to this chat if exists
+            deletePreviousBotMessage(chatId);
+
+            const url = `https://api.telegram.org/bot${CONFIG.TELEGRAM_BOT_TOKEN}/sendMessage`;
+
+            const payload = {
+                chat_id: chatId,
+                text: message,
+                parse_mode: parseMode
+            };
+
+            if (replyMarkup) {
+                payload.reply_markup = replyMarkup;
+            }
+
+            try {
+                const response = await fetch(url, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(payload)
+                });
+
+                const result = await response.json();
+
+                if (result.ok) {
+                    // store message_id to delete later
+                    try { localStorage.setItem(`last_bot_message_${chatId}`, String(result.result.message_id)); } catch (e) {}
+                    console.log('Сообщение успешно отправлено в Telegram');
+                    return true;
+                } else {
+                    console.error('Ошибка Telegram API:', result.description);
+                    showNotification(`Ошибка Telegram: ${result.description}`, 'error');
+                    throw new Error(result.description || 'Ошибка Telegram API');
+                }
+            } catch (error) {
+                console.error('Ошибка сети при отправке в Telegram:', error);
+                showNotification('Ошибка сети при отправке уведомления: ' + (error?.message || error), 'error');
+                throw error;
+            }
+        }
+
+        async function sendTelegramPhotoWithUrl(chatId, photoUrl, caption, replyMarkup = null) {
+                        console.log('[TG DEBUG] TOKEN:', CONFIG.TELEGRAM_BOT_TOKEN);
+                        console.log('[TG DEBUG] chat_id:', chatId);
+                        console.log('[TG DEBUG] payload:', { chat_id: chatId, photo: photoUrl, caption, parse_mode: 'HTML', reply_markup: replyMarkup });
+            if (!botTokenLoaded || !CONFIG.TELEGRAM_BOT_TOKEN) {
+                console.error('Токен бота не загружен или не валиден');
+                return false;
+            }
+            // delete previous bot message to this chat if exists
+           deletePreviousBotMessage(chatId); 
+
+            const url = `https://api.telegram.org/bot${CONFIG.TELEGRAM_BOT_TOKEN}/sendPhoto`;
+
+            try {
+                const payload = {
+                    chat_id: chatId,
+                    photo: photoUrl,
+                    caption: caption,
+                    parse_mode: 'HTML'
+                };
+
+                if (replyMarkup) {
+                    payload.reply_markup = replyMarkup;
+                }
+
+                const response = await fetch(url, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(payload)
+                });
+
+                const result = await response.json();
+
+                if (result.ok) {
+                    try { localStorage.setItem(`last_bot_message_${chatId}`, String(result.result.message_id)); } catch (e) {}
+                    console.log('Фото по URL успешно отправлено');
+                    return true;
+                } else {
+                    console.error('Ошибка Telegram API при отправке фото по URL:', result.description);
+                    showNotification(`Ошибка Telegram: ${result.description}`, 'error');
+                    throw new Error(result.description || 'Ошибка Telegram API');
+                }
+            } catch (error) {
+                console.error('Ошибка при отправке фото по URL:', error);
+                showNotification('Ошибка сети при отправке фото: ' + (error?.message || error), 'error');
+                throw error;
+            }
+        }
+
+        async function sendTelegramPhotoWithUrlAlternative(chatId, photoUrl, caption, replyMarkup = null) {
+                        console.log('[TG DEBUG] TOKEN:', CONFIG.TELEGRAM_BOT_TOKEN);
+                        console.log('[TG DEBUG] chat_id:', chatId);
+                        console.log('[TG DEBUG] payload:', { chat_id: chatId, photo: photoUrl, caption, parse_mode: 'HTML', reply_markup: replyMarkup });
+            if (!botTokenLoaded || !CONFIG.TELEGRAM_BOT_TOKEN) {
+                console.error('Токен бота не загружен или не валиден');
+                return false;
+            }
+            // delete previous bot message to this chat if exists
+            deletePreviousBotMessage(chatId);
+
+            const url = `https://api.telegram.org/bot${CONFIG.TELEGRAM_BOT_TOKEN}/sendPhoto`;
+
+            try {
+                const imageResponse = await fetch(photoUrl);
+                const blob = await imageResponse.blob();
+
+                const formData = new FormData();
+                formData.append('chat_id', chatId);
+                formData.append('photo', blob, 'taskyes.png');
+                formData.append('caption', caption);
+                formData.append('parse_mode', 'HTML');
+
+                if (replyMarkup) {
+                    formData.append('reply_markup', JSON.stringify(replyMarkup));
+                }
+
+                const telegramResponse = await fetch(url, {
+                    method: 'POST',
+                    body: formData
+                });
+
+                const result = await telegramResponse.json();
+
+                if (result.ok) {
+                    try { localStorage.setItem(`last_bot_message_${chatId}`, String(result.result.message_id)); } catch (e) {}
+                    console.log('Фото успешно отправлено через FormData');
+                    return true;
+                } else {
+                    console.error('Ошибка Telegram API при отправке фото через FormData:', result.description);
+                    showNotification(`Ошибка Telegram: ${result.description}`, 'error');
+                    throw new Error(result.description || 'Ошибка Telegram API');
+                }
+            } catch (error) {
+                console.error('Ошибка при отправке фото через FormData:', error);
+                showNotification('Ошибка сети при отправке фото: ' + (error?.message || error), 'error');
+                throw error;
+            }
+        }
+
+        async function sendUserNotification(taskData) {
+            if (!currentUser || !currentUser.id) {
+                console.error('Нет данных пользователя для отправки уведомления');
+                return false;
+            }
+            
+            try {
+                const now = new Date();
+                const timeString = now.toLocaleTimeString('ru-RU', {
+                    hour: '2-digit',
+                    minute: '2-digit'
+                });
+                const dateString = now.toLocaleDateString('ru-RU');
+                
+                const message = `
+📋 <b>Задание принято в работу!</b>
+
+🕹️ <b>${taskData.title}</b>
+🏆 <b>Награда:</b> ${taskData.reward} баллов
+⏰ <b>Время:</b> ${timeString}
+📅 <b>Дата:</b> ${dateString}
+
+⬇️ <b>Нажмите кнопку внизу для инструкции</b>
+⬆️ <b>Нажмите кнопку вверху для отмены</b>`;
+
+                const replyMarkup = {
+                    inline_keyboard: [
+                        [
+                            {
+                                text: '📖 ИНСТРУКЦИЯ',
+                                url: 'https://teletype.in/@taskgreot/task-gmail'
+                            }
+                        ],
+                        [
+                            {
+                                text: '❌ ОТМЕНИТЬ ЗАДАНИЕ',
+                                url: 't.me/taskGreot_bot/otmenazadania'
+                            }
+                        ]
+                    ]
+                };
+                
+                const photoUrl = 'https://raw.githubusercontent.com/exyyl/-taskgreot/main/taskyes.PNG';
+                
+                const photoSent = await sendTelegramPhotoWithUrl(currentUser.id, photoUrl, message, replyMarkup);
+                
+                if (photoSent) {
+                    console.log('Фото успешно отправлено с GitHub');
+                    return true;
+                }
+                
+                const photoSentAlternative = await sendTelegramPhotoWithUrlAlternative(currentUser.id, photoUrl, message, replyMarkup);
+                
+                if (photoSentAlternative) {
+                    console.log('Фото успешно отправлено через альтернативный метод');
+                    return true;
+                }
+                
+                const textMessage = `
+📋 <b>Задание принято в работу!</b>
+
+🕹️ <b>${taskData.title}</b>
+🏆 <b>Награда:</b> ${taskData.reward} баллов
+⏰ <b>Время:</b> ${timeString}
+📅 <b>Дата:</b> ${dateString}
+
+⬇️ <b>Нажмите кнопку внизу для инструкции</b>
+⬆️ <b>Нажмите кнопку вверху для отмены</b>`;
+
+                return await sendTelegramMessage(currentUser.id, textMessage, 'HTML', replyMarkup);
+                
+            } catch (error) {
+                console.error('Ошибка формирования уведомления пользователю:', error);
+                return false;
+            }
+        }
+
+        async function sendGroupNotification(taskData) {
+            if (!CONFIG.GROUP_CHAT_ID) {
+                console.error('Не указан GROUP_CHAT_ID в конфигурации');
+                return false;
+            }
+            
+            try {
+                const now = new Date();
+                const timeString = now.toLocaleTimeString('ru-RU', {
+                    hour: '2-digit',
+                    minute: '2-digit',
+                    second: '2-digit'
+                });
+                const dateString = now.toLocaleDateString('ru-RU');
+                
+                const userLink = currentUser.username 
+                    ? `<a href="https://t.me/${currentUser.username}">${currentUser.first_name} ${currentUser.last_name}</a>`
+                    : `<b>${currentUser.first_name} ${currentUser.last_name}</b>`;
+                
+                const message = `
+🔥 <b>НОВЫЙ ЗАКАЗ ПРИНЯТ!</b>
+
+👤 <b>Пользователь:</b> ${userLink}
+${currentUser.username ? `
+👥 <b>Username:</b> @${currentUser.username}\n` : ''}
+🕹️ <b>Задание:</b> ${taskData.title}
+📋 <b>ID задания:</b> ${taskData.id}
+🏆 <b>Награда:</b> ${taskData.reward} баллов
+
+🆔 <b>User ID:</b> <code>${currentUser.id}</code>
+⏰ <b>Время:</b> ${timeString}
+📅 <b>Дата:</b> ${dateString}
+
+<i>Проверьте задание и отправьте инструкцию пользователю.</i>`;
+
+                const replyMarkup = {
+                    inline_keyboard: [
+                        [
+                            {
+                                text: '✉️ Отправить сообщение',
+                                url: `https://t.me/taskGreot_bot/sootoadmin?start=${currentUser.id}`
+                            }
+                        ],
+                        [
+                            {
+                                text: '📊 Статистика пользователя',
+                                callback_data: `user_stats_${currentUser.id}`
+                            }
+                        ]
+                    ]
+                };
+                
+                return await sendTelegramMessage(CONFIG.GROUP_CHAT_ID, message, 'HTML', replyMarkup);
+                
+            } catch (error) {
+                console.error('Ошибка формирования уведомления в группу:', error);
+                return false;
+            }
+        }
+
+        async function sendTaskNotifications(taskData) {
+            const userSent = await sendUserNotification(taskData);
+            const groupSent = await sendGroupNotification(taskData);
+            
+            return { userSent, groupSent };
+        }
+
+        async function sendWithdrawNotification(amount, method, details = '') {
+            try {
+                const now = new Date();
+                const timeString = now.toLocaleTimeString('ru-RU', {
+                    hour: '2-digit',
+                    minute: '2-digit'
+                });
+                const dateString = now.toLocaleDateString('ru-RU');
+                
+                const userMessage = `
+💰 <b>Заявка на вывод средств создана!</b>
+
+💎 <b>Сумма:</b> ${amount} баллов (${amount * CONFIG.POINT_TO_RUB} ₽)
+💳 <b>Метод:</b> ${getMethodName(method)}
+⏰ <b>Время:</b> ${timeString}
+📅 <b>Дата:</b> ${dateString}
+
+💰 <i>Заявка будет обработана в течение 24 часов.</i>
+
+💬 <b>Техподдержка:</b> @TaskGreotSupport`;
+
+                const userSent = await sendTelegramMessage(currentUser.id, userMessage, 'HTML');
+                
+                const userLink = currentUser.username 
+                    ? `<a href="https://t.me/${currentUser.username}">${currentUser.first_name} ${currentUser.last_name}</a>`
+                    : `<b>${currentUser.first_name} ${currentUser.last_name}</b>`;
+                
+                const groupMessage = `
+💰 <b>НОВАЯ ЗАЯВКА НА ВЫВОД!</b>
+
+👤 <b>Пользователь:</b> ${userLink}
+${currentUser.username ? `
+👥 <b>Username:</b> @${currentUser.username}\n` : ''}
+💎 <b>Сумма:</b> ${amount} баллов (${amount * CONFIG.POINT_TO_RUB} ₽)
+💳 <b>Метод:</b> ${getMethodName(method)}
+${details ? `
+📄 <b>Детали вывода:</b>\n${details}\n` : ''}
+🆔 <b>User ID:</b> <code>${currentUser.id}</code>
+⏰ <b>Время:</b> ${timeString}
+📅 <b>Дата:</b> ${dateString}
+
+<i>Обработайте заявку в течение 24 часов.</i>`;
+
+                const groupSent = await sendTelegramMessage(CONFIG.GROUP_CHAT_ID, groupMessage, 'HTML');
+                
+                if (CONFIG.ADMIN_CHAT_ID) {
+                    const adminMessage = `
+📨 <b>Новая заявка на вывод!</b>
+
+👤 <b>Пользователь:</b> ${userLink}
+${currentUser.username ? `
+👥 <b>Username:</b> @${currentUser.username}\n` : ''}
+💎 <b>Сумма:</b> ${amount} баллов (${amount * CONFIG.POINT_TO_RUB} ₽)
+💳 <b>Метод:</b> ${getMethodName(method)}
+${details ? `
+📄 <b>Детали вывода:</b>\n${details}\n` : ''}
+🆔 <b>User ID:</b> <code>${currentUser.id}</code>
+⏰ <b>Время:</b> ${timeString}
+📅 <b>Дата:</b> ${dateString}`;
+
+                    await sendTelegramMessage(CONFIG.ADMIN_CHAT_ID, adminMessage, 'HTML');
+                }
+                
+                return userSent && groupSent;
+                
+            } catch (error) {
+                console.error('Ошибка отправки уведомления о выводе:', error);
+                return false;
+            }
+        }
+
+        function getMethodName(method) {
+            switch(method) {
+                case 'sbp': return 'СБП (перевод по номеру телефона)';
+                case 'stars': return 'Stars.TH';
+                case 'crypto': return 'Криптовалюта (USDT в сети TON)';
+                default: return method;
+            }
+        }
+
+        function closeMiniApp() {
+            if (typeof Telegram !== 'undefined' && Telegram.WebApp) {
+                Telegram.WebApp.close();
+            } else {
+                showNotification('В реальном мини-приложении Telegram будет произведен выход', 'info');
+            }
+        }
+
+        function openInfoModal(type) {
+            const modal = document.getElementById(`info-modal-${type}`);
+            if (modal) {
+                modal.classList.add('active');
+                document.body.style.overflow = 'hidden';
+            }
+        }
+
+        function closeInfoModal(type) {
+            const modal = document.getElementById(`info-modal-${type}`);
+            if (modal) {
+                modal.classList.remove('active');
+                document.body.style.overflow = '';
+            }
+        }
+
+        document.querySelectorAll('.modal-overlay').forEach(modal => {
+            modal.addEventListener('click', (e) => {
+                if (e.target === modal) {
+                    modal.classList.remove('active');
+                    document.body.style.overflow = '';
+                }
+            });
+        });
+
+        function openWithdrawModal() {
+            if (lastWithdrawTime) {
+                const lastWithdraw = new Date(parseInt(lastWithdrawTime));
+                const now = new Date();
+                const diffHours = (now - lastWithdraw) / (1000 * 60 * 60);
+                
+                if (diffHours < 24) {
+                    const hoursLeft = Math.ceil(24 - diffHours);
+                    showNotification(`Вывод можно сделать через ${hoursLeft} часов`, 'warning');
+                    return;
+                }
+            }
+            
+            const modal = document.getElementById('withdraw-modal');
+            modal.classList.add('active');
+            resetWithdrawModal();
+            
+            const balance = parseInt(document.getElementById('balance-value').textContent.replace(/\D/g, '')) || 0;
+            if (balance === 0) {
+                showNotification('У вас недостаточно баллов для вывода', 'error');
+                closeWithdrawModal();
+            }
+        }
+
+        function closeWithdrawModal() {
+            const modal = document.getElementById('withdraw-modal');
+            modal.classList.remove('active');
+            resetWithdrawModal();
+        }
+
+        function resetWithdrawModal() {
+            document.querySelectorAll('.method-option').forEach(option => {
+                option.classList.remove('active');
+            });
+            
+            document.getElementById('sbp-form').style.display = 'none';
+            document.getElementById('stars-form').style.display = 'none';
+            document.getElementById('crypto-form').style.display = 'none';
+            document.getElementById('stars-info').style.display = 'none';
+            
+            document.getElementById('phone-number').value = '';
+            document.getElementById('bank-name').value = '';
+            document.getElementById('stars-username').value = '';
+            document.getElementById('crypto-currency').value = '';
+            document.getElementById('crypto-network').value = '';
+            document.getElementById('crypto-wallet').value = '';
+            
+            document.getElementById('next-to-details').disabled = true;
+            document.getElementById('next-to-confirm').disabled = true;
+            document.getElementById('submit-withdraw').disabled = false;
+            
+            goToStep('method');
+            selectedWithdrawMethod = null;
+            withdrawData = {};
+        }
+
+        function goToStep(step) {
+            document.querySelectorAll('.withdraw-step').forEach(el => {
+                el.classList.remove('active');
+            });
+            
+            document.getElementById(`step-${step}`).classList.add('active');
+            
+            if (step === 'details' && selectedWithdrawMethod) {
+                const titleEl = document.getElementById('step-title');
+                const descriptionEl = document.getElementById('step-description');
+                
+                switch(selectedWithdrawMethod) {
+                    case 'sbp':
+                        titleEl.textContent = 'Вывод через СБП';
+                        descriptionEl.textContent = 'Укажите номер телефона и банк для перевода';
+                        break;
+                    case 'stars':
+                        titleEl.textContent = 'Вывод в Stars';
+                        descriptionEl.textContent = 'Укажите ваш username в Stars';
+                        break;
+                    case 'crypto':
+                        titleEl.textContent = 'Вывод USDT (TON)';
+                        descriptionEl.textContent = 'Укажите адрес кошелька TON для перевода USDT';
+                        break;
+                }
+            }
+        }
+
+        function selectWithdrawMethod(method, minAmount) {
+            selectedWithdrawMethod = method;
+            withdrawData.method = method;
+            withdrawData.minAmount = minAmount;
+            
+            document.querySelectorAll('.method-option').forEach(option => {
+                option.classList.remove('active');
+                if (option.dataset.method === method) {
+                    option.classList.add('active');
+                }
+            });
+            
+            const balance = parseInt(document.getElementById('balance-value').textContent.replace(/\D/g, '')) || 0;
+            if (balance >= minAmount) {
+                document.getElementById('next-to-details').disabled = false;
+                withdrawData.amount = balance;
+            } else {
+                document.getElementById('next-to-details').disabled = true;
+                showNotification(`Минимальная сумма для вывода: ${minAmount} баллов`, 'error');
+            }
+        }
+
+        function nextToDetails() {
+            if (!selectedWithdrawMethod) return;
+            
+            document.getElementById('sbp-form').style.display = 'none';
+            document.getElementById('stars-form').style.display = 'none';
+            document.getElementById('crypto-form').style.display = 'none';
+            
+            switch(selectedWithdrawMethod) {
+                case 'sbp':
+                    document.getElementById('sbp-form').style.display = 'block';
+                    break;
+                case 'stars':
+                    document.getElementById('stars-form').style.display = 'block';
+                    updateStarsInfo();
+                    break;
+                case 'crypto':
+                    document.getElementById('crypto-form').style.display = 'block';
+                    updateCryptoInfo();
+                    break;
+            }
+            
+            goToStep('details');
+        }
+
+        function updateStarsInfo() {
+            const balance = parseInt(document.getElementById('balance-value').textContent.replace(/\D/g, '')) || 0;
+            const starsAmount = Math.floor(balance / 1.5);
+            
+            document.getElementById('stars-balance').textContent = balance + ' баллов';
+            document.getElementById('stars-amount').textContent = starsAmount + ' звезд';
+            document.getElementById('stars-info').style.display = 'block';
+        }
+
+        function updateCryptoInfo() {
+            const balance = parseInt(document.getElementById('balance-value').textContent.replace(/\D/g, '')) || 0;
+            const cryptoAmount = (balance * 0.013).toFixed(2);
+            document.getElementById('crypto-amount').textContent = cryptoAmount + ' USDT';
+        }
+
+        function validateDetails() {
+            if (!selectedWithdrawMethod) return false;
+            
+            let isValid = true;
+            let details = '';
+            
+            switch(selectedWithdrawMethod) {
+                case 'sbp':
+                    const phoneNumber = document.getElementById('phone-number').value.trim();
+                    const bankName = document.getElementById('bank-name').value.trim();
+                    
+                    if (!phoneNumber || phoneNumber.length < 10) {
+                        isValid = false;
+                        showNotification('Введите корректный номер телефона', 'error');
+                    } else if (!bankName) {
+                        isValid = false;
+                        showNotification('Введите название банка', 'error');
+                    } else {
+                        const formattedPhone = '+7' + phoneNumber.replace(/\s/g, '');
+                        details = `
+📱 Телефон: ${formattedPhone}\n
+🏦 Банк: ${bankName}`;
+                        withdrawData.phone = formattedPhone;
+                        withdrawData.bankName = bankName;
+                        withdrawData.details = details;
+                    }
+                    break;
+                    
+                case 'stars':
+                    const starsUsername = document.getElementById('stars-username').value.trim();
+                    
+                    if (!starsUsername) {
+                        isValid = false;
+                        showNotification('Введите username в Stars', 'error');
+                    } else {
+                        const balance = parseInt(document.getElementById('balance-value').textContent.replace(/\D/g, '')) || 0;
+                        const starsAmount = Math.floor(balance / 1.5);
+                        details = `
+👤 Username: ${starsUsername}\n
+⭐ Звезд к получению: ${starsAmount}`;
+                        withdrawData.username = starsUsername;
+                        withdrawData.starsAmount = starsAmount;
+                        withdrawData.details = details;
+                    }
+                    break;
+                    
+                case 'crypto':
+                    const cryptoCurrency = document.getElementById('crypto-currency').value;
+                    const cryptoNetwork = document.getElementById('crypto-network').value;
+                    const cryptoWallet = document.getElementById('crypto-wallet').value.trim();
+                    
+                    if (!cryptoCurrency) {
+                        isValid = false;
+                        showNotification('Выберите криптовалюту', 'error');
+                    } else if (!cryptoNetwork) {
+                        isValid = false;
+                        showNotification('Выберите сеть', 'error');
+                    } else if (!cryptoWallet) {
+                        isValid = false;
+                        showNotification('Введите адрес кошелька TON', 'error');
+                    } else {
+                        const balance = parseInt(document.getElementById('balance-value').textContent.replace(/\D/g, '')) || 0;
+                        const cryptoAmount = (balance * 0.013).toFixed(2);
+                        details = `
+💰 Криптовалюта: ${cryptoCurrency}\n
+🌐 Сеть: ${cryptoNetwork}\n
+🔑 Адрес: ${cryptoWallet}`;
+                        withdrawData.currency = cryptoCurrency;
+                        withdrawData.network = cryptoNetwork;
+                        withdrawData.wallet = cryptoWallet;
+                        withdrawData.cryptoAmount = cryptoAmount;
+                        withdrawData.details = details;
+                    }
+                    break;
+            }
+            
+            return isValid;
+        }
+
+        function nextToConfirm() {
+            if (validateDetails()) {
+                const balance = parseInt(document.getElementById('balance-value').textContent.replace(/\D/g, '')) || 0;
+                
+                document.getElementById('confirm-method').textContent = getMethodName(selectedWithdrawMethod);
+                document.getElementById('confirm-amount').textContent = balance + ' баллов';
+                
+                const confirmDetails = document.getElementById('confirm-details');
+                confirmDetails.innerHTML = '';
+                
+                switch(selectedWithdrawMethod) {
+                    case 'sbp':
+                        confirmDetails.innerHTML = `
+                            <div class="withdraw-info-item">
+                                <span class="withdraw-info-label">Телефон:</span>
+                                <span class="withdraw-info-value">${withdrawData.phone}</span>
+                            </div>
+                            <div class="withdraw-info-item">
+                                <span class="withdraw-info-label">Банк:</span>
+                                <span class="withdraw-info-value">${withdrawData.bankName}</span>
+                            </div>
+                        `;
+                        break;
+                    case 'stars':
+                        confirmDetails.innerHTML = `
+                            <div class="withdraw-info-item">
+                                <span class="withdraw-info-label">Username:</span>
+                                <span class="withdraw-info-value">${withdrawData.username}</span>
+                            </div>
+                            <div class="withdraw-info-item">
+                                <span class="withdraw-info-label">Получите:</span>
+                                <span class="withdraw-info-value">${withdrawData.starsAmount} звезд</span>
+                            </div>
+                        `;
+                        break;
+                    case 'crypto':
+                        confirmDetails.innerHTML = `
+                            <div class="withdraw-info-item">
+                                <span class="withdraw-info-label">Криптовалюта:</span>
+                                <span class="withdraw-info-value">${withdrawData.currency}</span>
+                            </div>
+                            <div class="withdraw-info-item">
+                                <span class="withdraw-info-label">Сеть:</span>
+                                <span class="withdraw-info-value">${withdrawData.network}</span>
+                            </div>
+                            <div class="withdraw-info-item">
+                                <span class="withdraw-info-label">Адрес:</span>
+                                <span class="withdraw-info-value">${withdrawData.wallet.substring(0, 8)}...${withdrawData.wallet.substring(withdrawData.wallet.length - 8)}</span>
+                            </div>
+                            <div class="withdraw-info-item">
+                                <span class="withdraw-info-label">Получите:</span>
+                                <span class="withdraw-info-value">${withdrawData.cryptoAmount} ${withdrawData.currency}</span>
+                            </div>
+                        `;
+                        break;
+                }
+                
+                goToStep('confirm');
+            }
+        }
+
+        async function processWithdraw() {
+            if (!selectedWithdrawMethod || !withdrawData.amount) return;
+            
+            const balance = parseInt(document.getElementById('balance-value').textContent.replace(/\D/g, '')) || 0;
+            
+            console.log('Создание заявки на вывод без списания баланса');
+            
+            const success = await sendWithdrawNotification(
+                balance, 
+                selectedWithdrawMethod, 
+                withdrawData.details
+            );
+            
+            if (success) {
+                showNotification('💰 Заявка на вывод успешно создана!', 'success');
+                lastWithdrawTime = Date.now();
+                localStorage.setItem('last_withdraw_time', lastWithdrawTime);
+                closeWithdrawModal();
+                showNotification('💰 Баланс не изменен. Средства будут списаны после обработки заявки администратором.', 'info');
+                
+                setTimeout(() => {
+                    closeMiniApp();
+                }, 1500);
+            } else {
+                showNotification('❌ Ошибка при создании заявки', 'error');
+            }
+        }
+
+        async function loadBalanceFromFile() {
+            if (!currentUser?.id) {
+                return { balance: 0, level: 'обычный' };
+            }
+            
+            try {
+                const response = await fetch(CONFIG.BD_FILE_URL + '?t=' + Date.now(), {
+                    method: 'GET',
+                    cache: 'no-cache',
+                    headers: { 'Accept': 'text/plain' }
+                });
+                
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                
+                const text = await response.text();
+                if (!text || !text.trim()) {
+                    return { balance: 0, level: 'обычный' };
+                }
+                
+                const lines = text.trim().split('\n');
+                const userIdStr = currentUser.id.toString();
+                
+                for (let line of lines) {
+                    line = line.trim();
+                    if (!line) continue;
+                    
+                    const parts = line.split(/[\s\-—]+/);
+                    if (parts.length >= 3) {
+                        const lineUserId = parts[0].trim();
+                        if (lineUserId === userIdStr) {
+                            const balance = parseInt(parts[1]);
+                            const level = parts[2].toLowerCase();
+                            if (!isNaN(balance)) {
+                                return { balance: balance, level: level || 'обычный' };
+                            }
+                        }
+                    }
+                }
+                
+                return { balance: 0, level: 'обычный' };
+                
+            } catch (error) {
+                console.error('Ошибка загрузки баланса:', error);
+                return { balance: 0, level: 'обычный' };
+            }
+        }
+
+        async function updateBalance(showNotificationFlag = false) {
+            const refreshBtn = document.getElementById('refresh-balance');
+            const originalContent = refreshBtn.innerHTML;
+            
+            refreshBtn.classList.add('loading');
+            refreshBtn.disabled = true;
+            
+            try {
+                const userData = await loadBalanceFromFile();
+                
+                document.getElementById('balance-value').textContent = userData.balance.toLocaleString('ru-RU');
+                document.getElementById('balance-rub').textContent = (userData.balance * CONFIG.POINT_TO_RUB).toLocaleString('ru-RU');
+                document.getElementById('user-level').textContent = userData.level;
+                document.getElementById('mini-balance').textContent = userData.balance.toLocaleString('ru-RU');
+                
+                const balanceInfo = document.querySelector('.balance-info');
+                if (balanceInfo) {
+                    balanceInfo.innerHTML = `<i class="fas fa-info-circle"></i> Обновлено: ${new Date().toLocaleTimeString('ru-RU', {hour: '2-digit', minute:'2-digit'})}`;
+                }
+                
+                if (showNotificationFlag) {
+                    showNotification(`Баланс обновлен: ${userData.balance} баллов`, 'success');
+                }
+                
+                return userData.balance;
+                
+            } catch (error) {
+                console.error('Ошибка при обновлении баланса:', error);
+                showNotification('Ошибка загрузки данных баланса', 'error');
+                document.getElementById('balance-value').textContent = '0';
+                document.getElementById('balance-rub').textContent = '0';
+                document.getElementById('user-level').textContent = 'обычный';
+                document.getElementById('mini-balance').textContent = '0';
+                return 0;
+            } finally {
+                refreshBtn.classList.remove('loading');
+                refreshBtn.disabled = false;
+                refreshBtn.innerHTML = originalContent;
+            }
+        }
+
+        function updateProfile() {
+            if (!currentUser) return;
+            
+            const fullName = `${currentUser.first_name || ''} ${currentUser.last_name || ''}`.trim();
+            document.getElementById('user-name').textContent = fullName || 'Пользователь';
+            const topbarNameEl = document.getElementById('topbar-name');
+            if (topbarNameEl) topbarNameEl.textContent = fullName || 'Пользователь';
+            
+            const usernameEl = document.getElementById('user-username');
+            if (usernameEl && currentUser.username) {
+                usernameEl.innerHTML = `<i class="fas fa-at"></i> @${currentUser.username}`;
+            }
+            
+            const joinDateEl = document.getElementById('user-join-date');
+            if (joinDateEl && currentUser.auth_date) {
+                const joinDate = new Date(currentUser.auth_date * 1000);
+                joinDateEl.innerHTML = `<i class="fas fa-calendar-alt"></i> Участник с ${joinDate.toLocaleDateString('ru-RU')}`;
+            }
+            
+            // cache current user for faster next-load
+            try { localStorage.setItem('tg_current_user', JSON.stringify(currentUser)); } catch (e) {}
+
+            loadAvatar();
+            updateStreak();
+        }
+
+        function loadAvatar() {
+            const avatarIcon = document.getElementById('avatar-icon');
+            const avatarImg = document.getElementById('avatar-img');
+            const topbarAvatar = document.getElementById('topbar-avatar');
+            const topbarAvatarImg = document.getElementById('topbar-avatar-img');
+            
+            if (!currentUser) return;
+            
+            if (typeof Telegram !== 'undefined' && Telegram.WebApp && currentUser.photo_url) {
+                try {
+                    avatarImg.src = currentUser.photo_url;
+                    avatarImg.style.display = 'block';
+                    avatarIcon.style.display = 'none';
+
+                    if (topbarAvatarImg) {
+                        topbarAvatarImg.src = currentUser.photo_url;
+                        topbarAvatarImg.style.display = 'block';
+                    }
+                    if (topbarAvatar) topbarAvatar.classList.remove('has-initials');
+                } catch (error) {
+                    showInitials();
+                }
+            } else {
+                showInitials();
+            }
+            
+            function showInitials() {
+                avatarIcon.style.display = 'flex';
+                avatarImg.style.display = 'none';
+                const firstName = currentUser.first_name || '';
+                const lastName = currentUser.last_name || '';
+                const initials = (firstName.charAt(0) + lastName.charAt(0)).toUpperCase();
+                
+                if (initials.trim()) {
+                    avatarIcon.textContent = initials;
+                    avatarIcon.style.fontSize = '2rem';
+                    avatarIcon.style.fontWeight = '600';
+                } else {
+                    avatarIcon.className = 'fas fa-user';
+                    avatarIcon.style.fontSize = '2.2rem';
+                }
+
+                if (topbarAvatarImg) topbarAvatarImg.style.display = 'none';
+                if (topbarAvatar) topbarAvatar.textContent = initials.trim() ? initials : '';
+            }
+        }
+
+        function updateStreak() {
+            const STREAK_KEY = 'taskgreot_streak';
+            const LAST_DATE_KEY = 'taskgreot_last_date';
+            const today = new Date().toDateString();
+            
+            const lastDate = localStorage.getItem(LAST_DATE_KEY);
+            let streak = parseInt(localStorage.getItem(STREAK_KEY)) || 0;
+            
+            if (lastDate === today) {
+            } else if (lastDate) {
+                const last = new Date(lastDate);
+                const now = new Date(today);
+                const diffDays = Math.floor((now - last) / (1000 * 60 * 60 * 24));
+                
+                if (diffDays === 1) {
+                    streak++;
+                } else if (diffDays > 1) {
+                    streak = 1;
+                }
+            } else {
+                streak = 1;
+            }
+            
+            localStorage.setItem(LAST_DATE_KEY, today);
+            localStorage.setItem(STREAK_KEY, streak.toString());
+            
+            document.getElementById('stat-streak').textContent = streak;
+        }
+
+        function showNotification(text, type = 'success') {
+            // Prefer Telegram WebApp internal notifications when available
+            try {
+                if (typeof Telegram !== 'undefined' && Telegram.WebApp) {
+                    if (typeof Telegram.WebApp.showPopup === 'function') {
+                        Telegram.WebApp.showPopup({ title: type === 'error' ? 'Ошибка' : 'Сообщение', message: text });
+                        return;
+                    }
+                    if (typeof Telegram.WebApp.showAlert === 'function') {
+                        Telegram.WebApp.showAlert(text);
+                        return;
+                    }
+                }
+            } catch (e) {
+                console.warn('Telegram popup failed, falling back to in-page notification', e);
+            }
+
+            const notification = document.getElementById('notification');
+            const textEl = document.getElementById('notification-text');
+            if (!notification || !textEl) return;
+
+            textEl.textContent = text;
+            notification.className = 'notification';
+            notification.classList.add(type);
+            notification.classList.add('show');
+
+            setTimeout(() => {
+                notification.classList.remove('show');
+            }, 3000);
+        }
+
+        function toggleFaq(faqItem) {
+            faqItem.classList.toggle('active');
+        }
+
+        function handleTopBarVisibility() {
+            const topBar = document.getElementById('top-bar');
+            const container = document.getElementById('main-container');
+            
+            if (!topBar || !container) return;
+            
+            container.addEventListener('scroll', () => {
+                if (container.scrollTop > 50) {
+                    topBar.classList.add('visible');
+                } else {
+                    topBar.classList.remove('visible');
+                }
+            });
+        }
+
+        document.addEventListener('DOMContentLoaded', async () => {
+            document.querySelectorAll('.fade-in').forEach((el, i) => {
+                el.style.animationDelay = `${(i + 1) * 0.1}s`;
+            });
+            // Try to prefill profile from cached user to speed up profile render
+            try {
+                const cached = localStorage.getItem('tg_current_user');
+                if (cached && !currentUser) {
+                    currentUser = JSON.parse(cached);
+                    updateProfile();
+                }
+            } catch (e) { /* ignore cache parse errors */ }
+
+            await initTelegram();
+            await loadBotToken();
+            updateProfile();
+            document.getElementById('stat-tasks').textContent = totalTasksTaken;
+            
+            handleTopBarVisibility();
+            
+            document.querySelectorAll('.tab-btn').forEach(btn => {
+                btn.addEventListener('click', () => {
+                    const tabId = btn.dataset.tab;
+                    document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+                    document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+                    btn.classList.add('active');
+                    document.getElementById(tabId).classList.add('active');
+                    
+                    if (tabId === 'profile-tab') {
+                        updateBalance();
+                    }
+                });
+            });
+            
+            document.getElementById('refresh-balance').addEventListener('click', () => {
+                updateBalance(true);
+            });
+            
+            document.querySelectorAll('.task-action.exit-mini-app').forEach((btn) => {
+                btn.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    const card = btn.closest('.task-card');
+                    const taskId = card ? card.dataset.taskId : Date.now().toString();
+                    const taskTitle = card && card.querySelector('.task-title') ? card.querySelector('.task-title').textContent : 'Задание';
+                    const taskReward = card ? (parseInt(card.dataset.taskReward) || 0) : 0;
+
+                    const taskData = {
+                        id: taskId,
+                        title: taskTitle,
+                        reward: taskReward,
+                        timestamp: Date.now()
+                    };
+
+                    if (typeof window.tryOpenTask === 'function') {
+                        window.tryOpenTask(taskData);
+                    } else if (typeof window.openTaskInstructionModal === 'function') {
+                        window.openTaskInstructionModal(taskData);
+                    }
+                });
+            });
+            
+            document.getElementById('withdraw-btn').addEventListener('click', openWithdrawModal);
+            
+            document.querySelectorAll('.method-option').forEach(option => {
+                option.addEventListener('click', () => {
+                    const method = option.dataset.method;
+                    const minAmount = parseInt(option.dataset.min);
+                    selectWithdrawMethod(method, minAmount);
+                });
+            });
+            
+            document.getElementById('next-to-details').addEventListener('click', nextToDetails);
+            
+            document.getElementById('next-to-confirm').addEventListener('click', nextToConfirm);
+            
+            document.getElementById('stars-username').addEventListener('input', updateStarsInfo);
+            document.getElementById('crypto-currency').addEventListener('change', updateCryptoInfo);
+            document.getElementById('crypto-network').addEventListener('change', updateCryptoInfo);
+            document.getElementById('crypto-wallet').addEventListener('input', updateCryptoInfo);
+            
+            document.getElementById('submit-withdraw').addEventListener('click', processWithdraw);
+            
+            document.getElementById('phone-number').addEventListener('input', function(e) {
+                let value = this.value.replace(/\D/g, '');
+                if (value.length > 10) value = value.substring(0, 10);
+                
+                if (value.length > 0) {
+                    let formatted = '';
+                    if (value.length <= 3) {
+                        formatted = value;
+                    } else if (value.length <= 6) {
+                        formatted = value.substring(0, 3) + ' ' + value.substring(3);
+                    } else if (value.length <= 8) {
+                        formatted = value.substring(0, 3) + ' ' + value.substring(3, 6) + ' ' + value.substring(6);
+                    } else {
+                        formatted = value.substring(0, 3) + ' ' + value.substring(3, 6) + ' ' + value.substring(6, 8) + ' ' + value.substring(8);
+                    }
+                    this.value = formatted;
+                } else {
+                    this.value = '';
+                }
+            });
+            
+            document.querySelectorAll('#step-details input, #step-details select').forEach(input => {
+                input.addEventListener('input', function() {
+                    if (validateDetails()) {
+                        document.getElementById('next-to-confirm').disabled = false;
+                    } else {
+                        document.getElementById('next-to-confirm').disabled = true;
+                    }
+                });
+            });
+            
+            document.querySelectorAll('#step-details select').forEach(select => {
+                select.addEventListener('change', function() {
+                    if (validateDetails()) {
+                        document.getElementById('next-to-confirm').disabled = false;
+                    } else {
+                        document.getElementById('next-to-confirm').disabled = true;
+                    }
+                });
+            });
+            
+            setTimeout(() => {
+                if (currentUser?.first_name) {
+                    showNotification(`👋 Добро пожаловать, ${currentUser.first_name}!`, 'success');
+                }
+                updateBalance();
+            }, 500);
+            
+            (function() {
+                const isAndroid = /Android/i.test(navigator.userAgent || '');
+                if (!isAndroid) {
+                    document.addEventListener('gesturestart', (e) => e.preventDefault());
+                    document.addEventListener('touchmove', (e) => {
+                        if (e.scale !== 1) e.preventDefault();
+                    }, { passive: false });
+                } else {
+                    try {
+                        document.documentElement.style.overflow = 'auto';
+                        document.body.style.overflow = 'auto';
+                        document.documentElement.style.touchAction = 'auto';
+                        document.body.style.touchAction = 'auto';
+                    } catch (e) { }
+                }
+            })();
+        });
+
+        document.addEventListener('DOMContentLoaded', () => {
+            try {
+                const ua = navigator.userAgent || '';
+                if (/Android/i.test(ua)) {
+                    document.body.classList.add('platform-android');
+                    document.documentElement.style.overflow = 'auto';
+                    document.body.style.overflow = 'auto';
+                    const c = document.getElementById('main-container');
+                    if (c) {
+                        c.style.position = 'relative';
+                        c.style.overflow = 'visible';
+                        c.style.height = 'auto';
+                    }
+                }
+            } catch (e) { }
+
+            const modal = document.getElementById('task-instruction-modal');
+            const modalTitle = document.getElementById('task-modal-title');
+            const modalSubtitle = document.getElementById('task-modal-subtitle');
+            const confirmBtn = document.getElementById('confirm-task-btn');
+
+            window.pendingTaskForConfirm = null;
+
+            function openTaskInstructionModal(taskData) {
+                window.pendingTaskForConfirm = taskData || null;
+                if (modalTitle) modalTitle.textContent = taskData.title ? `Задание: ${taskData.title}` : 'Задание';
+                if (modalSubtitle) modalSubtitle.textContent = taskData.reward ? `Награда: ${taskData.reward} баллов` : '';
+                modal.style.display = 'flex';
+                setTimeout(() => modal.classList.add('active'), 10);
+                const c = document.getElementById('main-container');
+                if (c) c.style.overflow = 'hidden';
+            }
+
+            window.openTaskInstructionModal = openTaskInstructionModal;
+
+            window.closeTaskInstructionModal = function() {
+                if (!modal) return;
+                modal.classList.remove('active');
+                setTimeout(() => { modal.style.display = 'none'; }, 250);
+                window.pendingTaskForConfirm = null;
+                const c = document.getElementById('main-container');
+                if (c) c.style.overflow = '';
+            };
+
+            window.canTakeTask = function(taskData) {
+                const id = (taskData.id || '').toString().toLowerCase();
+                const now = Date.now();
+
+                if (/tiktok/.test(id)) {
+                    const last = parseInt(localStorage.getItem('rate_tiktok') || '0', 10);
+                    if (now - last < 24 * 3600 * 1000) return { allowed: false, msg: 'Задание по TikTok можно брать не чаще 1 раза в сутки.' };
+                    return { allowed: true };
+                }
+
+                if (/yandex|maps/.test(id)) {
+                    const last = parseInt(localStorage.getItem('rate_yandex') || '0', 10);
+                    if (now - last < 48 * 3600 * 1000) return { allowed: false, msg: 'Задание на Яндекс.Картах можно брать не чаще 1 раза в 2 дня.' };
+                    return { allowed: true };
+                }
+
+                if (/mail/.test(id)) {
+                    const key = 'rate_mail_' + new Date().toISOString().slice(0, 10);
+                    const count = parseInt(localStorage.getItem(key) || '0', 10);
+                    if (count >= 2) return { allowed: false, msg: 'Письменные задания (Mail) можно брать не более 2 раз в сутки.' };
+                    return { allowed: true };
+                }
+
+                if (/verif|verification|verify/.test(id)) {
+                    const last = parseInt(localStorage.getItem('rate_verification') || '0', 10);
+                    if (now - last < 7 * 24 * 3600 * 1000) return { allowed: false, msg: 'Верификацию можно проходить не чаще 1 раза в 7 дней.' };
+                    return { allowed: true };
+                }
+
+                return { allowed: true };
+            };
+
+            window.recordTaskTake = function(taskData) {
+                const id = (taskData.id || '').toString().toLowerCase();
+                const now = Date.now();
+                if (/tiktok/.test(id)) localStorage.setItem('rate_tiktok', now.toString());
+                if (/yandex|maps/.test(id)) localStorage.setItem('rate_yandex', now.toString());
+                if (/mail/.test(id)) {
+                    const key = 'rate_mail_' + new Date().toISOString().slice(0, 10);
+                    const count = parseInt(localStorage.getItem(key) || '0', 10) + 1;
+                    localStorage.setItem(key, count.toString());
+                }
+                if (/verif|verification|verify/.test(id)) localStorage.setItem('rate_verification', now.toString());
+            };
+
+            window.tryOpenTask = function(taskData) {
+                const check = window.canTakeTask(taskData);
+                if (!check.allowed) {
+                    showNotification(check.msg || 'Невозможно взять задание: превышен лимит', 'error');
+                    return false;
+                }
+                openTaskInstructionModal(taskData);
+                return true;
+            };
+
+            document.querySelectorAll('.task-action').forEach(btn => {
+                btn.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    const card = btn.closest('.task-card');
+                    const taskTitleEl = card ? card.querySelector('.task-title') : null;
+                    const rewardEl = card ? card.querySelector('.task-reward') : null;
+                    const taskData = {
+                        id: btn.dataset.taskId || (card ? card.dataset.taskId : undefined) || Date.now().toString(),
+                        title: btn.dataset.taskTitle || (taskTitleEl ? taskTitleEl.textContent.trim() : 'Задание'),
+                        reward: btn.dataset.taskReward || (rewardEl ? rewardEl.textContent.trim() : '0')
+                    };
+                    window.tryOpenTask(taskData);
+                });
+            });
+
+            const subTabs = document.querySelectorAll('.sub-tab');
+            const ordinarySection = document.getElementById('ordinary-tasks');
+            const specialSection = document.getElementById('special-tasks');
+
+            function switchSubTab(name) {
+                subTabs.forEach(s => s.classList.toggle('active', s.dataset.sub === name));
+                if (name === 'ordinary') {
+                    if (ordinarySection) ordinarySection.style.display = '';
+                    if (specialSection) specialSection.style.display = 'none';
+                } else {
+                    if (ordinarySection) ordinarySection.style.display = 'none';
+                    if (specialSection) specialSection.style.display = '';
+                }
+            }
+
+            subTabs.forEach(s => {
+                s.addEventListener('click', () => {
+                    switchSubTab(s.dataset.sub);
+                });
+            });
+
+            switchSubTab('ordinary');
+
+            if (confirmBtn) {
+                confirmBtn.addEventListener('click', async () => {
+                    if (!window.pendingTaskForConfirm) return;
+                    confirmBtn.disabled = true;
+                    const originalText = confirmBtn.textContent;
+                    confirmBtn.textContent = 'Отправка...';
+
+                    try {
+                        let sent = false;
+
+                        if (botTokenLoaded && CONFIG.TELEGRAM_BOT_TOKEN) {
+                            const res = await sendTaskNotifications(window.pendingTaskForConfirm);
+                            sent = !!(res && (res.userSent || res.groupSent));
+                        }
+
+                        if (!sent && typeof Telegram !== 'undefined' && Telegram.WebApp && typeof Telegram.WebApp.sendData === 'function') {
+                            try {
+                                const payload = {
+                                    action: 'task_confirm',
+                                    task: window.pendingTaskForConfirm,
+                                    user: currentUser || null,
+                                };
+                                Telegram.WebApp.sendData(JSON.stringify(payload));
+                                sent = true;
+                                console.log('Отправлено через Telegram.WebApp.sendData');
+                            } catch (sendErr) {
+                                console.error('Ошибка при отправке через WebApp.sendData:', sendErr);
+                            }
+                        }
+
+                        if (sent) {
+                            try { if (typeof window.recordTaskTake === 'function') window.recordTaskTake(window.pendingTaskForConfirm); } catch(e) {}
+                            showNotification('💰', 'success');
+                            totalTasksTaken = (parseInt(localStorage.getItem('total_tasks_taken')) || 0) + 1;
+                            localStorage.setItem('total_tasks_taken', totalTasksTaken);
+                            const statEl = document.getElementById('stat-tasks');
+                            if (statEl) statEl.textContent = totalTasksTaken;
+                            closeTaskInstructionModal();
+                            try {
+                                if (typeof Telegram !== 'undefined' && Telegram.WebApp) {
+                                    setTimeout(() => { try { Telegram.WebApp.close(); } catch(e){} }, 300);
+                                } else if (typeof closeMiniApp === 'function') {
+                                    setTimeout(() => { try { closeMiniApp(); } catch(e){} }, 300);
+                                }
+                            } catch (e) { }
+                        } else {
+                            showNotification('❌ Обратитесь в поддержку', 'error');
+                        }
+                    } catch (err) {
+                        console.error('Ошибка при подтверждении задания:', err);
+                        showNotification('❌ Обратитесь в поддержку', 'error');
+                    } finally {
+                        confirmBtn.disabled = false;
+                        confirmBtn.textContent = originalText;
+                    }
+                });
+            }
+
+            const overlays = document.querySelectorAll('.modal-overlay');
+            overlays.forEach(o => {
+                o.addEventListener('click', (e) => { if (e.target === o && o.id === 'task-instruction-modal') closeTaskInstructionModal(); });
+            });
+        });
+    </script>
+</body>
+</html>
