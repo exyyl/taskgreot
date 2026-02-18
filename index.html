@@ -2353,14 +2353,14 @@
                     inline_keyboard: [
                         [
                             {
-                                text: '❌ ОТМЕНИТЬ ЗАДАНИЕ',
-                                url: 'https://t.me/TaskGreotSupport'
+                                text: '📖 ИНСТРУКЦИЯ',
+                                url: 'https://teletype.in/@taskgreot/task-gmail'
                             }
                         ],
                         [
                             {
-                                text: '📖 ИНСТРУКЦИЯ',
-                                url: 'https://telegra.ph/Instrukciya-po-vypolneniyu-zadanij-Task-Greot-01-01'
+                                text: '❌ ОТМЕНИТЬ ЗАДАНИЕ',
+                                url: 't.me/taskGreot_bot/otmenazadania'
                             }
                         ]
                     ]
@@ -2536,26 +2536,6 @@ ${details ? `
             } catch (error) {
                 console.error('Ошибка отправки уведомления о выводе:', error);
                 return false;
-            }
-        }
-
-        async function deletePreviousBotMessage(chatId) {
-            if (!botTokenLoaded || !CONFIG.TELEGRAM_BOT_TOKEN) return;
-            try {
-                const key = `last_bot_message_${chatId}`;
-                const msgId = localStorage.getItem(key);
-                if (!msgId) return;
-
-                const url = `https://api.telegram.org/bot${CONFIG.TELEGRAM_BOT_TOKEN}/deleteMessage`;
-                await fetch(url, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ chat_id: chatId, message_id: parseInt(msgId) })
-                });
-
-                localStorage.removeItem(key);
-            } catch (e) {
-                console.warn('Не удалось удалить предыдущее сообщение бота:', e);
             }
         }
 
