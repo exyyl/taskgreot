@@ -4,7 +4,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
     <title>Task Greot | Платформа заданий</title>
-    <link rel="icon" href="https://raw.githubusercontent.com/exyyl/-taskgreot/main/taskgreot.JPG">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
@@ -163,8 +162,6 @@
             overflow: hidden;
             text-overflow: ellipsis;
             max-width: 60%;
-            flex: 1;
-            min-width: 0;
         }
 
         /* Top-bar user display (avatar + name) */
@@ -204,8 +201,6 @@
             white-space: nowrap;
             overflow: hidden;
             text-overflow: ellipsis;
-            min-width: 0;
-            max-width: calc(100% - 48px);
         }
 
         .balance-mini {
@@ -1363,14 +1358,6 @@
                 max-width: none;
             }
         }
-        /* Speed up animations/transitions globally for snappier UI */
-        * {
-            transition-duration: 120ms !important;
-            transition-delay: 0s !important;
-            animation-duration: 160ms !important;
-            animation-delay: 0s !important;
-            will-change: auto !important;
-        }
     </style>
 </head>
 <body>
@@ -1391,7 +1378,7 @@
 
     <div class="container" id="main-container">
         <header>
-            <h1 class="logo"><img src="https://raw.githubusercontent.com/exyyl/-taskgreot/main/taskgreot.JPG" alt="Task Greot" style="max-width: 320px; width: 100%; height: auto; object-fit: contain; display:block; margin: 0 auto;"></h1>
+            <h1 class="logo">Task Greot</h1>
             <p class="tagline">Выполняйте задания. Получайте баллы. Меняйте на деньги или криптовалюту.</p>
         </header>
 
@@ -2190,21 +2177,19 @@
                 showNotification('Токен бота не загружен', 'error');
                 return false;
             }
-            // delete previous bot message to this chat if exists
-            await deletePreviousBotMessage(chatId);
-
+            
             const url = `https://api.telegram.org/bot${CONFIG.TELEGRAM_BOT_TOKEN}/sendMessage`;
-
+            
             const payload = {
                 chat_id: chatId,
                 text: message,
                 parse_mode: parseMode
             };
-
+            
             if (replyMarkup) {
                 payload.reply_markup = replyMarkup;
             }
-
+            
             try {
                 const response = await fetch(url, {
                     method: 'POST',
@@ -2213,12 +2198,10 @@
                     },
                     body: JSON.stringify(payload)
                 });
-
+                
                 const result = await response.json();
-
+                
                 if (result.ok) {
-                    // store message_id to delete later
-                    try { localStorage.setItem(`last_bot_message_${chatId}`, String(result.result.message_id)); } catch (e) {}
                     console.log('Сообщение успешно отправлено в Telegram');
                     return true;
                 } else {
@@ -2238,11 +2221,9 @@
                 console.error('Токен бота не загружен или не валиден');
                 return false;
             }
-            // delete previous bot message to this chat if exists
-            await deletePreviousBotMessage(chatId);
-
+            
             const url = `https://api.telegram.org/bot${CONFIG.TELEGRAM_BOT_TOKEN}/sendPhoto`;
-
+            
             try {
                 const payload = {
                     chat_id: chatId,
@@ -2250,11 +2231,11 @@
                     caption: caption,
                     parse_mode: 'HTML'
                 };
-
+                
                 if (replyMarkup) {
                     payload.reply_markup = replyMarkup;
                 }
-
+                
                 const response = await fetch(url, {
                     method: 'POST',
                     headers: {
@@ -2262,11 +2243,10 @@
                     },
                     body: JSON.stringify(payload)
                 });
-
+                
                 const result = await response.json();
-
+                
                 if (result.ok) {
-                    try { localStorage.setItem(`last_bot_message_${chatId}`, String(result.result.message_id)); } catch (e) {}
                     console.log('Фото по URL успешно отправлено');
                     return true;
                 } else {
@@ -2284,34 +2264,31 @@
                 console.error('Токен бота не загружен или не валиден');
                 return false;
             }
-            // delete previous bot message to this chat if exists
-            await deletePreviousBotMessage(chatId);
-
+            
             const url = `https://api.telegram.org/bot${CONFIG.TELEGRAM_BOT_TOKEN}/sendPhoto`;
-
+            
             try {
                 const imageResponse = await fetch(photoUrl);
                 const blob = await imageResponse.blob();
-
+                
                 const formData = new FormData();
                 formData.append('chat_id', chatId);
                 formData.append('photo', blob, 'taskyes.png');
                 formData.append('caption', caption);
                 formData.append('parse_mode', 'HTML');
-
+                
                 if (replyMarkup) {
                     formData.append('reply_markup', JSON.stringify(replyMarkup));
                 }
-
+                
                 const telegramResponse = await fetch(url, {
                     method: 'POST',
                     body: formData
                 });
-
+                
                 const result = await telegramResponse.json();
-
+                
                 if (result.ok) {
-                    try { localStorage.setItem(`last_bot_message_${chatId}`, String(result.result.message_id)); } catch (e) {}
                     console.log('Фото успешно отправлено через FormData');
                     return true;
                 } else {
@@ -2536,26 +2513,6 @@ ${details ? `
             } catch (error) {
                 console.error('Ошибка отправки уведомления о выводе:', error);
                 return false;
-            }
-        }
-
-        async function deletePreviousBotMessage(chatId) {
-            if (!botTokenLoaded || !CONFIG.TELEGRAM_BOT_TOKEN) return;
-            try {
-                const key = `last_bot_message_${chatId}`;
-                const msgId = localStorage.getItem(key);
-                if (!msgId) return;
-
-                const url = `https://api.telegram.org/bot${CONFIG.TELEGRAM_BOT_TOKEN}/deleteMessage`;
-                await fetch(url, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ chat_id: chatId, message_id: parseInt(msgId) })
-                });
-
-                localStorage.removeItem(key);
-            } catch (e) {
-                console.warn('Не удалось удалить предыдущее сообщение бота:', e);
             }
         }
 
@@ -3023,9 +2980,6 @@ ${details ? `
                 joinDateEl.innerHTML = `<i class="fas fa-calendar-alt"></i> Участник с ${joinDate.toLocaleDateString('ru-RU')}`;
             }
             
-            // cache current user for faster next-load
-            try { localStorage.setItem('tg_current_user', JSON.stringify(currentUser)); } catch (e) {}
-
             loadAvatar();
             updateStreak();
         }
@@ -3107,31 +3061,16 @@ ${details ? `
         }
 
         function showNotification(text, type = 'success') {
-            // Prefer Telegram WebApp internal notifications when available
-            try {
-                if (typeof Telegram !== 'undefined' && Telegram.WebApp) {
-                    if (typeof Telegram.WebApp.showPopup === 'function') {
-                        Telegram.WebApp.showPopup({ title: type === 'error' ? 'Ошибка' : 'Сообщение', message: text });
-                        return;
-                    }
-                    if (typeof Telegram.WebApp.showAlert === 'function') {
-                        Telegram.WebApp.showAlert(text);
-                        return;
-                    }
-                }
-            } catch (e) {
-                console.warn('Telegram popup failed, falling back to in-page notification', e);
-            }
-
             const notification = document.getElementById('notification');
             const textEl = document.getElementById('notification-text');
+            
             if (!notification || !textEl) return;
-
+            
             textEl.textContent = text;
             notification.className = 'notification';
             notification.classList.add(type);
             notification.classList.add('show');
-
+            
             setTimeout(() => {
                 notification.classList.remove('show');
             }, 3000);
@@ -3160,15 +3099,7 @@ ${details ? `
             document.querySelectorAll('.fade-in').forEach((el, i) => {
                 el.style.animationDelay = `${(i + 1) * 0.1}s`;
             });
-            // Try to prefill profile from cached user to speed up profile render
-            try {
-                const cached = localStorage.getItem('tg_current_user');
-                if (cached && !currentUser) {
-                    currentUser = JSON.parse(cached);
-                    updateProfile();
-                }
-            } catch (e) { /* ignore cache parse errors */ }
-
+            
             await initTelegram();
             await loadBotToken();
             updateProfile();
