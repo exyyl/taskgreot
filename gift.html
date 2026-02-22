@@ -1,0 +1,627 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Мои NFT Подарки</title>
+    <!-- Подключаем Telegram Web App SDK -->
+    <script src="https://telegram.org/js/telegram-web-app.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            background: var(--tg-theme-bg-color, #f8f9fa);
+            color: var(--tg-theme-text-color, #1a1a1a);
+            min-height: 100vh;
+            padding: 16px;
+        }
+
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        h1 {
+            font-size: 24px;
+            font-weight: 600;
+            margin-bottom: 8px;
+            color: var(--tg-theme-text-color, #1a1a1a);
+        }
+
+        .subtitle {
+            font-size: 14px;
+            color: var(--tg-theme-hint-color, #6c757d);
+            margin-bottom: 24px;
+        }
+
+        /* Статистика */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+            margin-bottom: 24px;
+        }
+
+        .stat-card {
+            background: var(--tg-theme-secondary-bg-color, #ffffff);
+            border-radius: 12px;
+            padding: 16px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+        }
+
+        .stat-label {
+            font-size: 12px;
+            color: var(--tg-theme-hint-color, #6c757d);
+            margin-bottom: 4px;
+        }
+
+        .stat-value {
+            font-size: 28px;
+            font-weight: 600;
+            color: var(--tg-theme-text-color, #1a1a1a);
+        }
+
+        .stat-value small {
+            font-size: 14px;
+            font-weight: normal;
+            color: var(--tg-theme-hint-color, #6c757d);
+            margin-left: 4px;
+        }
+
+        /* Фильтры */
+        .filters {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+
+        .filter-btn {
+            padding: 8px 16px;
+            border: none;
+            border-radius: 20px;
+            font-size: 14px;
+            font-weight: 500;
+            background: var(--tg-theme-secondary-bg-color, #e9ecef);
+            color: var(--tg-theme-text-color, #495057);
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .filter-btn.active {
+            background: var(--tg-theme-button-color, #2481cc);
+            color: var(--tg-theme-button-text-color, #ffffff);
+        }
+
+        /* Сетка подарков */
+        .gifts-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+            gap: 12px;
+            margin-bottom: 20px;
+        }
+
+        .gift-card {
+            background: var(--tg-theme-secondary-bg-color, #ffffff);
+            border-radius: 16px;
+            padding: 16px 12px 12px;
+            transition: transform 0.2s, box-shadow 0.2s;
+            position: relative;
+            border: 1px solid rgba(0,0,0,0.05);
+            cursor: pointer;
+        }
+
+        .gift-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 16px rgba(0,0,0,0.1);
+        }
+
+        .gift-badge {
+            position: absolute;
+            top: 8px;
+            right: 8px;
+            padding: 4px 8px;
+            border-radius: 12px;
+            font-size: 10px;
+            font-weight: 600;
+            text-transform: uppercase;
+            background: var(--tg-theme-button-color, #2481cc);
+            color: var(--tg-theme-button-text-color, #ffffff);
+        }
+
+        .gift-badge.burned {
+            background: #6c757d;
+        }
+
+        .gift-badge.premium {
+            background: linear-gradient(135deg, #ffd700, #ffa500);
+            color: #000;
+        }
+
+        .gift-emoji {
+            font-size: 64px;
+            text-align: center;
+            margin: 8px 0;
+            filter: drop-shadow(0 4px 8px rgba(0,0,0,0.1));
+        }
+
+        .gift-info {
+            text-align: center;
+        }
+
+        .gift-name {
+            font-weight: 600;
+            font-size: 16px;
+            margin-bottom: 4px;
+            color: var(--tg-theme-text-color, #1a1a1a);
+        }
+
+        .gift-details {
+            font-size: 12px;
+            color: var(--tg-theme-hint-color, #6c757d);
+            display: flex;
+            flex-direction: column;
+            gap: 2px;
+        }
+
+        .gift-number {
+            background: var(--tg-theme-bg-color, #f8f9fa);
+            padding: 2px 8px;
+            border-radius: 10px;
+            display: inline-block;
+            margin-top: 6px;
+            font-size: 10px;
+        }
+
+        /* Детальная карточка */
+        .detail-card {
+            background: var(--tg-theme-secondary-bg-color, #ffffff);
+            border-radius: 20px;
+            padding: 20px;
+            margin-top: 20px;
+            border: 1px solid rgba(0,0,0,0.05);
+        }
+
+        .detail-header {
+            display: flex;
+            gap: 16px;
+            margin-bottom: 20px;
+        }
+
+        .detail-emoji {
+            font-size: 80px;
+            line-height: 1;
+        }
+
+        .detail-title h2 {
+            font-size: 20px;
+            margin-bottom: 4px;
+        }
+
+        .detail-title p {
+            color: var(--tg-theme-hint-color, #6c757d);
+            font-size: 14px;
+        }
+
+        .detail-section {
+            margin-bottom: 16px;
+        }
+
+        .detail-section h3 {
+            font-size: 14px;
+            color: var(--tg-theme-hint-color, #6c757d);
+            margin-bottom: 8px;
+            font-weight: 500;
+        }
+
+        .info-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 8px 0;
+            border-bottom: 1px solid rgba(0,0,0,0.05);
+        }
+
+        .info-label {
+            color: var(--tg-theme-hint-color, #6c757d);
+        }
+
+        .info-value {
+            font-weight: 500;
+        }
+
+        .colors-preview {
+            display: flex;
+            gap: 8px;
+            margin-top: 8px;
+        }
+
+        .color-dot {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            border: 2px solid var(--tg-theme-bg-color, #ffffff);
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        /* Загрузка и ошибки */
+        .loading {
+            text-align: center;
+            padding: 48px 0;
+            color: var(--tg-theme-hint-color, #6c757d);
+        }
+
+        .loading-spinner {
+            border: 3px solid var(--tg-theme-secondary-bg-color, #e9ecef);
+            border-top: 3px solid var(--tg-theme-button-color, #2481cc);
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 16px;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .error {
+            text-align: center;
+            padding: 32px;
+            color: #dc3545;
+            background: rgba(220, 53, 69, 0.1);
+            border-radius: 12px;
+        }
+
+        .back-btn {
+            background: var(--tg-theme-secondary-bg-color, #e9ecef);
+            border: none;
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 14px;
+            cursor: pointer;
+            margin-bottom: 16px;
+            color: var(--tg-theme-text-color, #1a1a1a);
+        }
+
+        .footer {
+            text-align: center;
+            font-size: 12px;
+            color: var(--tg-theme-hint-color, #6c757d);
+            margin-top: 32px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container" id="app">
+        <!-- Шапка -->
+        <h1>🎁 Мои NFT Подарки</h1>
+        <div class="subtitle" id="userInfo">Загрузка информации о пользователе...</div>
+
+        <!-- Статистика -->
+        <div class="stats-grid" id="stats" style="display: none;">
+            <div class="stat-card">
+                <div class="stat-label">Всего подарков</div>
+                <div class="stat-value" id="totalCount">0</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-label">Уникальных</div>
+                <div class="stat-value" id="uniqueCount">0</div>
+            </div>
+        </div>
+
+        <!-- Фильтры -->
+        <div class="filters" id="filters" style="display: none;">
+            <button class="filter-btn active" data-filter="all">Все</button>
+            <button class="filter-btn" data-filter="premium">Premium</button>
+            <button class="filter-btn" data-filter="burned">Сожженные</button>
+            <button class="filter-btn" data-filter="blockchain">Из блокчейна</button>
+        </div>
+
+        <!-- Основной контент -->
+        <div id="content"></div>
+        <div id="detail" style="display: none;"></div>
+
+        <!-- Футер -->
+        <div class="footer" id="footer" style="display: none;">
+            Данные предоставлены Telegram API
+        </div>
+    </div>
+
+    <script>
+        const tg = window.Telegram.WebApp;
+        tg.expand(); // Разворачиваем на весь экран
+        tg.ready(); // Готово к работе
+
+        // Состояние приложения
+        let gifts = [];
+        let filteredGifts = [];
+        let currentFilter = 'all';
+        let selectedGift = null;
+
+        // Инициализация
+        async function init() {
+            try {
+                // Показываем загрузку
+                document.getElementById('content').innerHTML = `
+                    <div class="loading">
+                        <div class="loading-spinner"></div>
+                        Загружаем ваши NFT подарки...
+                    </div>
+                `;
+
+                // Получаем данные о пользователе
+                const user = tg.initDataUnsafe?.user;
+                if (user) {
+                    document.getElementById('userInfo').innerHTML = 
+                        `👤 ${user.first_name} ${user.last_name || ''} • ID: ${user.id}`;
+                }
+
+                // Запрашиваем подарки через вызов метода бота
+                // В реальном приложении здесь будет вызов к вашему бэкенду
+                const response = await fetch('https://api.telegram.org/bot<YOUR_BOT_TOKEN>/getUserGifts', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        user_id: user?.id
+                    })
+                });
+
+                // Для демонстрации используем тестовые данные
+                // В реальности замените на response.json()
+                const mockGifts = generateMockGifts();
+                gifts = mockGifts.gifts || mockGifts;
+                
+                // Применяем фильтр
+                applyFilter('all');
+                
+                // Показываем элементы интерфейса
+                document.getElementById('stats').style.display = 'grid';
+                document.getElementById('filters').style.display = 'flex';
+                document.getElementById('footer').style.display = 'block';
+                
+                // Обновляем статистику
+                updateStats();
+                
+                // Отрисовываем сетку
+                renderGiftsGrid();
+
+            } catch (error) {
+                console.error('Ошибка загрузки:', error);
+                document.getElementById('content').innerHTML = `
+                    <div class="error">
+                        ❌ Не удалось загрузить подарки<br>
+                        <small>${error.message}</small>
+                    </div>
+                `;
+            }
+        }
+
+        // Генерация тестовых данных (для демонстрации)
+        function generateMockGifts() {
+            const gifts = [];
+            const names = ['Золотой NFT', 'Бриллиант', 'Эксклюзив', 'Редкий', 'Легендарный'];
+            const emojis = ['🏆', '💎', '👑', '🌟', '🎨', '🎭', '⚡️', '🔥'];
+            
+            for (let i = 1; i <= 12; i++) {
+                const isPremium = i % 3 === 0;
+                const isBurned = i % 7 === 0;
+                const isBlockchain = i % 5 === 0;
+                
+                gifts.push({
+                    id: `gift_${i}`,
+                    name: `${names[i % names.length]} #${i}`,
+                    emoji: emojis[i % emojis.length],
+                    is_premium: isPremium,
+                    is_burned: isBurned,
+                    is_from_blockchain: isBlockchain,
+                    unique_gift_number: i,
+                    unique_gift_variant_count: Math.floor(Math.random() * 100) + 1,
+                    rarity: ['common', 'rare', 'epic', 'legendary'][i % 4],
+                    colors: {
+                        background: ['#FF6B6B', '#4ECDC4', '#45B7D1', '#96CEB4'][i % 4],
+                        text: '#FFFFFF',
+                        accent: ['#FFE66D', '#FF9F1C', '#2EC4B6', '#E71D36'][i % 4]
+                    },
+                    purchase_date: new Date(2025, i % 12, i % 28).toISOString()
+                });
+            }
+            
+            return gifts;
+        }
+
+        // Применение фильтра
+        function applyFilter(filter) {
+            currentFilter = filter;
+            
+            // Обновляем активный класс на кнопках
+            document.querySelectorAll('.filter-btn').forEach(btn => {
+                btn.classList.toggle('active', btn.dataset.filter === filter);
+            });
+            
+            // Фильтруем подарки
+            filteredGifts = gifts.filter(gift => {
+                if (filter === 'all') return true;
+                if (filter === 'premium') return gift.is_premium;
+                if (filter === 'burned') return gift.is_burned;
+                if (filter === 'blockchain') return gift.is_from_blockchain;
+                return true;
+            });
+            
+            // Перерисовываем
+            renderGiftsGrid();
+        }
+
+        // Обновление статистики
+        function updateStats() {
+            const total = gifts.length;
+            const unique = new Set(gifts.map(g => g.name)).size;
+            
+            document.getElementById('totalCount').innerHTML = `${total} <small>шт</small>`;
+            document.getElementById('uniqueCount').innerHTML = `${unique} <small>шт</small>`;
+        }
+
+        // Отрисовка сетки подарков
+        function renderGiftsGrid() {
+            if (filteredGifts.length === 0) {
+                document.getElementById('content').innerHTML = `
+                    <div style="text-align: center; padding: 48px 0; color: var(--tg-theme-hint-color);">
+                        😢 Нет подарков, соответствующих фильтру
+                    </div>
+                `;
+                return;
+            }
+
+            let html = '<div class="gifts-grid">';
+            
+            filteredGifts.forEach(gift => {
+                html += `
+                    <div class="gift-card" onclick="showGiftDetail('${gift.id}')">
+                        ${gift.is_premium ? '<div class="gift-badge premium">⭐ PREMIUM</div>' : ''}
+                        ${gift.is_burned ? '<div class="gift-badge burned">🔥 Сожжен</div>' : ''}
+                        ${gift.is_from_blockchain && !gift.is_premium && !gift.is_burned ? 
+                            '<div class="gift-badge">⛓️ TON</div>' : ''}
+                        <div class="gift-emoji">${gift.emoji}</div>
+                        <div class="gift-info">
+                            <div class="gift-name">${gift.name}</div>
+                            <div class="gift-details">
+                                <span>#${gift.unique_gift_number} из ${gift.unique_gift_variant_count}</span>
+                                <span>${gift.rarity}</span>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            });
+            
+            html += '</div>';
+            document.getElementById('content').innerHTML = html;
+            document.getElementById('detail').style.display = 'none';
+        }
+
+        // Показ детальной информации о подарке
+        function showGiftDetail(giftId) {
+            const gift = gifts.find(g => g.id === giftId);
+            if (!gift) return;
+            
+            selectedGift = gift;
+            
+            const detailHtml = `
+                <button class="back-btn" onclick="renderGiftsGrid()">← Назад к списку</button>
+                <div class="detail-card">
+                    <div class="detail-header">
+                        <div class="detail-emoji">${gift.emoji}</div>
+                        <div class="detail-title">
+                            <h2>${gift.name}</h2>
+                            <p>${gift.rarity}</p>
+                        </div>
+                    </div>
+                    
+                    <div class="detail-section">
+                        <h3>Информация</h3>
+                        <div class="info-row">
+                            <span class="info-label">Номер</span>
+                            <span class="info-value">#${gift.unique_gift_number}</span>
+                        </div>
+                        <div class="info-row">
+                            <span class="info-label">Всего вариантов</span>
+                            <span class="info-value">${gift.unique_gift_variant_count}</span>
+                        </div>
+                        <div class="info-row">
+                            <span class="info-label">Premium</span>
+                            <span class="info-value">${gift.is_premium ? 'Да' : 'Нет'}</span>
+                        </div>
+                        <div class="info-row">
+                            <span class="info-label">Сожжен</span>
+                            <span class="info-value">${gift.is_burned ? 'Да' : 'Нет'}</span>
+                        </div>
+                        <div class="info-row">
+                            <span class="info-label">Из блокчейна</span>
+                            <span class="info-value">${gift.is_from_blockchain ? 'Да' : 'Нет'}</span>
+                        </div>
+                        <div class="info-row">
+                            <span class="info-label">Дата получения</span>
+                            <span class="info-value">${new Date(gift.purchase_date).toLocaleDateString()}</span>
+                        </div>
+                    </div>
+                    
+                    <div class="detail-section">
+                        <h3>Цветовая схема</h3>
+                        <div class="colors-preview">
+                            <div class="color-dot" style="background: ${gift.colors.background}"></div>
+                            <div class="color-dot" style="background: ${gift.colors.text}"></div>
+                            <div class="color-dot" style="background: ${gift.colors.accent}"></div>
+                        </div>
+                    </div>
+                    
+                    <div class="detail-section">
+                        <h3>Действия</h3>
+                        <div style="display: flex; gap: 10px;">
+                            <button class="filter-btn" style="flex: 1;" onclick="shareGift('${gift.id}')">
+                                🔗 Поделиться
+                            </button>
+                            <button class="filter-btn" style="flex: 1;" onclick="burnGift('${gift.id}')">
+                                ⚠️ Сжечь
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            `;
+            
+            document.getElementById('content').innerHTML = '';
+            document.getElementById('detail').style.display = 'block';
+            document.getElementById('detail').innerHTML = detailHtml;
+        }
+
+        // Демо-функции действий
+        function shareGift(giftId) {
+            tg.showPopup({
+                title: 'Поделиться подарком',
+                message: 'Ссылка на подарок скопирована в буфер обмена',
+                buttons: [{type: 'ok'}]
+            });
+        }
+
+        function burnGift(giftId) {
+            tg.showPopup({
+                title: 'Сжечь подарок?',
+                message: 'Это действие нельзя отменить. Подарок будет безвозвратно удален.',
+                buttons: [
+                    {type: 'destructive', text: 'Сжечь'},
+                    {type: 'cancel'}
+                ]
+            }, (buttonId) => {
+                if (buttonId === 'destructive') {
+                    alert('Демо-режим: подарок не будет сожжен');
+                }
+            });
+        }
+
+        // Обработчики фильтров
+        document.addEventListener('click', (e) => {
+            if (e.target.classList.contains('filter-btn')) {
+                applyFilter(e.target.dataset.filter);
+            }
+        });
+
+        // Запускаем приложение
+        init();
+
+        // Настраиваем основную кнопку Telegram
+        tg.MainButton.setText('Обновить');
+        tg.MainButton.onClick(() => {
+            tg.MainButton.showProgress(false);
+            init().finally(() => {
+                tg.MainButton.hideProgress();
+            });
+        });
+        tg.MainButton.show();
+    </script>
+</body>
+</html>
