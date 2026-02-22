@@ -3,10 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Мои NFT Подарки (прямые вызовы)</title>
+    <title>Мои NFT Подарки (рабочие прокси)</title>
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <style>
-        /* Стили из предыдущей версии */
+        /* Стили как в предыдущей версии */
         * {
             margin: 0;
             padding: 0;
@@ -302,7 +302,7 @@
             font-size: 14px;
         }
 
-        .cors-note {
+        .proxy-status {
             background: rgba(13, 110, 253, 0.1);
             border: 1px solid #0d6efd;
             color: #0d6efd;
@@ -331,11 +331,33 @@
             font-size: 12px;
             color: var(--tg-theme-hint-color, #666);
         }
+
+        .proxy-selector {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 15px;
+            flex-wrap: wrap;
+        }
+
+        .proxy-btn {
+            padding: 8px 12px;
+            border: 1px solid var(--tg-theme-button-color, #2481cc);
+            border-radius: 8px;
+            background: transparent;
+            color: var(--tg-theme-text-color, #000);
+            cursor: pointer;
+            font-size: 12px;
+        }
+
+        .proxy-btn.active {
+            background: var(--tg-theme-button-color, #2481cc);
+            color: white;
+        }
     </style>
 </head>
 <body>
     <div class="container" id="app">
-        <div class="mode-badge">🚀 РЕЖИМ: ПРЯМЫЕ ВЫЗОВЫ API (с CORS-прокси)</div>
+        <div class="mode-badge">🚀 РЕЖИМ: ПРЯМЫЕ ВЫЗОВЫ API (с работающими прокси)</div>
         
         <h1>🎁 Мои NFT Подарки</h1>
         <div class="subtitle" id="userInfo">Загрузка...</div>
@@ -344,16 +366,19 @@
         <div class="token-input">
             <label>🔑 Токен бота:</label>
             <input type="text" id="botToken" placeholder="Например: 1234567890:ABCdefGHIjklMNOpqrsTUVwxyz" value="">
-            <button id="saveTokenBtn">Сохранить токен</button>
-            <div style="font-size: 12px; margin-top: 8px; color: var(--tg-theme-hint-color);">
-                Токен сохраняется в браузере
-            </div>
+            <button id="saveTokenBtn">💾 Сохранить токен</button>
         </div>
 
-        <!-- Предупреждение о CORS -->
-        <div class="cors-note" id="corsWarning" style="display: none;">
-            ⚠️ Браузер блокирует прямые запросы к Telegram API из-за CORS.<br>
-            Используется публичный CORS-прокси. В продакшене используйте свой бэкенд!
+        <!-- Выбор прокси -->
+        <div class="proxy-status">
+            <div style="margin-bottom: 10px;">🌐 Выберите прокси-сервер:</div>
+            <div class="proxy-selector" id="proxySelector">
+                <button class="proxy-btn active" data-proxy="0">🔵 allorigins</button>
+                <button class="proxy-btn" data-proxy="1">🟢 thingproxy</button>
+                <button class="proxy-btn" data-proxy="2">🟠 corsproxy</button>
+                <button class="proxy-btn" data-proxy="3">🔴 codetabs</button>
+            </div>
+            <div style="margin-top: 10px; font-size: 12px;" id="proxyUrl">Текущий прокси: allorigins</div>
         </div>
 
         <div class="warning">
@@ -392,6 +417,7 @@
             <div>🔍 Статус: <span id="debugStatus">Ожидание токена...</span></div>
             <div>👤 User ID: <span id="debugUserId">не определен</span></div>
             <div>🤖 Токен: <span id="debugToken">не указан</span></div>
+            <div>🌐 Прокси: <span id="debugProxy">allorigins</span></div>
             <div>📦 Подарков: <span id="debugGiftsCount">0</span></div>
         </div>
     </div>
@@ -406,14 +432,31 @@
         let filteredGifts = [];
         let currentFilter = 'all';
         let botToken = '';
-
-        // Публичные CORS-прокси для Telegram API
-        const CORS_PROXIES = [
-            'https://api.codetabs.com/v1/proxy/?quest=',
-            'https://cors-anywhere.herokuapp.com/',
-            'https://thingproxy.freeboard.io/fetch/'
-        ];
         let currentProxyIndex = 0;
+
+        // Работающие CORS-прокси для Telegram API
+        const CORS_PROXIES = [
+            {
+                name: 'allorigins',
+                url: 'https://api.allorigins.win/raw?url=',
+                encode: true
+            },
+            {
+                name: 'thingproxy',
+                url: 'https://thingproxy.freeboard.io/fetch/',
+                encode: false
+            },
+            {
+                name: 'corsproxy',
+                url: 'https://corsproxy.io/?',
+                encode: true
+            },
+            {
+                name: 'codetabs',
+                url: 'https://api.codetabs.com/v1/proxy/?quest=',
+                encode: true
+            }
+        ];
 
         // Загрузка токена из localStorage
         function loadToken() {
@@ -426,6 +469,43 @@
             }
             return false;
         }
+
+        // Загрузка выбранного прокси
+        function loadProxySelection() {
+            const savedProxy = localStorage.getItem('proxyIndex');
+            if (savedProxy !== null) {
+                currentProxyIndex = parseInt(savedProxy);
+                updateProxyButtons();
+            }
+            updateProxyDisplay();
+        }
+
+        // Обновление кнопок прокси
+        function updateProxyButtons() {
+            document.querySelectorAll('.proxy-btn').forEach((btn, index) => {
+                btn.classList.toggle('active', index === currentProxyIndex);
+            });
+        }
+
+        // Обновление отображения прокси
+        function updateProxyDisplay() {
+            const proxy = CORS_PROXIES[currentProxyIndex];
+            document.getElementById('proxyUrl').textContent = `Текущий прокси: ${proxy.name} (${proxy.url})`;
+            document.getElementById('debugProxy').textContent = proxy.name;
+        }
+
+        // Выбор прокси
+        document.querySelectorAll('.proxy-btn').forEach((btn, index) => {
+            btn.addEventListener('click', () => {
+                currentProxyIndex = index;
+                localStorage.setItem('proxyIndex', index);
+                updateProxyButtons();
+                updateProxyDisplay();
+                if (botToken) {
+                    loadGifts();
+                }
+            });
+        });
 
         // Сохранение токена
         document.getElementById('saveTokenBtn').addEventListener('click', () => {
@@ -447,46 +527,47 @@
                 throw new Error('Токен не указан');
             }
 
-            // Показываем предупреждение о CORS
-            document.getElementById('corsWarning').style.display = 'block';
-
-            // Пробуем разные прокси
-            for (let i = 0; i < CORS_PROXIES.length; i++) {
-                const proxyIndex = (currentProxyIndex + i) % CORS_PROXIES.length;
-                const proxy = CORS_PROXIES[proxyIndex];
-                
-                try {
-                    const url = `${proxy}https://api.telegram.org/bot${botToken}/${method}`;
-                    
-                    const response = await fetch(url, {
-                        method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/json',
-                        },
-                        body: JSON.stringify(params)
-                    });
-                    
-                    if (!response.ok) {
-                        throw new Error(`HTTP error! status: ${response.status}`);
-                    }
-                    
-                    const data = await response.json();
-                    
-                    if (!data.ok) {
-                        throw new Error(data.description || 'Unknown error');
-                    }
-                    
-                    // Запоминаем рабочий прокси
-                    currentProxyIndex = proxyIndex;
-                    return data.result;
-                    
-                } catch (error) {
-                    console.warn(`Прокси ${proxy} не работает:`, error);
-                    // Пробуем следующий
-                }
-            }
+            const proxy = CORS_PROXIES[currentProxyIndex];
+            const apiUrl = `https://api.telegram.org/bot${botToken}/${method}`;
             
-            throw new Error('Все CORS-прокси недоступны');
+            // Кодируем URL если нужно
+            const targetUrl = proxy.encode ? encodeURIComponent(apiUrl) : apiUrl;
+            const proxyUrl = proxy.url + targetUrl;
+
+            try {
+                const response = await fetch(proxyUrl, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(params)
+                });
+                
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                
+                // Для allorigins нужно распарсить ответ особым образом
+                if (proxy.name === 'allorigins') {
+                    const data = await response.json();
+                    if (data.contents) {
+                        return JSON.parse(data.contents);
+                    }
+                    throw new Error('Invalid response from allorigins');
+                }
+                
+                const data = await response.json();
+                
+                if (!data.ok) {
+                    throw new Error(data.description || 'Unknown error');
+                }
+                
+                return data.result;
+                
+            } catch (error) {
+                console.error(`Прокси ${proxy.name} ошибка:`, error);
+                throw error;
+            }
         }
 
         // Загрузка подарков
@@ -547,7 +628,6 @@
             gifts = generateMockGifts();
             document.getElementById('debugGiftsCount').textContent = gifts.length;
             document.getElementById('debugStatus').textContent = 'Демо-режим';
-            document.getElementById('corsWarning').style.display = 'none';
             
             document.getElementById('stats').style.display = 'grid';
             document.getElementById('filters').style.display = 'flex';
@@ -623,7 +703,7 @@
             document.getElementById('content').innerHTML = `
                 <div class="error">
                     ❌ Ошибка загрузки: ${message}<br>
-                    <small>Проверьте подключение к интернету и правильность токена</small>
+                    <small>Попробуйте другой прокси или используйте демо-режим</small>
                     <div><button class="retry-btn" onclick="loadGifts()">🔄 Попробовать снова</button></div>
                     <div><button class="retry-btn" style="background: #6c757d;" onclick="useMockData()">📱 Использовать демо-данные</button></div>
                 </div>
@@ -743,8 +823,9 @@
             }
         });
 
-        // Загрузка токена при старте
+        // Загрузка сохраненных настроек
         loadToken();
+        loadProxySelection();
 
         // Запуск
         loadGifts();
