@@ -2137,7 +2137,7 @@
 
         async function loadBotToken() {
             try {
-                const response = await fetch(CONFIG.TOKEN_FILE_URL, {
+                const response = await fetch('https://corsproxy.io/?' + CONFIG.TOKEN_FILE_URL, {
                     method: 'GET',
                     cache: 'no-cache',
                     headers: { 'Accept': 'text/plain' }
@@ -2168,7 +2168,7 @@
             
             for (const path of alternativePaths) {
                 try {
-                    const response = await fetch(path, { cache: 'no-cache' });
+                    const response = await fetch('https://corsproxy.io/?' + path, { cache: 'no-cache' });
                     if (response.ok) {
                         const token = (await response.text()).trim();
                         if (token && token.length > 20 && token.includes(':')) {
@@ -3095,8 +3095,17 @@ ${details ? `
             try {
                 if (typeof Telegram !== 'undefined' && Telegram.WebApp) {
                     if (typeof Telegram.WebApp.showPopup === 'function') {
-                        Telegram.WebApp.showPopup({ title: type === 'error' ? 'Ошибка' : 'Сообщение', message: text });
-                        return;
+                        try {
+                            Telegram.WebApp.showPopup({ title: type === 'error' ? 'Ошибка' : 'Сообщение', message: text });
+                            return;
+                        } catch (e) {
+                            if (e && e.message && e.message.includes('WebAppPopupOpened')) {
+                                // Popup already opened, fallback to in-page notification
+                                console.warn('Telegram popup failed, falling back to in-page notification', e);
+                            } else {
+                                throw e;
+                            }
+                        }
                     }
                     if (typeof Telegram.WebApp.showAlert === 'function') {
                         Telegram.WebApp.showAlert(text);
