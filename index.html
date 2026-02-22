@@ -1,9 +1,11 @@
+
 <!DOCTYPE html>
 <html lang="ru">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
     <title>Task Greot | Платформа заданий</title>
+    <link rel="icon" href="https://raw.githubusercontent.com/exyyl/-taskgreot/main/taskgreot.JPG">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
@@ -45,6 +47,7 @@
             background: var(--bg-deep);
             color: var(--text-light);
             position: relative;
+            font-size: 16px;
         }
 
         body::before {
@@ -147,15 +150,63 @@
             align-items: center;
             justify-content: space-between;
             max-width: 1200px;
+            width: 100%;
         }
 
         .logo-small {
-            font-size: 1.8rem;
+            font-size: clamp(1.4rem, 5vw, 1.8rem);
             font-weight: 900;
             background: linear-gradient(90deg, var(--accent-purple), var(--accent-green));
             -webkit-background-clip: text;
             background-clip: text;
             color: transparent;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            max-width: 60%;
+            flex: 1;
+            min-width: 0;
+        }
+
+        /* Top-bar user display (avatar + name) */
+        .topbar-user {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            max-width: 60%;
+            overflow: hidden;
+        }
+
+        .topbar-avatar {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: linear-gradient(90deg, var(--accent-purple), var(--accent-green));
+            flex-shrink: 0;
+            font-weight: 700;
+            color: white;
+        }
+
+        .topbar-avatar img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: block;
+        }
+
+        .topbar-name {
+            font-weight: 700;
+            color: var(--text-light);
+            font-size: clamp(0.95rem, 3.5vw, 1rem);
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            min-width: 0;
+            max-width: calc(100% - 48px);
         }
 
         .balance-mini {
@@ -167,11 +218,12 @@
             border-radius: 20px;
             border: 1px solid rgba(50, 173, 93, 0.3);
             box-shadow: 0 0 15px var(--accent-green-glow);
+            flex-shrink: 0;
         }
 
         .balance-mini-value {
             font-weight: 700;
-            font-size: 1rem;
+            font-size: clamp(0.9rem, 4vw, 1rem);
             color: var(--accent-green);
         }
 
@@ -182,13 +234,11 @@
 
         header {
             text-align: center;
-            padding: 40px 20px 30px;
-            position: relative;
-            margin-top: 0;
+            padding: clamp(20px, 5vw, 40px) clamp(16px, 4vw, 20px) clamp(20px, 5vw, 30px);
         }
 
         .logo {
-            font-size: 3.2rem;
+            font-size: clamp(2.4rem, 8vw, 3.2rem);
             font-weight: 900;
             background: linear-gradient(90deg, var(--accent-purple), var(--accent-green));
             -webkit-background-clip: text;
@@ -201,12 +251,13 @@
 
         .tagline {
             color: var(--text-muted);
-            font-size: 1.05rem;
+            font-size: clamp(0.9rem, 3.5vw, 1.05rem);
             font-weight: 400;
             letter-spacing: 0.5px;
             max-width: 600px;
             margin: 0 auto;
             line-height: 1.4;
+            padding: 0 10px;
         }
 
         .glass-card {
@@ -249,6 +300,7 @@
             gap: 8px;
             margin: 18px 0;
             justify-content: center;
+            flex-wrap: wrap;
         }
 
         .sub-tab {
@@ -259,6 +311,9 @@
             border: 1px solid transparent;
             cursor: pointer;
             font-weight: 600;
+            font-size: clamp(0.85rem, 3.5vw, 1rem);
+            transition: all 0.2s ease;
+            white-space: nowrap;
         }
 
         .sub-tab.active {
@@ -281,11 +336,11 @@
             cursor: pointer;
             transition: all 0.3s ease;
             font-weight: 500;
-            font-size: 0.85rem;
+            font-size: clamp(0.75rem, 3vw, 0.85rem);
         }
 
         .tab-btn i {
-            font-size: 1.3rem;
+            font-size: clamp(1.2rem, 5vw, 1.3rem);
             margin-bottom: 6px;
             transition: all 0.3s ease;
         }
@@ -305,7 +360,7 @@
             display: none;
             flex: 1;
             animation: fadeIn 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-            padding: 0 20px;
+            padding: 0 16px;
         }
 
         .tab-content.active {
@@ -317,41 +372,44 @@
             to { opacity: 1; transform: translateY(0); }
         }
 
-        .tasks-section { max-width: none; width: 100%; margin: 0 auto; padding: 0 12px; }
+        .tasks-section { 
+            max-width: none; 
+            width: 100%; 
+            margin: 0 auto; 
+        }
+        
         .tasks-grid {
             display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 20px;
+            grid-template-columns: 1fr;
+            gap: clamp(12px, 3vw, 20px);
             margin-top: 16px;
             margin-bottom: 40px;
-            align-items: start;
             width: 100%;
         }
 
+        /* РАСШИРЕННЫЕ КАРТОЧКИ ЗАДАНИЙ */
         .task-card {
             position: relative;
             overflow: hidden;
-            padding: 20px;
+            padding: clamp(16px, 4vw, 24px);
             border-radius: 28px;
-            min-height: 190px;
-            display: grid;
-            grid-template-columns: 72px 1fr;
-            gap: 18px;
-            align-items: start;
-            transition: transform 0.18s ease, box-shadow 0.18s ease;
-            background: rgba(254, 254, 254, 0.9);
-            backdrop-filter: blur(15px);
-            -webkit-backdrop-filter: blur(15px);
-            border: 1px solid rgba(255, 255, 255, 0.3);
-            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
-            color: var(--text-dark);
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+            transition: all 0.25s ease;
+            background: rgba(254, 254, 254, 0.03);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border: 1px solid var(--border-glass);
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+            color: var(--text-light);
         }
 
-        @media (max-width: 600px) {
-            .task-card { grid-template-columns: 56px 1fr; padding: 14px; min-height: 120px; }
-            .task-footer { flex-direction: column; gap: 10px; align-items: stretch; }
-            .task-reward { width: 100%; justify-content: flex-start; }
-            .task-action { width: 100%; }
+        .task-card:hover {
+            transform: translateY(-4px);
+            border-color: rgba(50, 173, 93, 0.3);
+            background: rgba(254, 254, 254, 0.05);
+            box-shadow: 0 12px 30px rgba(0, 0, 0, 0.25);
         }
 
         .task-card::before {
@@ -359,88 +417,89 @@
             position: absolute;
             top: 0;
             left: 0;
-            width: 100%;
-            height: 4px;
-            background: var(--gradient-purple);
+            width: 4px;
+            height: 100%;
+            background: var(--accent-green);
             opacity: 0;
-            transition: opacity 0.3s ease;
+            transition: opacity 0.2s;
         }
 
         .task-card:hover::before {
-            opacity: 1;
+            opacity: 0.6;
+        }
+
+        .task-row {
+            display: flex;
+            gap: clamp(12px, 3vw, 18px);
+            align-items: flex-start;
         }
 
         .task-icon {
-            width: 72px;
-            height: 72px;
+            width: clamp(48px, 12vw, 64px);
+            height: clamp(48px, 12vw, 64px);
             display: flex;
             align-items: center;
             justify-content: center;
-            background: var(--gradient-purple);
+            background: rgba(50, 173, 93, 0.1);
             border-radius: 20px;
-            font-size: 1.8rem;
-            color: white;
-            box-shadow: 0 10px 30px var(--accent-purple-glow);
+            font-size: clamp(1.4rem, 5vw, 2rem);
+            color: var(--accent-green);
+            border: 1px solid rgba(50, 173, 93, 0.3);
             flex-shrink: 0;
-            justify-self: center;
-            grid-row: 1 / span 2;
-            align-self: start;
+        }
+
+        .task-content {
+            flex: 1;
+            min-width: 0;
         }
 
         .task-title {
-            font-family: Inter, system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial;
-            font-size: 1.1rem;
+            font-size: clamp(1rem, 4vw, 1.2rem);
             font-weight: 700;
-            margin: 0 0 4px 0;
-            color: var(--text-dark);
-            line-height: 1.2;
-            letter-spacing: -0.2px;
-            grid-column: 2 / 3;
+            margin: 0 0 6px 0;
+            color: var(--text-light);
+            line-height: 1.3;
+            word-wrap: break-word;
         }
 
         .task-desc {
-            font-family: Inter, system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial;
-            color: rgba(26, 30, 43, 0.8);
-            font-size: 0.86rem;
-            margin: 0;
-            line-height: 1.4;
-            text-align: left;
-            hyphens: auto;
-            -webkit-hyphens: auto;
-            -moz-hyphens: auto;
-            display: block;
-            max-height: none;
-            overflow: visible;
-            position: static;
-            grid-column: 2 / 3;
-            margin-top: 2px;
-            overflow-wrap: anywhere;
+            color: var(--text-muted);
+            font-size: clamp(0.85rem, 3.5vw, 0.95rem);
+            line-height: 1.5;
+            display: -webkit-box;
+            -webkit-line-clamp: 3;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+            word-wrap: break-word;
         }
 
         .task-footer {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            grid-column: 1 / -1;
-            margin-top: 10px;
+            margin-top: 8px;
+            padding-top: 16px;
+            border-top: 1px solid var(--border-glass);
             gap: 12px;
+            flex-wrap: wrap;
         }
 
         .task-reward {
             color: var(--accent-green);
-            font-weight: 800;
-            font-size: 1.05rem;
+            font-weight: 700;
+            font-size: clamp(0.95rem, 4vw, 1.1rem);
             display: inline-flex;
             align-items: center;
             gap: 8px;
             background: rgba(50, 173, 93, 0.1);
-            padding: 8px 10px;
-            border-radius: 20px;
+            padding: 8px 18px;
+            border-radius: 30px;
             border: 1px solid rgba(50, 173, 93, 0.2);
+            white-space: nowrap;
         }
 
         .task-reward i {
-            font-size: 1rem;
+            font-size: 0.95rem;
             color: var(--accent-green);
         }
 
@@ -448,64 +507,53 @@
             background: var(--gradient-green);
             color: white;
             border: none;
-            padding: 10px 20px;
+            padding: clamp(10px, 3vw, 12px) clamp(20px, 6vw, 28px);
             border-radius: 30px;
-            font-weight: 700;
+            font-weight: 600;
             cursor: pointer;
             transition: all 0.2s ease;
-            letter-spacing: 0.3px;
-            box-shadow: 0 6px 18px var(--accent-green-glow);
-            font-size: 0.98rem;
-            width: 100%;
-            justify-self: center;
-            white-space: normal;
-            text-align: center;
-            min-height: 44px;
+            box-shadow: 0 6px 16px var(--accent-green-glow);
+            font-size: clamp(0.9rem, 3.5vw, 1rem);
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            white-space: nowrap;
+        }
+
+        .task-action.exit-mini-app {
+            background: var(--gradient-green);
         }
 
         .task-action:hover {
             transform: translateY(-2px);
-            box-shadow: 0 8px 25px rgba(50, 173, 93, 0.5);
+            box-shadow: 0 8px 20px rgba(50, 173, 93, 0.4);
         }
 
         .task-action:active {
             transform: translateY(0);
         }
 
-        .task-card:hover {
-            transform: translateY(-6px);
-            box-shadow: 0 20px 40px rgba(0,0,0,0.2);
-        }
-
         .profile-header {
             display: flex;
             align-items: center;
-            gap: 24px;
-            padding: 32px;
-            margin-bottom: 32px;
-            position: relative;
+            gap: clamp(16px, 4vw, 24px);
+            padding: clamp(20px, 5vw, 32px);
+            margin-bottom: 24px;
             background: rgba(254, 254, 254, 0.05);
-        }
-
-        .profile-header::after {
-            content: '';
-            position: absolute;
-            bottom: 0;
-            left: 32px;
-            right: 32px;
-            height: 1px;
-            background: linear-gradient(90deg, transparent, var(--border-glass), transparent);
+            border-radius: 28px;
+            border: 1px solid var(--border-glass);
+            flex-wrap: wrap;
         }
 
         .avatar {
-            width: 110px;
-            height: 110px;
+            width: clamp(80px, 20vw, 110px);
+            height: clamp(80px, 20vw, 110px);
             border-radius: 50%;
             background: var(--gradient-purple);
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 2.8rem;
+            font-size: clamp(2rem, 7vw, 2.8rem);
             color: white;
             overflow: hidden;
             border: 4px solid rgba(255, 255, 255, 0.15);
@@ -519,21 +567,28 @@
             object-fit: cover;
         }
 
+        .profile-info {
+            flex: 1;
+            min-width: 200px;
+        }
+
         .profile-info h2 {
-            font-size: 1.8rem;
+            font-size: clamp(1.4rem, 5vw, 1.8rem);
             margin-bottom: 6px;
             color: white;
             font-weight: 800;
             letter-spacing: -0.3px;
+            word-wrap: break-word;
         }
 
         .profile-info p {
             color: var(--text-muted);
-            font-size: 1rem;
+            font-size: clamp(0.9rem, 3.5vw, 1rem);
             margin-bottom: 4px;
             display: flex;
             align-items: center;
             gap: 8px;
+            flex-wrap: wrap;
         }
 
         .level-badge {
@@ -545,19 +600,22 @@
             padding: 8px 18px;
             border-radius: 30px;
             font-weight: 700;
-            font-size: 0.9rem;
+            font-size: clamp(0.85rem, 3.5vw, 0.9rem);
             border: 1px solid rgba(50, 173, 93, 0.3);
             margin-top: 12px;
             box-shadow: 0 0 15px var(--accent-green-glow);
+            flex-wrap: wrap;
         }
 
         .balance-card {
-            padding: 36px 32px;
+            padding: clamp(24px, 6vw, 36px) clamp(20px, 5vw, 32px);
             text-align: center;
-            margin-bottom: 32px;
+            margin-bottom: 24px;
+            background: rgba(254, 254, 254, 0.05);
+            border-radius: 28px;
+            border: 1px solid var(--border-glass);
             position: relative;
             overflow: hidden;
-            background: rgba(254, 254, 254, 0.05);
         }
 
         .balance-card::before {
@@ -576,6 +634,8 @@
             justify-content: space-between;
             align-items: center;
             margin-bottom: 20px;
+            flex-wrap: wrap;
+            gap: 12px;
         }
 
         .balance-label {
@@ -583,7 +643,7 @@
             align-items: center;
             gap: 12px;
             color: var(--text-muted);
-            font-size: 1.1rem;
+            font-size: clamp(1rem, 4vw, 1.1rem);
             font-weight: 500;
         }
 
@@ -591,14 +651,14 @@
             background: rgba(50, 173, 93, 0.15);
             border: 1px solid rgba(50, 173, 93, 0.3);
             color: var(--accent-green);
-            width: 48px;
-            height: 48px;
+            width: clamp(44px, 10vw, 48px);
+            height: clamp(44px, 10vw, 48px);
             border-radius: 16px;
             cursor: pointer;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 1.3rem;
+            font-size: clamp(1.2rem, 5vw, 1.3rem);
             transition: all 0.3s ease;
             box-shadow: 0 0 15px var(--accent-green-glow);
         }
@@ -612,8 +672,12 @@
             animation: spin 1s linear infinite;
         }
 
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
         .balance-amount {
-            font-size: 4.2rem;
+            font-size: clamp(3rem, 12vw, 4.2rem);
             font-weight: 900;
             background: var(--gradient-green);
             -webkit-background-clip: text;
@@ -622,28 +686,30 @@
             margin: 15px 0;
             text-shadow: 0 0 30px var(--accent-green-glow);
             letter-spacing: -1px;
+            word-wrap: break-word;
         }
 
         .balance-subtext {
             color: var(--text-muted);
             margin-bottom: 24px;
-            font-size: 1rem;
+            font-size: clamp(0.9rem, 3.5vw, 1rem);
         }
 
         .withdraw-btn {
             background: var(--gradient-green);
             color: white;
             border: none;
-            padding: 18px 36px;
+            padding: clamp(14px, 4vw, 18px) clamp(24px, 8vw, 36px);
             border-radius: 40px;
             font-weight: 600;
             cursor: pointer;
             width: 100%;
             max-width: 280px;
-            font-size: 1.1rem;
+            font-size: clamp(1rem, 4vw, 1.1rem);
             letter-spacing: 0.5px;
             transition: all 0.3s ease;
             box-shadow: 0 8px 25px var(--accent-green-glow);
+            margin: 0 auto;
         }
 
         .withdraw-btn:hover {
@@ -664,15 +730,17 @@
         .stats-grid {
             display: grid;
             grid-template-columns: repeat(2, 1fr);
-            gap: 18px;
+            gap: clamp(12px, 3vw, 18px);
             margin-bottom: 32px;
         }
 
         .stat-card {
-            padding: 28px 22px;
+            padding: clamp(20px, 5vw, 28px) clamp(16px, 4vw, 22px);
             text-align: center;
             transition: all 0.3s ease;
             background: rgba(254, 254, 254, 0.05);
+            border-radius: 24px;
+            border: 1px solid var(--border-glass);
         }
 
         .stat-card:hover {
@@ -680,7 +748,7 @@
         }
 
         .stat-value {
-            font-size: 2.4rem;
+            font-size: clamp(2rem, 8vw, 2.4rem);
             font-weight: 800;
             color: var(--accent-green);
             margin-bottom: 8px;
@@ -689,7 +757,7 @@
 
         .stat-label {
             color: var(--text-muted);
-            font-size: 0.95rem;
+            font-size: clamp(0.85rem, 3.5vw, 0.95rem);
             font-weight: 500;
         }
 
@@ -709,8 +777,7 @@
             opacity: 0;
             visibility: hidden;
             transition: all 0.3s ease;
-            padding-top: env(safe-area-inset-top);
-            padding-bottom: env(safe-area-inset-bottom);
+            padding: env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left);
         }
 
         .modal-overlay.active {
@@ -724,14 +791,15 @@
             -webkit-backdrop-filter: blur(30px) saturate(180%);
             border-radius: 40px;
             border: 1px solid var(--border-glass);
-            padding: 36px;
+            padding: clamp(24px, 6vw, 36px);
             width: 90%;
             max-width: 420px;
-            max-height: calc(100vh - 40px - env(safe-area-inset-top) - env(safe-area-inset-bottom));
+            max-height: 90vh;
             overflow-y: auto;
             transform: translateY(20px) scale(0.98);
             transition: transform 0.3s ease;
             box-shadow: 0 25px 70px rgba(0, 0, 0, 0.5);
+            margin: auto;
         }
 
         .modal-overlay.active .modal-content {
@@ -739,12 +807,12 @@
         }
 
         .modal-header {
-            margin-bottom: 28px;
+            margin-bottom: 24px;
             text-align: center;
         }
 
         .modal-header h2 {
-            font-size: 2rem;
+            font-size: clamp(1.6rem, 6vw, 2rem);
             font-weight: 800;
             color: white;
             margin-bottom: 10px;
@@ -753,21 +821,21 @@
 
         .modal-header p {
             color: var(--text-muted);
-            font-size: 1.05rem;
+            font-size: clamp(0.95rem, 4vw, 1.05rem);
         }
 
         .method-selection {
             display: grid;
             grid-template-columns: repeat(3, 1fr);
-            gap: 16px;
-            margin-bottom: 28px;
+            gap: clamp(8px, 2vw, 16px);
+            margin-bottom: 24px;
         }
 
         .method-option {
             display: flex;
             flex-direction: column;
             align-items: center;
-            padding: 22px 14px;
+            padding: clamp(12px, 4vw, 22px) clamp(8px, 3vw, 14px);
             background: rgba(255, 255, 255, 0.03);
             border: 2px solid var(--border-glass);
             border-radius: 24px;
@@ -789,15 +857,15 @@
         }
 
         .method-icon {
-            width: 60px;
-            height: 60px;
+            width: clamp(40px, 10vw, 60px);
+            height: clamp(40px, 10vw, 60px);
             border-radius: 20px;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 2rem;
+            font-size: clamp(1.5rem, 5vw, 2rem);
             color: white;
-            margin-bottom: 14px;
+            margin-bottom: 10px;
         }
 
         .sbp-icon {
@@ -813,38 +881,38 @@
         }
 
         .method-name {
-            font-size: 1.05rem;
+            font-size: clamp(0.9rem, 3.5vw, 1rem);
             font-weight: 700;
             color: white;
-            margin-bottom: 6px;
+            margin-bottom: 4px;
         }
 
         .method-min {
             color: var(--warning);
-            font-size: 0.85rem;
+            font-size: 0.8rem;
             font-weight: 600;
         }
 
         .input-group {
-            margin-bottom: 22px;
+            margin-bottom: 20px;
         }
 
         .input-group label {
             display: block;
             color: var(--text-muted);
-            font-size: 1rem;
-            margin-bottom: 10px;
+            font-size: clamp(0.9rem, 3.5vw, 1rem);
+            margin-bottom: 8px;
             font-weight: 500;
         }
 
         .input-group input, .input-group select {
             width: 100%;
-            padding: 16px 18px;
+            padding: clamp(12px, 3vw, 16px) clamp(14px, 4vw, 18px);
             background: rgba(255, 255, 255, 0.05);
             border: 2px solid var(--border-glass);
             border-radius: 20px;
             color: white;
-            font-size: 1.05rem;
+            font-size: clamp(0.95rem, 4vw, 1.05rem);
             font-family: 'Inter', sans-serif;
             transition: all 0.3s ease;
         }
@@ -865,7 +933,7 @@
             top: 50%;
             transform: translateY(-50%);
             color: var(--text-muted);
-            font-size: 1.05rem;
+            font-size: 1rem;
             pointer-events: none;
         }
 
@@ -877,14 +945,14 @@
             background: var(--gradient-green);
             color: white;
             border: none;
-            padding: 18px;
+            padding: clamp(14px, 4vw, 18px);
             border-radius: 40px;
             font-weight: 600;
             cursor: pointer;
             width: 100%;
-            font-size: 1.1rem;
+            font-size: clamp(1rem, 4vw, 1.1rem);
             transition: all 0.3s ease;
-            margin-top: 24px;
+            margin-top: 20px;
             box-shadow: 0 8px 25px var(--accent-green-glow);
         }
 
@@ -902,8 +970,8 @@
 
         .close-modal {
             position: absolute;
-            top: 24px;
-            right: 24px;
+            top: max(16px, env(safe-area-inset-top));
+            right: max(16px, env(safe-area-inset-right));
             background: none;
             border: none;
             color: var(--text-muted);
@@ -916,6 +984,7 @@
             justify-content: center;
             border-radius: 50%;
             transition: all 0.3s ease;
+            z-index: 10;
         }
 
         .close-modal:hover {
@@ -935,7 +1004,7 @@
         .step-header {
             display: flex;
             align-items: center;
-            margin-bottom: 22px;
+            margin-bottom: 20px;
         }
 
         .step-back {
@@ -944,8 +1013,8 @@
             color: var(--text-muted);
             font-size: 1.2rem;
             cursor: pointer;
-            width: 44px;
-            height: 44px;
+            width: 40px;
+            height: 40px;
             display: flex;
             align-items: center;
             justify-content: center;
@@ -961,7 +1030,7 @@
 
         .step-title {
             flex: 1;
-            font-size: 1.6rem;
+            font-size: clamp(1.3rem, 5vw, 1.6rem);
             font-weight: 800;
             color: white;
             letter-spacing: -0.2px;
@@ -969,22 +1038,22 @@
 
         .step-description {
             color: var(--text-muted);
-            margin-bottom: 28px;
+            margin-bottom: 24px;
             line-height: 1.5;
-            font-size: 1.05rem;
+            font-size: clamp(0.95rem, 4vw, 1.05rem);
         }
 
         .withdraw-info {
             background: rgba(255, 255, 255, 0.03);
             border-radius: 24px;
-            padding: 24px;
-            margin-bottom: 28px;
+            padding: 20px;
+            margin-bottom: 24px;
         }
 
         .withdraw-info-item {
             display: flex;
             justify-content: space-between;
-            margin-bottom: 14px;
+            margin-bottom: 12px;
             font-size: 1rem;
         }
 
@@ -1003,36 +1072,35 @@
 
         .stars-conversion {
             color: var(--warning);
-            font-size: 0.95rem;
+            font-size: 0.9rem;
             text-align: center;
             margin-top: 12px;
             font-weight: 500;
         }
 
         .info-sections {
-            margin-bottom: 40px;
+            margin-bottom: 30px;
         }
 
         .info-section {
-            padding: 32px;
-            margin-bottom: 24px;
+            padding: clamp(20px, 5vw, 32px);
+            margin-bottom: 20px;
             cursor: pointer;
             background: rgba(254, 254, 254, 0.05);
-        }
-
-        .info-section:last-child {
-            margin-bottom: 0;
+            border-radius: 24px;
+            border: 1px solid var(--border-glass);
         }
 
         .info-section h2 {
-            font-size: 1.7rem;
-            margin-bottom: 24px;
+            font-size: clamp(1.3rem, 5vw, 1.7rem);
+            margin-bottom: 16px;
             color: white;
             font-weight: 800;
             display: flex;
             align-items: center;
             justify-content: space-between;
-            letter-spacing: -0.3px;
+            flex-wrap: wrap;
+            gap: 12px;
         }
 
         .info-section h2 i {
@@ -1046,60 +1114,31 @@
 
         .info-content {
             color: var(--text-muted);
-            line-height: 1.7;
-            font-size: 1.05rem;
+            line-height: 1.6;
+            font-size: clamp(0.95rem, 3.5vw, 1.05rem);
         }
 
         .info-content p {
-            margin-bottom: 18px;
-        }
-
-        .info-content p:last-child {
-            margin-bottom: 0;
-        }
-
-        .info-content strong {
-            color: var(--text-light);
-            font-weight: 600;
-        }
-
-        .info-list {
-            list-style: none;
-            margin: 18px 0;
-        }
-
-        .info-list li {
-            padding: 10px 0;
-            padding-left: 28px;
-            position: relative;
-            color: var(--text-muted);
-        }
-
-        .info-list li:before {
-            content: '•';
-            color: var(--accent-green);
-            font-size: 1.5rem;
-            position: absolute;
-            left: 0;
-            top: 6px;
+            margin-bottom: 16px;
         }
 
         .highlight {
-            background: linear-gradient(135deg, rgba(50, 173, 93, 0.1), rgba(157, 78, 221, 0.05));
+            background: rgba(50, 173, 93, 0.1);
             border-left: 4px solid var(--accent-green);
-            padding: 20px 24px;
+            padding: 16px 20px;
             border-radius: 12px;
-            margin: 24px 0;
+            margin: 16px 0;
             color: var(--text-light);
             font-weight: 500;
         }
 
         .faq-item {
-            padding: 26px;
-            margin-bottom: 16px;
+            padding: clamp(16px, 4vw, 26px);
+            margin-bottom: 12px;
             cursor: pointer;
-            transition: all 0.3s ease;
             background: rgba(254, 254, 254, 0.05);
+            border-radius: 20px;
+            border: 1px solid var(--border-glass);
         }
 
         .faq-item:hover {
@@ -1112,7 +1151,8 @@
             align-items: center;
             font-weight: 700;
             color: white;
-            font-size: 1.1rem;
+            font-size: clamp(1rem, 4vw, 1.1rem);
+            gap: 12px;
         }
 
         .faq-question i {
@@ -1128,14 +1168,14 @@
             max-height: 0;
             overflow: hidden;
             color: var(--text-muted);
-            line-height: 1.7;
-            transition: max-height 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-            font-size: 1.05rem;
+            line-height: 1.6;
+            transition: max-height 0.3s ease;
+            font-size: clamp(0.95rem, 3.5vw, 1.05rem);
         }
 
         .faq-item.active .faq-answer {
-            max-height: 500px;
-            margin-top: 20px;
+            max-height: 300px;
+            margin-top: 16px;
         }
 
         .info-modal-content {
@@ -1147,16 +1187,15 @@
 
         .info-modal-header {
             text-align: center;
-            margin-bottom: 30px;
-            padding-bottom: 20px;
+            margin-bottom: 24px;
+            padding-bottom: 16px;
             border-bottom: 1px solid var(--border-glass);
         }
 
         .info-modal-header h2 {
-            font-size: 2.2rem;
+            font-size: clamp(1.8rem, 6vw, 2.2rem);
             font-weight: 800;
             color: white;
-            margin-bottom: 10px;
             display: flex;
             align-items: center;
             justify-content: center;
@@ -1167,11 +1206,23 @@
             padding: 10px 0;
         }
 
+        .instruction-list {
+            color: var(--text-muted);
+            line-height: 1.7;
+            padding-left: 20px;
+            font-size: clamp(0.95rem, 4vw, 1.05rem);
+        }
+
+        .instruction-list li {
+            margin-bottom: 12px;
+        }
+
         .notification {
             position: fixed;
             top: calc(80px + env(safe-area-inset-top));
-            right: 20px;
-            padding: 18px 26px;
+            right: max(16px, env(safe-area-inset-right));
+            left: max(16px, env(safe-area-inset-left));
+            padding: 16px 24px;
             background: rgba(22, 23, 43, 0.98);
             border: 1px solid var(--border-glass);
             border-radius: 30px;
@@ -1183,6 +1234,8 @@
             max-width: 340px;
             backdrop-filter: blur(25px) saturate(180%);
             -webkit-backdrop-filter: blur(25px) saturate(180%);
+            margin: 0 auto;
+            text-align: center;
         }
 
         .notification.show {
@@ -1211,10 +1264,6 @@
             animation: spin 1s ease-in-out infinite;
         }
 
-        @keyframes spin {
-            to { transform: rotate(360deg); }
-        }
-
         .fade-in {
             animation: fadeIn 0.5s ease-out forwards;
             opacity: 0;
@@ -1224,27 +1273,11 @@
         .fade-in:nth-child(2) { animation-delay: 0.2s; }
         .fade-in:nth-child(3) { animation-delay: 0.3s; }
 
-        @media (min-width: 1400px) {
-            .tasks-grid { grid-template-columns: repeat(3, 1fr); gap: 24px; max-width: 1300px; margin: 0 auto; }
-            .task-card { grid-template-columns: 72px 1fr; min-height: 200px; padding: 20px; }
-            .task-icon { width: 72px; height: 72px; }
+        .exit-mini-app {
+            cursor: pointer;
         }
 
-        @media (min-width: 992px) and (max-width: 1399px) {
-            .tasks-grid { grid-template-columns: repeat(2, 1fr); gap: 20px; }
-            .task-card { grid-template-columns: 72px 1fr; min-height: 180px; padding: 18px; }
-            .task-icon { width: 64px; height: 64px; }
-        }
-
-        @media (max-width: 991px) {
-            .tasks-grid { grid-template-columns: 1fr; gap: 16px; padding: 0 10px; }
-            .task-card { grid-template-columns: 56px 1fr; grid-auto-rows: auto; padding: 14px; min-height: 150px; }
-            .task-footer { grid-column: 1 / -1; flex-direction: column; align-items: stretch; gap: 10px; }
-            .task-action { width: 100%; }
-            .task-title { font-size: 1.04rem; }
-            .task-desc { font-size: 0.9rem; }
-        }
-
+        /* Адаптивные медиа-запросы */
         @media (max-width: 768px) {
             .logo { font-size: 2.8rem; }
             .top-bar { height: calc(55px + env(safe-area-inset-top)); }
@@ -1254,9 +1287,10 @@
             header { padding: 30px 20px; }
             .profile-header { flex-direction: column; text-align: center; gap: 20px; padding: 24px; }
             .avatar { width: 95px; height: 95px; font-size: 2.4rem; }
+            .profile-info { text-align: center; }
+            .profile-info p { justify-content: center; }
             .balance-amount { font-size: 3.6rem; }
             .tab-navigation { padding: 10px; border-radius: 20px; bottom: calc(16px + env(safe-area-inset-bottom)); }
-            .task-card, .profile-header, .balance-card, .info-section { padding: 24px; }
             .modal-content { padding: 28px; width: 95%; }
             .method-selection { gap: 12px; }
             .method-option { padding: 18px 10px; }
@@ -1265,61 +1299,90 @@
 
         @media (max-width: 600px) {
             .tasks-grid { gap: 12px; }
-            .task-card { grid-template-columns: 48px 1fr; padding: 12px; min-height: 120px; gap: 12px; }
-            .task-icon { width: 48px; height: 48px; font-size: 1.2rem; grid-row: 1 / span 2; }
-            .task-footer { grid-column: 1 / -1; margin-top: 8px; }
-            .task-title { font-size: 1rem; }
-            .task-desc { font-size: 0.82rem; line-height: 1.35; }
-            .task-action { padding: 10px; font-size: 0.92rem; }
-        }
-
-        @media (max-width: 480px) {
-            .container { padding-left: 16px; padding-right: 16px; padding-bottom: calc(100px + env(safe-area-inset-bottom)); }
-            .logo { font-size: 2.4rem; }
-            .tagline { font-size: 1rem; }
-            .balance-amount { font-size: 3.2rem; }
-            .stat-value { font-size: 2rem; }
-            .method-selection { grid-template-columns: 1fr; gap: 10px; }
-            .method-option { flex-direction: row; text-align: left; padding: 18px; align-items: center; }
-            .method-icon { margin-right: 16px; margin-bottom: 0; flex-shrink: 0; }
-            .method-name { flex: 1; text-align: left; }
-            .info-section { padding: 24px; }
-            .info-section h2 { font-size: 1.5rem; }
-            .info-content { font-size: 1rem; }
-            .task-title { font-size: 1rem; }
+            .task-card { padding: 16px; }
+            .task-icon { width: 52px; height: 52px; font-size: 1.6rem; }
+            .task-title { font-size: 1.05rem; }
             .task-desc { font-size: 0.9rem; }
         }
 
-        @media (max-width: 420px) {
-            .task-card { grid-template-columns: 44px 1fr; padding: 10px; min-height: 110px; }
-            .task-title { font-size: 0.98rem; }
-            .task-desc { font-size: 0.8rem; }
-            .task-action { font-size: 0.9rem; padding: 8px; }
+        @media (max-width: 480px) {
+            .task-footer {
+                flex-direction: column;
+                align-items: stretch;
+            }
+            
+            .task-reward {
+                width: 100%;
+                justify-content: center;
+            }
+            
+            .task-action {
+                width: 100%;
+                justify-content: center;
+            }
+            
+            .method-selection {
+                grid-template-columns: 1fr;
+            }
+            
+            .method-option {
+                flex-direction: row;
+                text-align: left;
+                padding: 16px;
+                align-items: center;
+                gap: 16px;
+            }
+            
+            .method-icon {
+                margin-bottom: 0;
+            }
+        }
+
+        @media (max-width: 360px) {
+            .task-row {
+                flex-direction: column;
+                align-items: center;
+                text-align: center;
+            }
+            
+            .task-content {
+                text-align: center;
+            }
         }
 
         @supports (padding: max(0px)) {
             .container {
-                padding-left: max(20px, env(safe-area-inset-left));
-                padding-right: max(20px, env(safe-area-inset-right));
+                padding-left: max(16px, env(safe-area-inset-left));
+                padding-right: max(16px, env(safe-area-inset-right));
             }
+            
             .tab-navigation {
-                left: max(20px, env(safe-area-inset-left));
-                right: max(20px, env(safe-area-inset-right));
+                left: max(16px, env(safe-area-inset-left));
+                right: max(16px, env(safe-area-inset-right));
                 width: auto;
                 transform: none;
                 max-width: none;
             }
         }
-        
-        .exit-mini-app {
-            cursor: pointer;
+        /* Speed up animations/transitions globally for snappier UI */
+        * {
+            transition-duration: 120ms !important;
+            transition-delay: 0s !important;
+            animation-duration: 160ms !important;
+            animation-delay: 0s !important;
+            will-change: auto !important;
         }
     </style>
 </head>
 <body>
     <div class="top-bar" id="top-bar">
         <div class="top-bar-content">
-            <div class="logo-small">Task Greot</div>
+            <div class="logo-small">
+                <div class="topbar-user" id="topbar-user">
+                    <div class="topbar-avatar" id="topbar-avatar"><img id="topbar-avatar-img" src="" alt="" style="display:none;"></div>
+                    <div class="topbar-name" id="topbar-name">Пользователь</div>
+                </div>
+            </div>
             <div class="balance-mini">
                 <i class="fas fa-gem"></i>
                 <span class="balance-mini-value" id="mini-balance">0</span>
@@ -1329,12 +1392,12 @@
 
     <div class="container" id="main-container">
         <header>
-            <h1 class="logo">Task Greot</h1>
+            <h1 class="logo"><img src="https://raw.githubusercontent.com/exyyl/-taskgreot/main/taskgreot.JPG" alt="Task Greot" style="max-width: 320px; width: 100%; height: auto; object-fit: contain; display:block; margin: 0 auto;"></h1>
             <p class="tagline">Выполняйте задания. Получайте баллы. Меняйте на деньги или криптовалюту.</p>
         </header>
 
         <div id="tasks-tab" class="tab-content active">
-            <h2 style="margin-bottom: 12px; font-size: 1.8rem; font-weight: 800; color: white; letter-spacing: -0.3px;">Доступные задания</h2>
+            <h2 style="margin-bottom: 12px; font-size: clamp(1.4rem, 5vw, 1.8rem); font-weight: 800; color: white; letter-spacing: -0.3px;">Доступные задания</h2>
 
             <div class="sub-tab-navigation">
                 <button class="sub-tab active" data-sub="ordinary">Обычные</button>
@@ -1344,9 +1407,13 @@
             <div id="ordinary-tasks" class="tasks-section">
                 <div class="tasks-grid">
                     <div class="task-card glass-card fade-in" data-task-id="tiktok_comments" data-task-reward="500">
-                        <div class="task-icon"><i class="fab fa-tiktok"></i></div>
-                        <h3 class="task-title">Комментарии в TikTok</h3>
-                        <p class="task-desc">Напишите 100 комментариев под тематическими видео в TikTok. Мы предоставим готовые шаблоны и темы. Просто копируйте и вставляйте!</p>
+                        <div class="task-row">
+                            <div class="task-icon"><i class="fab fa-tiktok"></i></div>
+                            <div class="task-content">
+                                <h3 class="task-title">Комментарии в TikTok</h3>
+                                <p class="task-desc">Напишите 100 комментариев под тематическими видео в TikTok. Мы предоставим готовые шаблоны и темы. Просто копируйте и вставляйте!</p>
+                            </div>
+                        </div>
                         <div class="task-footer">
                             <div class="task-reward">
                                 <i class="fas fa-gem"></i> +500 баллов
@@ -1356,10 +1423,15 @@
                             </button>
                         </div>
                     </div>
+
                     <div class="task-card glass-card fade-in" data-task-id="yandex_reviews" data-task-reward="60">
-                        <div class="task-icon"><i class="fas fa-map-marker-alt"></i></div>
-                        <h3 class="task-title">Отзыв на Яндекс Картах</h3>
-                        <p class="task-desc">Оставьте отзыв в Яндекс Картах по нашему шаблону. Быстро, просто и безопасно. Задание выполняется за 2-3 минуты.</p>
+                        <div class="task-row">
+                            <div class="task-icon"><i class="fas fa-map-marker-alt"></i></div>
+                            <div class="task-content">
+                                <h3 class="task-title">Отзыв на Яндекс Картах</h3>
+                                <p class="task-desc">Оставьте отзыв в Яндекс Картах по нашему шаблону. Быстро, просто и безопасно. Задание выполняется за 2-3 минуты.</p>
+                            </div>
+                        </div>
                         <div class="task-footer">
                             <div class="task-reward">
                                 <i class="fas fa-gem"></i> +60 баллов
@@ -1369,10 +1441,15 @@
                             </button>
                         </div>
                     </div>
+
                     <div class="task-card glass-card fade-in" data-task-id="gmail_create" data-task-reward="10">
-                        <div class="task-icon"><i class="fas fa-envelope"></i></div>
-                        <h3 class="task-title">Создание почты Gmail</h3>
-                        <p class="task-desc">Создайте почтовый ящик Gmail по нашим данным. Максимально простое задание на 1-2 минуты. Никаких сложных действий.</p>
+                        <div class="task-row">
+                            <div class="task-icon"><i class="fas fa-envelope"></i></div>
+                            <div class="task-content">
+                                <h3 class="task-title">Создание почты Gmail</h3>
+                                <p class="task-desc">Создайте почтовый ящик Gmail по нашим данным. Максимально простое задание на 1-2 минуты. Никаких сложных действий.</p>
+                            </div>
+                        </div>
                         <div class="task-footer">
                             <div class="task-reward">
                                 <i class="fas fa-gem"></i> +10 баллов
@@ -1388,9 +1465,13 @@
             <div id="special-tasks" class="tasks-section" style="display:none;">
                 <div class="tasks-grid">
                     <div class="task-card glass-card fade-in" data-task-id="special_verification" data-task-reward="60">
-                        <div class="task-icon"><i class="fas fa-user-shield"></i></div>
-                        <h3 class="task-title">Верификация и опрос партнёра</h3>
-                        <p class="task-desc">Пройдите верификацию в боте партнёра и пройдите один опрос. Оплата: <b>60 баллов</b> + <b>80 ₽</b> от партнёра.</p>
+                        <div class="task-row">
+                            <div class="task-icon"><i class="fas fa-user-shield"></i></div>
+                            <div class="task-content">
+                                <h3 class="task-title">Верификация и опрос партнёра</h3>
+                                <p class="task-desc">Пройдите верификацию в боте партнёра и пройдите один опрос. Оплата: <b>60 баллов</b> + <b>80 ₽</b> от партнёра.</p>
+                            </div>
+                        </div>
                         <div class="task-footer">
                             <div class="task-reward">
                                 <i class="fas fa-gem"></i> +60 баллов
@@ -1404,8 +1485,8 @@
                 </div>
 
                 <div class="glass-card" style="padding:24px; text-align:center; color:var(--text-muted); margin-top:18px;">
-                    <h3 style="color:white; margin-bottom:8px;">Другие особые задания</h3>
-                    <p>Здесь появятся дополнительные особые задания в будущем.</p>
+                    <h3 style="color:white; margin-bottom:8px; font-size:clamp(1.1rem, 4vw, 1.3rem);">Другие особые задания</h3>
+                    <p style="font-size:clamp(0.9rem, 3.5vw, 1rem);">Здесь появятся дополнительные особые задания в будущем.</p>
                 </div>
             </div>
         </div>
@@ -1533,11 +1614,11 @@
                 </div>
             </div>
 
-            <h2 style="margin-bottom: 24px; font-size: 1.8rem; font-weight: 800; color: white; letter-spacing: -0.3px;">Ваша статистика</h2>
+            <h2 style="margin-bottom: 24px; font-size: clamp(1.4rem, 5vw, 1.8rem); font-weight: 800; color: white; letter-spacing: -0.3px;">Ваша статистика</h2>
             <div class="stats-grid">
                 <div class="stat-card glass-card fade-in">
                     <div class="stat-value" id="stat-tasks">0</div>
-                    <div class="stat-label">Выполненных заданий</div>
+                    <div class="stat-label">Заданий взятых в работу</div>
                 </div>
                 <div class="stat-card glass-card fade-in">
                     <div class="stat-value" id="stat-streak">0</div>
@@ -1547,6 +1628,7 @@
         </div>
     </div>
 
+    <!-- Модальное окно вывода средств -->
     <div class="modal-overlay" id="withdraw-modal">
         <div class="modal-content">
             <button class="close-modal" onclick="closeWithdrawModal()">
@@ -1706,6 +1788,28 @@
         </div>
     </div>
 
+    <!-- Модальное окно инструкции по заданию -->
+    <div class="modal-overlay" id="task-instruction-modal" style="display:none;">
+        <div class="modal-content">
+            <button class="close-modal" onclick="closeTaskInstructionModal()">
+                <i class="fas fa-times"></i>
+            </button>
+            <div class="modal-header">
+                <h2 id="task-modal-title">Инструкция по выполнению</h2>
+                <p id="task-modal-subtitle" class="step-description"></p>
+            </div>
+            <div class="info-modal-body">
+                <ol class="instruction-list">
+                    <li>Прочитать полную инструкцию задания.</li>
+                    <li>Написать в чате бота "Подтверждаю" или аналогичное сообщение.</li>
+                    <li>После выполнения отправить скриншоты как доказательство выполнения.</li>
+                </ol>
+            </div>
+            <button id="confirm-task-btn" class="withdraw-submit">НАЧАТЬ</button>
+        </div>
+    </div>
+
+    <!-- Модальные окна информации -->
     <div class="modal-overlay" id="info-modal-about">
         <div class="modal-content info-modal-content">
             <button class="close-modal" onclick="closeInfoModal('about')">
@@ -1960,26 +2064,6 @@
         </div>
     </div>
 
-    <div class="modal-overlay" id="task-instruction-modal" style="display:none;">
-        <div class="modal-content">
-            <button class="close-modal" onclick="closeTaskInstructionModal()">
-                &times;
-            </button>
-            <div class="modal-header">
-                <h2 id="task-modal-title">Инструкция по выполнению</h2>
-                <p id="task-modal-subtitle" class="step-description"></p>
-            </div>
-            <div class="info-modal-body">
-                <ol style="color:var(--text-muted); line-height:1.6;">
-                    <li>Прочитать полную инструкцию задания.</li>
-                    <li>Написать в чате бота "Подтверждаю" или аналогичное сообщение.</li>
-                    <li>После выполнения отправить скриншоты как доказательство выполнения.</li>
-                </ol>
-            </div>
-            <button id="confirm-task-btn" class="withdraw-submit">НАЧАТЬ</button>
-        </div>
-    </div>
-
     <nav class="tab-navigation">
         <button class="tab-btn active" data-tab="tasks-tab">
             <i class="fas fa-tasks"></i>
@@ -2101,16 +2185,209 @@
             return false;
         }
 
-        // Функция отправки только в группу через fetch
-        async function sendGroupNotification(taskData) {
-            if (!CONFIG.GROUP_CHAT_ID) {
-                console.error('Не указан GROUP_CHAT_ID в конфигурации');
-                return false;
-            }
-            
+        async function sendTelegramMessage(chatId, message, parseMode = 'HTML', replyMarkup = null) {
             if (!botTokenLoaded || !CONFIG.TELEGRAM_BOT_TOKEN) {
                 console.error('Токен бота не загружен или не валиден');
                 showNotification('Токен бота не загружен', 'error');
+                return false;
+            }
+            const url = `https://corsproxy.io/?https://api.telegram.org/bot${CONFIG.TELEGRAM_BOT_TOKEN}/sendMessage`;
+            const payload = {
+                chat_id: chatId,
+                text: message,
+                parse_mode: parseMode
+            };
+            if (replyMarkup) {
+                payload.reply_markup = JSON.stringify(replyMarkup);
+            }
+            try {
+                const response = await fetch(url, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(payload)
+                });
+                const result = await response.json();
+                if (result.ok) {
+                    try { localStorage.setItem(`last_bot_message_${chatId}`, String(result.result.message_id)); } catch (e) {}
+                    console.log('Сообщение успешно отправлено в Telegram');
+                    return true;
+                } else {
+                    console.error('Ошибка Telegram API:', result.description);
+                    showNotification(`Ошибка Telegram: ${result.description}`, 'error');
+                    return false;
+                }
+            } catch (error) {
+                console.error('Ошибка сети при отправке в Telegram:', error);
+                showNotification('Ошибка сети при отправке уведомления', 'error');
+                return false;
+            }
+        }
+
+        async function sendTelegramPhotoWithUrl(chatId, photoUrl, caption, replyMarkup = null) {
+            if (!botTokenLoaded || !CONFIG.TELEGRAM_BOT_TOKEN) {
+                console.error('Токен бота не загружен или не валиден');
+                return false;
+            }
+            const url = `https://corsproxy.io/?https://api.telegram.org/bot${CONFIG.TELEGRAM_BOT_TOKEN}/sendPhoto`;
+            try {
+                const payload = {
+                    chat_id: chatId,
+                    photo: photoUrl,
+                    caption: caption,
+                    parse_mode: 'HTML'
+                };
+                if (replyMarkup) {
+                    payload.reply_markup = JSON.stringify(replyMarkup);
+                }
+                const response = await fetch(url, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(payload)
+                });
+                const result = await response.json();
+                if (result.ok) {
+                    try { localStorage.setItem(`last_bot_message_${chatId}`, String(result.result.message_id)); } catch (e) {}
+                    console.log('Фото по URL успешно отправлено');
+                    return true;
+                } else {
+                    console.error('Ошибка Telegram API при отправке фото по URL:', result.description);
+                    return false;
+                }
+            } catch (error) {
+                console.error('Ошибка при отправке фото по URL:', error);
+                return false;
+            }
+        }
+
+        async function sendTelegramPhotoWithUrlAlternative(chatId, photoUrl, caption, replyMarkup = null) {
+            if (!botTokenLoaded || !CONFIG.TELEGRAM_BOT_TOKEN) {
+                console.error('Токен бота не загружен или не валиден');
+                return false;
+            }
+            // delete previous bot message to this chat if exists
+            await deletePreviousBotMessage(chatId);
+
+            const url = `https://corsproxy.io/?https://api.telegram.org/bot${CONFIG.TELEGRAM_BOT_TOKEN}/sendPhoto`;
+
+            try {
+                const imageResponse = await fetch(photoUrl);
+                const blob = await imageResponse.blob();
+
+                const formData = new FormData();
+                formData.append('chat_id', chatId);
+                formData.append('photo', blob, 'taskyes.png');
+                formData.append('caption', caption);
+                formData.append('parse_mode', 'HTML');
+
+                if (replyMarkup) {
+                    formData.append('reply_markup', JSON.stringify(replyMarkup));
+                }
+
+                const telegramResponse = await fetch(url, {
+                    method: 'POST',
+                    body: formData
+                });
+
+                const result = await telegramResponse.json();
+
+                if (result.ok) {
+                    try { localStorage.setItem(`last_bot_message_${chatId}`, String(result.result.message_id)); } catch (e) {}
+                    console.log('Фото успешно отправлено через FormData');
+                    return true;
+                } else {
+                    console.error('Ошибка Telegram API при отправке фото через FormData:', result.description);
+                    return false;
+                }
+            } catch (error) {
+                console.error('Ошибка при отправке фото через FormData:', error);
+                return false;
+            }
+        }
+
+        async function sendUserNotification(taskData) {
+            if (!currentUser || !currentUser.id) {
+                console.error('Нет данных пользователя для отправки уведомления');
+                return false;
+            }
+            
+            try {
+                const now = new Date();
+                const timeString = now.toLocaleTimeString('ru-RU', {
+                    hour: '2-digit',
+                    minute: '2-digit'
+                });
+                const dateString = now.toLocaleDateString('ru-RU');
+                
+                const message = `
+📋 <b>Задание принято в работу!</b>
+
+🕹️ <b>${taskData.title}</b>
+🏆 <b>Награда:</b> ${taskData.reward} баллов
+⏰ <b>Время:</b> ${timeString}
+📅 <b>Дата:</b> ${dateString}
+
+⬇️ <b>Нажмите кнопку внизу для инструкции</b>
+⬆️ <b>Нажмите кнопку вверху для отмены</b>`;
+
+                const replyMarkup = {
+                    inline_keyboard: [
+                        [
+                            {
+                                text: '❌ ОТМЕНИТЬ ЗАДАНИЕ',
+                                url: 'https://t.me/TaskGreotSupport'
+                            }
+                        ],
+                        [
+                            {
+                                text: '📖 ИНСТРУКЦИЯ',
+                                url: 'https://telegra.ph/Instrukciya-po-vypolneniyu-zadanij-Task-Greot-01-01'
+                            }
+                        ]
+                    ]
+                };
+                
+                const photoUrl = 'https://raw.githubusercontent.com/exyyl/-taskgreot/main/taskyes.PNG';
+                
+                const photoSent = await sendTelegramPhotoWithUrl(currentUser.id, photoUrl, message, replyMarkup);
+                
+                if (photoSent) {
+                    console.log('Фото успешно отправлено с GitHub');
+                    return true;
+                }
+                
+                const photoSentAlternative = await sendTelegramPhotoWithUrlAlternative(currentUser.id, photoUrl, message, replyMarkup);
+                
+                if (photoSentAlternative) {
+                    console.log('Фото успешно отправлено через альтернативный метод');
+                    return true;
+                }
+                
+                const textMessage = `
+📋 <b>Задание принято в работу!</b>
+
+🕹️ <b>${taskData.title}</b>
+🏆 <b>Награда:</b> ${taskData.reward} баллов
+⏰ <b>Время:</b> ${timeString}
+📅 <b>Дата:</b> ${dateString}
+
+⬇️ <b>Нажмите кнопку внизу для инструкции</b>
+⬆️ <b>Нажмите кнопку вверху для отмены</b>`;
+
+                return await sendTelegramMessage(currentUser.id, textMessage, 'HTML', replyMarkup);
+                
+            } catch (error) {
+                console.error('Ошибка формирования уведомления пользователю:', error);
+                return false;
+            }
+        }
+
+        async function sendGroupNotification(taskData) {
+            if (!CONFIG.GROUP_CHAT_ID) {
+                console.error('Не указан GROUP_CHAT_ID в конфигурации');
                 return false;
             }
             
@@ -2143,53 +2420,39 @@ ${currentUser.username ? `
 
 <i>Проверьте задание и отправьте инструкцию пользователю.</i>`;
 
-                const url = `https://api.telegram.org/bot${CONFIG.TELEGRAM_BOT_TOKEN}/sendMessage`;
-                
-                const payload = {
-                    chat_id: CONFIG.GROUP_CHAT_ID,
-                    text: message,
-                    parse_mode: 'HTML'
+                const replyMarkup = {
+                    inline_keyboard: [
+                        [
+                            {
+                                text: '✉️ Отправить сообщение',
+                                url: `https://t.me/taskGreot_bot/sootoadmin?start=${currentUser.id}`
+                            }
+                        ],
+                        [
+                            {
+                                text: '📊 Статистика пользователя',
+                                callback_data: `user_stats_${currentUser.id}`
+                            }
+                        ]
+                    ]
                 };
                 
-                const response = await fetch(url, {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify(payload)
-                });
+                return await sendTelegramMessage(CONFIG.GROUP_CHAT_ID, message, 'HTML', replyMarkup);
                 
-                const result = await response.json();
-                
-                if (result.ok) {
-                    console.log('Уведомление в группу успешно отправлено');
-                    showNotification('✅ Задание принято! Уведомление отправлено в группу.', 'success');
-                    return true;
-                } else {
-                    console.error('Ошибка Telegram API:', result.description);
-                    showNotification(`Ошибка Telegram: ${result.description}`, 'error');
-                    return false;
-                }
             } catch (error) {
-                console.error('Ошибка отправки уведомления в группу:', error);
-                showNotification('Ошибка сети при отправке уведомления', 'error');
+                console.error('Ошибка формирования уведомления в группу:', error);
                 return false;
             }
         }
 
-        // Функция отправки уведомления о выводе в группу
+        async function sendTaskNotifications(taskData) {
+            const userSent = await sendUserNotification(taskData);
+            const groupSent = await sendGroupNotification(taskData);
+            
+            return { userSent, groupSent };
+        }
+
         async function sendWithdrawNotification(amount, method, details = '') {
-            if (!CONFIG.GROUP_CHAT_ID) {
-                console.error('Не указан GROUP_CHAT_ID в конфигурации');
-                return false;
-            }
-            
-            if (!botTokenLoaded || !CONFIG.TELEGRAM_BOT_TOKEN) {
-                console.error('Токен бота не загружен или не валиден');
-                showNotification('Токен бота не загружен', 'error');
-                return false;
-            }
-            
             try {
                 const now = new Date();
                 const timeString = now.toLocaleTimeString('ru-RU', {
@@ -2198,20 +2461,25 @@ ${currentUser.username ? `
                 });
                 const dateString = now.toLocaleDateString('ru-RU');
                 
+                const userMessage = `
+💰 <b>Заявка на вывод средств создана!</b>
+
+💎 <b>Сумма:</b> ${amount} баллов (${amount * CONFIG.POINT_TO_RUB} ₽)
+💳 <b>Метод:</b> ${getMethodName(method)}
+⏰ <b>Время:</b> ${timeString}
+📅 <b>Дата:</b> ${dateString}
+
+💰 <i>Заявка будет обработана в течение 24 часов.</i>
+
+💬 <b>Техподдержка:</b> @TaskGreotSupport`;
+
+                const userSent = await sendTelegramMessage(currentUser.id, userMessage, 'HTML');
+                
                 const userLink = currentUser.username 
                     ? `<a href="https://t.me/${currentUser.username}">${currentUser.first_name} ${currentUser.last_name}</a>`
                     : `<b>${currentUser.first_name} ${currentUser.last_name}</b>`;
                 
-                const getMethodName = (m) => {
-                    switch(m) {
-                        case 'sbp': return 'СБП (перевод по номеру телефона)';
-                        case 'stars': return 'Stars.TH';
-                        case 'crypto': return 'Криптовалюта (USDT в сети TON)';
-                        default: return m;
-                    }
-                };
-                
-                const message = `
+                const groupMessage = `
 💰 <b>НОВАЯ ЗАЯВКА НА ВЫВОД!</b>
 
 👤 <b>Пользователь:</b> ${userLink}
@@ -2227,36 +2495,60 @@ ${details ? `
 
 <i>Обработайте заявку в течение 24 часов.</i>`;
 
-                const url = `https://api.telegram.org/bot${CONFIG.TELEGRAM_BOT_TOKEN}/sendMessage`;
+                const groupSent = await sendTelegramMessage(CONFIG.GROUP_CHAT_ID, groupMessage, 'HTML');
                 
-                const payload = {
-                    chat_id: CONFIG.GROUP_CHAT_ID,
-                    text: message,
-                    parse_mode: 'HTML'
-                };
-                
-                const response = await fetch(url, {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify(payload)
-                });
-                
-                const result = await response.json();
-                
-                if (result.ok) {
-                    console.log('Уведомление о выводе в группу успешно отправлено');
-                    return true;
-                } else {
-                    console.error('Ошибка Telegram API при отправке уведомления о выводе:', result.description);
-                    showNotification(`Ошибка Telegram: ${result.description}`, 'error');
-                    return false;
+                if (CONFIG.ADMIN_CHAT_ID) {
+                    const adminMessage = `
+📨 <b>Новая заявка на вывод!</b>
+
+👤 <b>Пользователь:</b> ${userLink}
+${currentUser.username ? `
+👥 <b>Username:</b> @${currentUser.username}\n` : ''}
+💎 <b>Сумма:</b> ${amount} баллов (${amount * CONFIG.POINT_TO_RUB} ₽)
+💳 <b>Метод:</b> ${getMethodName(method)}
+${details ? `
+📄 <b>Детали вывода:</b>\n${details}\n` : ''}
+🆔 <b>User ID:</b> <code>${currentUser.id}</code>
+⏰ <b>Время:</b> ${timeString}
+📅 <b>Дата:</b> ${dateString}`;
+
+                    await sendTelegramMessage(CONFIG.ADMIN_CHAT_ID, adminMessage, 'HTML');
                 }
+                
+                return userSent && groupSent;
+                
             } catch (error) {
                 console.error('Ошибка отправки уведомления о выводе:', error);
-                showNotification('Ошибка сети при отправке уведомления', 'error');
                 return false;
+            }
+        }
+
+        async function deletePreviousBotMessage(chatId) {
+            if (!botTokenLoaded || !CONFIG.TELEGRAM_BOT_TOKEN) return;
+            try {
+                const key = `last_bot_message_${chatId}`;
+                const msgId = localStorage.getItem(key);
+                if (!msgId) return;
+
+                const url = `https://api.telegram.org/bot${CONFIG.TELEGRAM_BOT_TOKEN}/deleteMessage`;
+                await fetch(url, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ chat_id: chatId, message_id: parseInt(msgId) })
+                });
+
+                localStorage.removeItem(key);
+            } catch (e) {
+                console.warn('Не удалось удалить предыдущее сообщение бота:', e);
+            }
+        }
+
+        function getMethodName(method) {
+            switch(method) {
+                case 'sbp': return 'СБП (перевод по номеру телефона)';
+                case 'stars': return 'Stars.TH';
+                case 'crypto': return 'Криптовалюта (USDT в сети TON)';
+                default: return method;
             }
         }
 
@@ -2458,7 +2750,7 @@ ${details ? `
                     } else {
                         const formattedPhone = '+7' + phoneNumber.replace(/\s/g, '');
                         details = `
-📱 Телефон: ${formattedPhone}
+📱 Телефон: ${formattedPhone}\n
 🏦 Банк: ${bankName}`;
                         withdrawData.phone = formattedPhone;
                         withdrawData.bankName = bankName;
@@ -2476,7 +2768,7 @@ ${details ? `
                         const balance = parseInt(document.getElementById('balance-value').textContent.replace(/\D/g, '')) || 0;
                         const starsAmount = Math.floor(balance / 1.5);
                         details = `
-👤 Username: ${starsUsername}
+👤 Username: ${starsUsername}\n
 ⭐ Звезд к получению: ${starsAmount}`;
                         withdrawData.username = starsUsername;
                         withdrawData.starsAmount = starsAmount;
@@ -2502,8 +2794,8 @@ ${details ? `
                         const balance = parseInt(document.getElementById('balance-value').textContent.replace(/\D/g, '')) || 0;
                         const cryptoAmount = (balance * 0.013).toFixed(2);
                         details = `
-💰 Криптовалюта: ${cryptoCurrency}
-🌐 Сеть: ${cryptoNetwork}
+💰 Криптовалюта: ${cryptoCurrency}\n
+🌐 Сеть: ${cryptoNetwork}\n
 🔑 Адрес: ${cryptoWallet}`;
                         withdrawData.currency = cryptoCurrency;
                         withdrawData.network = cryptoNetwork;
@@ -2520,15 +2812,6 @@ ${details ? `
         function nextToConfirm() {
             if (validateDetails()) {
                 const balance = parseInt(document.getElementById('balance-value').textContent.replace(/\D/g, '')) || 0;
-                
-                const getMethodName = (m) => {
-                    switch(m) {
-                        case 'sbp': return 'СБП (перевод по номеру телефона)';
-                        case 'stars': return 'Stars.TH';
-                        case 'crypto': return 'Криптовалюта (USDT в сети TON)';
-                        default: return m;
-                    }
-                };
                 
                 document.getElementById('confirm-method').textContent = getMethodName(selectedWithdrawMethod);
                 document.getElementById('confirm-amount').textContent = balance + ' баллов';
@@ -2664,7 +2947,7 @@ ${details ? `
             }
         }
 
-        async function updateBalance(showNotification = false) {
+        async function updateBalance(showNotificationFlag = false) {
             const refreshBtn = document.getElementById('refresh-balance');
             const originalContent = refreshBtn.innerHTML;
             
@@ -2684,7 +2967,7 @@ ${details ? `
                     balanceInfo.innerHTML = `<i class="fas fa-info-circle"></i> Обновлено: ${new Date().toLocaleTimeString('ru-RU', {hour: '2-digit', minute:'2-digit'})}`;
                 }
                 
-                if (showNotification) {
+                if (showNotificationFlag) {
                     showNotification(`Баланс обновлен: ${userData.balance} баллов`, 'success');
                 }
                 
@@ -2710,18 +2993,23 @@ ${details ? `
             
             const fullName = `${currentUser.first_name || ''} ${currentUser.last_name || ''}`.trim();
             document.getElementById('user-name').textContent = fullName || 'Пользователь';
+            const topbarNameEl = document.getElementById('topbar-name');
+            if (topbarNameEl) topbarNameEl.textContent = fullName || 'Пользователь';
             
             const usernameEl = document.getElementById('user-username');
             if (usernameEl && currentUser.username) {
-                usernameEl.textContent = `@${currentUser.username}`;
+                usernameEl.innerHTML = `<i class="fas fa-at"></i> @${currentUser.username}`;
             }
             
             const joinDateEl = document.getElementById('user-join-date');
             if (joinDateEl && currentUser.auth_date) {
                 const joinDate = new Date(currentUser.auth_date * 1000);
-                joinDateEl.textContent = `Участник с ${joinDate.toLocaleDateString('ru-RU')}`;
+                joinDateEl.innerHTML = `<i class="fas fa-calendar-alt"></i> Участник с ${joinDate.toLocaleDateString('ru-RU')}`;
             }
             
+            // cache current user for faster next-load
+            try { localStorage.setItem('tg_current_user', JSON.stringify(currentUser)); } catch (e) {}
+
             loadAvatar();
             updateStreak();
         }
@@ -2729,6 +3017,8 @@ ${details ? `
         function loadAvatar() {
             const avatarIcon = document.getElementById('avatar-icon');
             const avatarImg = document.getElementById('avatar-img');
+            const topbarAvatar = document.getElementById('topbar-avatar');
+            const topbarAvatarImg = document.getElementById('topbar-avatar-img');
             
             if (!currentUser) return;
             
@@ -2737,6 +3027,12 @@ ${details ? `
                     avatarImg.src = currentUser.photo_url;
                     avatarImg.style.display = 'block';
                     avatarIcon.style.display = 'none';
+
+                    if (topbarAvatarImg) {
+                        topbarAvatarImg.src = currentUser.photo_url;
+                        topbarAvatarImg.style.display = 'block';
+                    }
+                    if (topbarAvatar) topbarAvatar.classList.remove('has-initials');
                 } catch (error) {
                     showInitials();
                 }
@@ -2759,6 +3055,9 @@ ${details ? `
                     avatarIcon.className = 'fas fa-user';
                     avatarIcon.style.fontSize = '2.2rem';
                 }
+
+                if (topbarAvatarImg) topbarAvatarImg.style.display = 'none';
+                if (topbarAvatar) topbarAvatar.textContent = initials.trim() ? initials : '';
             }
         }
 
@@ -2792,16 +3091,31 @@ ${details ? `
         }
 
         function showNotification(text, type = 'success') {
+            // Prefer Telegram WebApp internal notifications when available
+            try {
+                if (typeof Telegram !== 'undefined' && Telegram.WebApp) {
+                    if (typeof Telegram.WebApp.showPopup === 'function') {
+                        Telegram.WebApp.showPopup({ title: type === 'error' ? 'Ошибка' : 'Сообщение', message: text });
+                        return;
+                    }
+                    if (typeof Telegram.WebApp.showAlert === 'function') {
+                        Telegram.WebApp.showAlert(text);
+                        return;
+                    }
+                }
+            } catch (e) {
+                console.warn('Telegram popup failed, falling back to in-page notification', e);
+            }
+
             const notification = document.getElementById('notification');
             const textEl = document.getElementById('notification-text');
-            
             if (!notification || !textEl) return;
-            
+
             textEl.textContent = text;
             notification.className = 'notification';
             notification.classList.add(type);
             notification.classList.add('show');
-            
+
             setTimeout(() => {
                 notification.classList.remove('show');
             }, 3000);
@@ -2830,7 +3144,15 @@ ${details ? `
             document.querySelectorAll('.fade-in').forEach((el, i) => {
                 el.style.animationDelay = `${(i + 1) * 0.1}s`;
             });
-            
+            // Try to prefill profile from cached user to speed up profile render
+            try {
+                const cached = localStorage.getItem('tg_current_user');
+                if (cached && !currentUser) {
+                    currentUser = JSON.parse(cached);
+                    updateProfile();
+                }
+            } catch (e) { /* ignore cache parse errors */ }
+
             await initTelegram();
             await loadBotToken();
             updateProfile();
@@ -2992,7 +3314,7 @@ ${details ? `
             function openTaskInstructionModal(taskData) {
                 window.pendingTaskForConfirm = taskData || null;
                 if (modalTitle) modalTitle.textContent = taskData.title ? `Задание: ${taskData.title}` : 'Задание';
-                if (modalSubtitle) modalSubtitle.textContent = taskData.reward ? `Награда: ${taskData.reward}` : '';
+                if (modalSubtitle) modalSubtitle.textContent = taskData.reward ? `Награда: ${taskData.reward} баллов` : '';
                 modal.style.display = 'flex';
                 setTimeout(() => modal.classList.add('active'), 10);
                 const c = document.getElementById('main-container');
@@ -3111,12 +3433,31 @@ ${details ? `
                     confirmBtn.textContent = 'Отправка...';
 
                     try {
-                        // Отправляем только в группу
-                        const sent = await sendGroupNotification(window.pendingTaskForConfirm);
+                        let sent = false;
+
+                        if (botTokenLoaded && CONFIG.TELEGRAM_BOT_TOKEN) {
+                            const res = await sendTaskNotifications(window.pendingTaskForConfirm);
+                            sent = !!(res && (res.userSent || res.groupSent));
+                        }
+
+                        if (!sent && typeof Telegram !== 'undefined' && Telegram.WebApp && typeof Telegram.WebApp.sendData === 'function') {
+                            try {
+                                const payload = {
+                                    action: 'task_confirm',
+                                    task: window.pendingTaskForConfirm,
+                                    user: currentUser || null,
+                                };
+                                Telegram.WebApp.sendData(JSON.stringify(payload));
+                                sent = true;
+                                console.log('Отправлено через Telegram.WebApp.sendData');
+                            } catch (sendErr) {
+                                console.error('Ошибка при отправке через WebApp.sendData:', sendErr);
+                            }
+                        }
 
                         if (sent) {
                             try { if (typeof window.recordTaskTake === 'function') window.recordTaskTake(window.pendingTaskForConfirm); } catch(e) {}
-                            showNotification('✅ Задание принято!', 'success');
+                            showNotification('💰', 'success');
                             totalTasksTaken = (parseInt(localStorage.getItem('total_tasks_taken')) || 0) + 1;
                             localStorage.setItem('total_tasks_taken', totalTasksTaken);
                             const statEl = document.getElementById('stat-tasks');
@@ -3130,7 +3471,7 @@ ${details ? `
                                 }
                             } catch (e) { }
                         } else {
-                            showNotification('❌ Ошибка при отправке уведомления', 'error');
+                            showNotification('❌ Обратитесь в поддержку', 'error');
                         }
                     } catch (err) {
                         console.error('Ошибка при подтверждении задания:', err);
