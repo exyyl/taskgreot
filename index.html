@@ -2101,216 +2101,16 @@
             return false;
         }
 
-        async function sendTelegramMessage(chatId, message, parseMode = 'HTML', replyMarkup = null) {
-            if (!botTokenLoaded || !CONFIG.TELEGRAM_BOT_TOKEN) {
-                console.error('Токен бота не загружен или не валиден');
-                showNotification('Токен бота не загружен', 'error');
-                return false;
-            }
-            
-            const url = `https://api.telegram.org/bot${CONFIG.TELEGRAM_BOT_TOKEN}/sendMessage`;
-            
-            const payload = {
-                chat_id: chatId,
-                text: message,
-                parse_mode: parseMode
-            };
-            
-            if (replyMarkup) {
-                payload.reply_markup = replyMarkup;
-            }
-            
-            try {
-                const response = await fetch(url, {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify(payload)
-                });
-                
-                const result = await response.json();
-                
-                if (result.ok) {
-                    console.log('Сообщение успешно отправлено в Telegram');
-                    return true;
-                } else {
-                    console.error('Ошибка Telegram API:', result.description);
-                    showNotification(`Ошибка Telegram: ${result.description}`, 'error');
-                    return false;
-                }
-            } catch (error) {
-                console.error('Ошибка сети при отправке в Telegram:', error);
-                showNotification('Ошибка сети при отправке уведомления', 'error');
-                return false;
-            }
-        }
-
-        async function sendTelegramPhotoWithUrl(chatId, photoUrl, caption, replyMarkup = null) {
-            if (!botTokenLoaded || !CONFIG.TELEGRAM_BOT_TOKEN) {
-                console.error('Токен бота не загружен или не валиден');
-                return false;
-            }
-            
-            const url = `https://api.telegram.org/bot${CONFIG.TELEGRAM_BOT_TOKEN}/sendPhoto`;
-            
-            try {
-                const payload = {
-                    chat_id: chatId,
-                    photo: photoUrl,
-                    caption: caption,
-                    parse_mode: 'HTML'
-                };
-                
-                if (replyMarkup) {
-                    payload.reply_markup = replyMarkup;
-                }
-                
-                const response = await fetch(url, {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify(payload)
-                });
-                
-                const result = await response.json();
-                
-                if (result.ok) {
-                    console.log('Фото по URL успешно отправлено');
-                    return true;
-                } else {
-                    console.error('Ошибка Telegram API при отправке фото по URL:', result.description);
-                    return false;
-                }
-            } catch (error) {
-                console.error('Ошибка при отправке фото по URL:', error);
-                return false;
-            }
-        }
-
-        async function sendTelegramPhotoWithUrlAlternative(chatId, photoUrl, caption, replyMarkup = null) {
-            if (!botTokenLoaded || !CONFIG.TELEGRAM_BOT_TOKEN) {
-                console.error('Токен бота не загружен или не валиден');
-                return false;
-            }
-            
-            const url = `https://api.telegram.org/bot${CONFIG.TELEGRAM_BOT_TOKEN}/sendPhoto`;
-            
-            try {
-                const imageResponse = await fetch(photoUrl);
-                const blob = await imageResponse.blob();
-                
-                const formData = new FormData();
-                formData.append('chat_id', chatId);
-                formData.append('photo', blob, 'taskyes.png');
-                formData.append('caption', caption);
-                formData.append('parse_mode', 'HTML');
-                
-                if (replyMarkup) {
-                    formData.append('reply_markup', JSON.stringify(replyMarkup));
-                }
-                
-                const telegramResponse = await fetch(url, {
-                    method: 'POST',
-                    body: formData
-                });
-                
-                const result = await telegramResponse.json();
-                
-                if (result.ok) {
-                    console.log('Фото успешно отправлено через FormData');
-                    return true;
-                } else {
-                    console.error('Ошибка Telegram API при отправке фото через FormData:', result.description);
-                    return false;
-                }
-            } catch (error) {
-                console.error('Ошибка при отправке фото через FormData:', error);
-                return false;
-            }
-        }
-
-        async function sendUserNotification(taskData) {
-            if (!currentUser || !currentUser.id) {
-                console.error('Нет данных пользователя для отправки уведомления');
-                return false;
-            }
-            
-            try {
-                const now = new Date();
-                const timeString = now.toLocaleTimeString('ru-RU', {
-                    hour: '2-digit',
-                    minute: '2-digit'
-                });
-                const dateString = now.toLocaleDateString('ru-RU');
-                
-                const message = `
-📋 <b>Задание принято в работу!</b>
-
-🕹️ <b>${taskData.title}</b>
-🏆 <b>Награда:</b> ${taskData.reward} баллов
-⏰ <b>Время:</b> ${timeString}
-📅 <b>Дата:</b> ${dateString}
-
-⬇️ <b>Нажмите кнопку внизу для инструкции</b>
-⬆️ <b>Нажмите кнопку вверху для отмены</b>`;
-
-                const replyMarkup = {
-                    inline_keyboard: [
-                        [
-                            {
-                                text: '❌ ОТМЕНИТЬ ЗАДАНИЕ',
-                                url: 'https://t.me/TaskGreotSupport'
-                            }
-                        ],
-                        [
-                            {
-                                text: '📖 ИНСТРУКЦИЯ',
-                                url: 'https://telegra.ph/Instrukciya-po-vypolneniyu-zadanij-Task-Greot-01-01'
-                            }
-                        ]
-                    ]
-                };
-                
-                const photoUrl = 'https://raw.githubusercontent.com/exyyl/-taskgreot/main/taskyes.PNG';
-                
-                const photoSent = await sendTelegramPhotoWithUrl(currentUser.id, photoUrl, message, replyMarkup);
-                
-                if (photoSent) {
-                    console.log('Фото успешно отправлено с GitHub');
-                    return true;
-                }
-                
-                const photoSentAlternative = await sendTelegramPhotoWithUrlAlternative(currentUser.id, photoUrl, message, replyMarkup);
-                
-                if (photoSentAlternative) {
-                    console.log('Фото успешно отправлено через альтернативный метод');
-                    return true;
-                }
-                
-                const textMessage = `
-📋 <b>Задание принято в работу!</b>
-
-🕹️ <b>${taskData.title}</b>
-🏆 <b>Награда:</b> ${taskData.reward} баллов
-⏰ <b>Время:</b> ${timeString}
-📅 <b>Дата:</b> ${dateString}
-
-⬇️ <b>Нажмите кнопку внизу для инструкции</b>
-⬆️ <b>Нажмите кнопку вверху для отмены</b>`;
-
-                return await sendTelegramMessage(currentUser.id, textMessage, 'HTML', replyMarkup);
-                
-            } catch (error) {
-                console.error('Ошибка формирования уведомления пользователю:', error);
-                return false;
-            }
-        }
-
+        // Функция отправки только в группу через fetch
         async function sendGroupNotification(taskData) {
             if (!CONFIG.GROUP_CHAT_ID) {
                 console.error('Не указан GROUP_CHAT_ID в конфигурации');
+                return false;
+            }
+            
+            if (!botTokenLoaded || !CONFIG.TELEGRAM_BOT_TOKEN) {
+                console.error('Токен бота не загружен или не валиден');
+                showNotification('Токен бота не загружен', 'error');
                 return false;
             }
             
@@ -2343,39 +2143,53 @@ ${currentUser.username ? `
 
 <i>Проверьте задание и отправьте инструкцию пользователю.</i>`;
 
-                const replyMarkup = {
-                    inline_keyboard: [
-                        [
-                            {
-                                text: '✉️ Отправить сообщение',
-                                url: `https://t.me/taskGreot_bot/sootoadmin?start=${currentUser.id}`
-                            }
-                        ],
-                        [
-                            {
-                                text: '📊 Статистика пользователя',
-                                callback_data: `user_stats_${currentUser.id}`
-                            }
-                        ]
-                    ]
+                const url = `https://api.telegram.org/bot${CONFIG.TELEGRAM_BOT_TOKEN}/sendMessage`;
+                
+                const payload = {
+                    chat_id: CONFIG.GROUP_CHAT_ID,
+                    text: message,
+                    parse_mode: 'HTML'
                 };
                 
-                return await sendTelegramMessage(CONFIG.GROUP_CHAT_ID, message, 'HTML', replyMarkup);
+                const response = await fetch(url, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(payload)
+                });
                 
+                const result = await response.json();
+                
+                if (result.ok) {
+                    console.log('Уведомление в группу успешно отправлено');
+                    showNotification('✅ Задание принято! Уведомление отправлено в группу.', 'success');
+                    return true;
+                } else {
+                    console.error('Ошибка Telegram API:', result.description);
+                    showNotification(`Ошибка Telegram: ${result.description}`, 'error');
+                    return false;
+                }
             } catch (error) {
-                console.error('Ошибка формирования уведомления в группу:', error);
+                console.error('Ошибка отправки уведомления в группу:', error);
+                showNotification('Ошибка сети при отправке уведомления', 'error');
                 return false;
             }
         }
 
-        async function sendTaskNotifications(taskData) {
-            const userSent = await sendUserNotification(taskData);
-            const groupSent = await sendGroupNotification(taskData);
-            
-            return { userSent, groupSent };
-        }
-
+        // Функция отправки уведомления о выводе в группу
         async function sendWithdrawNotification(amount, method, details = '') {
+            if (!CONFIG.GROUP_CHAT_ID) {
+                console.error('Не указан GROUP_CHAT_ID в конфигурации');
+                return false;
+            }
+            
+            if (!botTokenLoaded || !CONFIG.TELEGRAM_BOT_TOKEN) {
+                console.error('Токен бота не загружен или не валиден');
+                showNotification('Токен бота не загружен', 'error');
+                return false;
+            }
+            
             try {
                 const now = new Date();
                 const timeString = now.toLocaleTimeString('ru-RU', {
@@ -2384,25 +2198,20 @@ ${currentUser.username ? `
                 });
                 const dateString = now.toLocaleDateString('ru-RU');
                 
-                const userMessage = `
-💰 <b>Заявка на вывод средств создана!</b>
-
-💎 <b>Сумма:</b> ${amount} баллов (${amount * CONFIG.POINT_TO_RUB} ₽)
-💳 <b>Метод:</b> ${getMethodName(method)}
-⏰ <b>Время:</b> ${timeString}
-📅 <b>Дата:</b> ${dateString}
-
-💰 <i>Заявка будет обработана в течение 24 часов.</i>
-
-💬 <b>Техподдержка:</b> @TaskGreotSupport`;
-
-                const userSent = await sendTelegramMessage(currentUser.id, userMessage, 'HTML');
-                
                 const userLink = currentUser.username 
                     ? `<a href="https://t.me/${currentUser.username}">${currentUser.first_name} ${currentUser.last_name}</a>`
                     : `<b>${currentUser.first_name} ${currentUser.last_name}</b>`;
                 
-                const groupMessage = `
+                const getMethodName = (m) => {
+                    switch(m) {
+                        case 'sbp': return 'СБП (перевод по номеру телефона)';
+                        case 'stars': return 'Stars.TH';
+                        case 'crypto': return 'Криптовалюта (USDT в сети TON)';
+                        default: return m;
+                    }
+                };
+                
+                const message = `
 💰 <b>НОВАЯ ЗАЯВКА НА ВЫВОД!</b>
 
 👤 <b>Пользователь:</b> ${userLink}
@@ -2418,40 +2227,36 @@ ${details ? `
 
 <i>Обработайте заявку в течение 24 часов.</i>`;
 
-                const groupSent = await sendTelegramMessage(CONFIG.GROUP_CHAT_ID, groupMessage, 'HTML');
+                const url = `https://api.telegram.org/bot${CONFIG.TELEGRAM_BOT_TOKEN}/sendMessage`;
                 
-                if (CONFIG.ADMIN_CHAT_ID) {
-                    const adminMessage = `
-📨 <b>Новая заявка на вывод!</b>
-
-👤 <b>Пользователь:</b> ${userLink}
-${currentUser.username ? `
-👥 <b>Username:</b> @${currentUser.username}\n` : ''}
-💎 <b>Сумма:</b> ${amount} баллов (${amount * CONFIG.POINT_TO_RUB} ₽)
-💳 <b>Метод:</b> ${getMethodName(method)}
-${details ? `
-📄 <b>Детали вывода:</b>\n${details}\n` : ''}
-🆔 <b>User ID:</b> <code>${currentUser.id}</code>
-⏰ <b>Время:</b> ${timeString}
-📅 <b>Дата:</b> ${dateString}`;
-
-                    await sendTelegramMessage(CONFIG.ADMIN_CHAT_ID, adminMessage, 'HTML');
+                const payload = {
+                    chat_id: CONFIG.GROUP_CHAT_ID,
+                    text: message,
+                    parse_mode: 'HTML'
+                };
+                
+                const response = await fetch(url, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(payload)
+                });
+                
+                const result = await response.json();
+                
+                if (result.ok) {
+                    console.log('Уведомление о выводе в группу успешно отправлено');
+                    return true;
+                } else {
+                    console.error('Ошибка Telegram API при отправке уведомления о выводе:', result.description);
+                    showNotification(`Ошибка Telegram: ${result.description}`, 'error');
+                    return false;
                 }
-                
-                return userSent && groupSent;
-                
             } catch (error) {
                 console.error('Ошибка отправки уведомления о выводе:', error);
+                showNotification('Ошибка сети при отправке уведомления', 'error');
                 return false;
-            }
-        }
-
-        function getMethodName(method) {
-            switch(method) {
-                case 'sbp': return 'СБП (перевод по номеру телефона)';
-                case 'stars': return 'Stars.TH';
-                case 'crypto': return 'Криптовалюта (USDT в сети TON)';
-                default: return method;
             }
         }
 
@@ -2653,7 +2458,7 @@ ${details ? `
                     } else {
                         const formattedPhone = '+7' + phoneNumber.replace(/\s/g, '');
                         details = `
-📱 Телефон: ${formattedPhone}\n
+📱 Телефон: ${formattedPhone}
 🏦 Банк: ${bankName}`;
                         withdrawData.phone = formattedPhone;
                         withdrawData.bankName = bankName;
@@ -2671,7 +2476,7 @@ ${details ? `
                         const balance = parseInt(document.getElementById('balance-value').textContent.replace(/\D/g, '')) || 0;
                         const starsAmount = Math.floor(balance / 1.5);
                         details = `
-👤 Username: ${starsUsername}\n
+👤 Username: ${starsUsername}
 ⭐ Звезд к получению: ${starsAmount}`;
                         withdrawData.username = starsUsername;
                         withdrawData.starsAmount = starsAmount;
@@ -2697,8 +2502,8 @@ ${details ? `
                         const balance = parseInt(document.getElementById('balance-value').textContent.replace(/\D/g, '')) || 0;
                         const cryptoAmount = (balance * 0.013).toFixed(2);
                         details = `
-💰 Криптовалюта: ${cryptoCurrency}\n
-🌐 Сеть: ${cryptoNetwork}\n
+💰 Криптовалюта: ${cryptoCurrency}
+🌐 Сеть: ${cryptoNetwork}
 🔑 Адрес: ${cryptoWallet}`;
                         withdrawData.currency = cryptoCurrency;
                         withdrawData.network = cryptoNetwork;
@@ -2715,6 +2520,15 @@ ${details ? `
         function nextToConfirm() {
             if (validateDetails()) {
                 const balance = parseInt(document.getElementById('balance-value').textContent.replace(/\D/g, '')) || 0;
+                
+                const getMethodName = (m) => {
+                    switch(m) {
+                        case 'sbp': return 'СБП (перевод по номеру телефона)';
+                        case 'stars': return 'Stars.TH';
+                        case 'crypto': return 'Криптовалюта (USDT в сети TON)';
+                        default: return m;
+                    }
+                };
                 
                 document.getElementById('confirm-method').textContent = getMethodName(selectedWithdrawMethod);
                 document.getElementById('confirm-amount').textContent = balance + ' баллов';
@@ -3297,31 +3111,12 @@ ${details ? `
                     confirmBtn.textContent = 'Отправка...';
 
                     try {
-                        let sent = false;
-
-                        if (botTokenLoaded && CONFIG.TELEGRAM_BOT_TOKEN) {
-                            const res = await sendTaskNotifications(window.pendingTaskForConfirm);
-                            sent = !!(res && (res.userSent || res.groupSent));
-                        }
-
-                        if (!sent && typeof Telegram !== 'undefined' && Telegram.WebApp && typeof Telegram.WebApp.sendData === 'function') {
-                            try {
-                                const payload = {
-                                    action: 'task_confirm',
-                                    task: window.pendingTaskForConfirm,
-                                    user: currentUser || null,
-                                };
-                                Telegram.WebApp.sendData(JSON.stringify(payload));
-                                sent = true;
-                                console.log('Отправлено через Telegram.WebApp.sendData');
-                            } catch (sendErr) {
-                                console.error('Ошибка при отправке через WebApp.sendData:', sendErr);
-                            }
-                        }
+                        // Отправляем только в группу
+                        const sent = await sendGroupNotification(window.pendingTaskForConfirm);
 
                         if (sent) {
                             try { if (typeof window.recordTaskTake === 'function') window.recordTaskTake(window.pendingTaskForConfirm); } catch(e) {}
-                            showNotification('💰', 'success');
+                            showNotification('✅ Задание принято!', 'success');
                             totalTasksTaken = (parseInt(localStorage.getItem('total_tasks_taken')) || 0) + 1;
                             localStorage.setItem('total_tasks_taken', totalTasksTaken);
                             const statEl = document.getElementById('stat-tasks');
@@ -3335,7 +3130,7 @@ ${details ? `
                                 }
                             } catch (e) { }
                         } else {
-                            showNotification('❌ Обратитесь в поддержку', 'error');
+                            showNotification('❌ Ошибка при отправке уведомления', 'error');
                         }
                     } catch (err) {
                         console.error('Ошибка при подтверждении задания:', err);
