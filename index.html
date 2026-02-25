@@ -1217,6 +1217,89 @@
             margin-bottom: 12px;
         }
 
+        .instruction-steps {
+            background: rgba(50, 173, 93, 0.05);
+            border-radius: 24px;
+            padding: clamp(16px, 4vw, 24px);
+            margin: 20px 0;
+            border: 1px solid rgba(50, 173, 93, 0.2);
+        }
+
+        .step-item {
+            display: flex;
+            align-items: flex-start;
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .step-item:last-child {
+            margin-bottom: 0;
+        }
+
+        .step-number {
+            width: 32px;
+            height: 32px;
+            background: var(--accent-green);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 800;
+            color: white;
+            flex-shrink: 0;
+            font-size: 1.1rem;
+            box-shadow: 0 0 15px var(--accent-green-glow);
+        }
+
+        .step-text {
+            flex: 1;
+            color: var(--text-light);
+            font-size: clamp(0.95rem, 3.5vw, 1rem);
+            line-height: 1.5;
+        }
+
+        .step-text strong {
+            color: var(--accent-green);
+        }
+
+        .copy-badge {
+            display: inline-block;
+            background: rgba(255, 255, 255, 0.1);
+            padding: 5px 12px;
+            border-radius: 20px;
+            margin-top: 8px;
+            font-size: 0.9rem;
+            border: 1px dashed var(--accent-green);
+            color: var(--accent-green);
+        }
+
+        .copy-badge i {
+            margin-right: 5px;
+        }
+
+        .add-task-btn {
+            background: var(--gradient-purple);
+            color: white;
+            border: none;
+            padding: 16px 24px;
+            border-radius: 30px;
+            font-weight: 600;
+            cursor: pointer;
+            width: 100%;
+            font-size: clamp(1rem, 4vw, 1.1rem);
+            margin: 20px 0 30px 0;
+            box-shadow: 0 8px 25px var(--accent-purple-glow);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+        }
+
+        .add-task-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 12px 30px rgba(157, 78, 221, 0.5);
+        }
+
         .notification {
             position: fixed;
             top: calc(80px + env(safe-area-inset-top));
@@ -1277,6 +1360,7 @@
             cursor: pointer;
         }
 
+        /* Адаптация для разных экранов */
         @media (max-width: 768px) {
             .logo { font-size: 2.8rem; }
             .top-bar { height: calc(55px + env(safe-area-inset-top)); }
@@ -1294,6 +1378,8 @@
             .method-selection { gap: 12px; }
             .method-option { padding: 18px 10px; }
             .method-icon { width: 52px; height: 52px; font-size: 1.8rem; }
+            .step-item { gap: 12px; }
+            .step-number { width: 28px; height: 28px; font-size: 1rem; }
         }
 
         @media (max-width: 600px) {
@@ -1302,6 +1388,8 @@
             .task-icon { width: 52px; height: 52px; font-size: 1.6rem; }
             .task-title { font-size: 1.05rem; }
             .task-desc { font-size: 0.9rem; }
+            .instruction-steps { padding: 14px; }
+            .step-item { margin-bottom: 15px; }
         }
 
         @media (max-width: 480px) {
@@ -1335,6 +1423,21 @@
             .method-icon {
                 margin-bottom: 0;
             }
+            
+            .step-item {
+                flex-direction: column;
+                align-items: center;
+                text-align: center;
+            }
+            
+            .step-number {
+                margin-bottom: 5px;
+            }
+            
+            .copy-badge {
+                width: 100%;
+                text-align: center;
+            }
         }
 
         @media (max-width: 360px) {
@@ -1346,6 +1449,11 @@
             
             .task-content {
                 text-align: center;
+            }
+            
+            .sub-tab {
+                padding: 6px 10px;
+                font-size: 0.8rem;
             }
         }
 
@@ -1363,6 +1471,7 @@
                 max-width: none;
             }
         }
+
         * {
             transition-duration: 120ms !important;
             transition-delay: 0s !important;
@@ -1394,7 +1503,7 @@
             <p class="tagline">Выполняйте задания. Получайте баллы. Меняйте на деньги или криптовалюту.</p>
         </header>
 
-        <!-- Вкладка "Задания" (Обычные, Особые и Дополнительные) -->
+        <!-- Вкладка "Задания" -->
         <div id="tasks-tab" class="tab-content active">
             <h2 style="margin-bottom: 12px; font-size: clamp(1.4rem, 5vw, 1.8rem); font-weight: 800; color: white; letter-spacing: -0.3px;">Доступные задания</h2>
 
@@ -1492,8 +1601,11 @@
                 </div>
             </div>
 
-            <!-- Дополнительные задания (загружаемые из zadan.txt) -->
+            <!-- Дополнительные задания -->
             <div id="extra-tasks" class="tasks-section" style="display:none;">
+                <button class="add-task-btn" id="add-task-btn">
+                    <i class="fas fa-plus-circle"></i> Добавить своё задание
+                </button>
                 <div id="extra-tasks-container" class="tasks-grid">
                     <!-- Загрузка... -->
                 </div>
@@ -1808,13 +1920,69 @@
                 <p id="task-modal-subtitle" class="step-description"></p>
             </div>
             <div class="info-modal-body">
-                <div id="task-instruction-link-container" style="text-align: center; margin: 20px 0;">
-                    <p>Для выполнения задания перейдите по ссылке:</p>
-                    <a href="#" id="task-instruction-link" target="_blank" style="display: inline-block; background: var(--gradient-green); color: white; padding: 15px 25px; border-radius: 40px; text-decoration: none; font-weight: 600; margin: 15px 0;">Открыть инструкцию</a>
+                <div class="instruction-steps">
+                    <div class="step-item">
+                        <div class="step-number">1</div>
+                        <div class="step-text">Внимательно прочитайте инструкцию и убедитесь, что сможете выполнить задание</div>
+                    </div>
+                    <div class="step-item">
+                        <div class="step-number">2</div>
+                        <div class="step-text">Нажмите кнопку <strong>«НАЧАТЬ»</strong> ниже, чтобы принять задание в работу</div>
+                    </div>
+                    <div class="step-item">
+                        <div class="step-number">3</div>
+                        <div class="step-text">
+                            Напишите в чат с ботом слово <strong>«ПОДТВЕРЖДАЮ»</strong>
+                            <div class="copy-badge" onclick="copyToClipboard('ПОДТВЕРЖДАЮ')">
+                                <i class="fas fa-copy"></i> Нажмите, чтобы скопировать
+                            </div>
+                        </div>
+                    </div>
                 </div>
-                <p style="color: var(--text-muted); text-align: center; font-size: 0.95rem;">После ознакомления с инструкцией, нажмите кнопку "НАЧАТЬ", чтобы принять задание в работу.</p>
+                
+                <div id="task-instruction-link-container" style="text-align: center; margin: 20px 0;">
+                    <p style="color: var(--text-muted); margin-bottom: 10px;">Ссылка на полную инструкцию:</p>
+                    <a href="#" id="task-instruction-link" target="_blank" style="display: inline-block; background: var(--gradient-purple); color: white; padding: 15px 25px; border-radius: 40px; text-decoration: none; font-weight: 600; margin: 10px 0;">Открыть инструкцию</a>
+                </div>
             </div>
             <button id="confirm-task-btn" class="withdraw-submit">НАЧАТЬ</button>
+        </div>
+    </div>
+
+    <!-- Модальное окно добавления задания -->
+    <div class="modal-overlay" id="add-task-modal">
+        <div class="modal-content">
+            <button class="close-modal" onclick="closeAddTaskModal()">
+                <i class="fas fa-times"></i>
+            </button>
+            <div class="modal-header">
+                <h2><i class="fas fa-plus-circle"></i> Добавить задание</h2>
+                <p>Предложите своё задание для платформы</p>
+            </div>
+            <div class="info-modal-body">
+                <div class="input-group">
+                    <label for="task-title">Название задания</label>
+                    <input type="text" id="task-title" placeholder="Например: Лайки в Instagram">
+                </div>
+                <div class="input-group">
+                    <label for="task-desc">Описание задания</label>
+                    <input type="text" id="task-desc" placeholder="Краткое описание того, что нужно сделать">
+                </div>
+                <div class="input-group">
+                    <label for="task-reward">Желаемая награда (баллы)</label>
+                    <input type="number" id="task-reward" placeholder="Например: 50">
+                </div>
+                <div class="input-group">
+                    <label for="task-instruction-url">Ссылка на инструкцию</label>
+                    <input type="url" id="task-instruction-url" placeholder="https://...">
+                </div>
+                <p style="color: var(--text-muted); font-size: 0.9rem; margin-top: 15px;">
+                    <i class="fas fa-info-circle"></i> После отправки заявка будет рассмотрена администратором. При одобрении вы получите бонус.
+                </p>
+                <button class="withdraw-submit" id="submit-task-btn" onclick="submitTask()">
+                    <i class="fas fa-paper-plane"></i> Отправить заявку
+                </button>
+            </div>
         </div>
     </div>
 
@@ -1975,6 +2143,16 @@
             return false;
         }
 
+        // Функция копирования в буфер обмена
+        function copyToClipboard(text) {
+            navigator.clipboard.writeText(text).then(() => {
+                showNotification('✅ Слово "ПОДТВЕРЖДАЮ" скопировано!', 'success');
+            }).catch(err => {
+                console.error('Ошибка копирования:', err);
+                showNotification('❌ Не удалось скопировать', 'error');
+            });
+        }
+
         // Удаление предыдущего сообщения бота
         async function deletePreviousBotMessage(chatId) {
             if (!botTokenLoaded || !CONFIG.TELEGRAM_BOT_TOKEN) return;
@@ -2002,63 +2180,52 @@
             }
         }
 
-        // Отправка сообщения в Telegram (с удалением предыдущего)
-        async function sendTelegramMessage(chatId, message, parseMode = 'HTML', replyMarkup = null) {
+        // Отправка сообщения в Telegram (с фото)
+        async function sendTelegramPhoto(chatId, photoUrl, caption, replyMarkup = null) {
             if (!botTokenLoaded || !CONFIG.TELEGRAM_BOT_TOKEN) {
                 console.error('Токен бота не загружен или не валиден');
-                showNotification('Ошибка: токен бота не загружен', 'error');
                 return false;
             }
 
-            // Сначала удаляем предыдущее сообщение
             await deletePreviousBotMessage(chatId);
 
-            const url = `https://corsproxy.io/?url=${encodeURIComponent('https://api.telegram.org/bot' + CONFIG.TELEGRAM_BOT_TOKEN + '/sendMessage')}`;
-            
-            const payload = {
-                chat_id: chatId,
-                text: message,
-                parse_mode: parseMode
-            };
-            
-            if (replyMarkup) {
-                payload.reply_markup = JSON.stringify(replyMarkup);
-            }
+            const url = `https://corsproxy.io/?url=${encodeURIComponent('https://api.telegram.org/bot' + CONFIG.TELEGRAM_BOT_TOKEN + '/sendPhoto')}`;
 
             try {
-                console.log('Отправка запроса в Telegram API...');
+                const formData = new FormData();
+                formData.append('chat_id', chatId);
+                formData.append('photo', photoUrl);
+                formData.append('caption', caption);
+                formData.append('parse_mode', 'HTML');
+
+                if (replyMarkup) {
+                    formData.append('reply_markup', JSON.stringify(replyMarkup));
+                }
+
                 const response = await fetch(url, {
                     method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify(payload)
+                    body: formData
                 });
-                
+
                 const result = await response.json();
-                console.log('Ответ Telegram API:', result);
                 
                 if (result.ok) {
-                    // Сохраняем ID нового сообщения
                     try { 
                         localStorage.setItem(`last_bot_message_${chatId}`, String(result.result.message_id)); 
                     } catch (e) {}
-                    
-                    console.log('Сообщение успешно отправлено в Telegram');
+                    console.log('Фото успешно отправлено');
                     return true;
                 } else {
-                    console.error('Ошибка Telegram API:', result.description);
-                    showNotification(`Ошибка Telegram: ${result.description}`, 'error');
+                    console.error('Ошибка отправки фото:', result.description);
                     return false;
                 }
             } catch (error) {
-                console.error('Ошибка сети при отправке в Telegram:', error);
-                showNotification('Ошибка сети при отправке уведомления', 'error');
+                console.error('Ошибка при отправке фото:', error);
                 return false;
             }
         }
 
-        // Отправка уведомления пользователю
+        // Отправка уведомления пользователю (с фото)
         async function sendUserNotification(taskData) {
             if (!currentUser || !currentUser.id) {
                 console.error('Нет данных пользователя для отправки уведомления');
@@ -2073,7 +2240,7 @@
                 });
                 const dateString = now.toLocaleDateString('ru-RU');
                 
-                const message = `
+                const caption = `
 📋 <b>Задание принято в работу!</b>
 
 🕹️ <b>${taskData.title}</b>
@@ -2083,7 +2250,6 @@
 
 ⬇️ <b>Нажмите кнопку ниже для инструкции</b>`;
 
-                // Используем ссылку на инструкцию из данных задания
                 const instructionUrl = taskData.instruction || 'https://teletype.in/@taskgreot/';
                 
                 const replyMarkup = {
@@ -2103,10 +2269,9 @@
                     ]
                 };
                 
-                console.log('Отправка уведомления пользователю:', currentUser.id);
-                console.log('Ссылка на инструкцию:', instructionUrl);
+                const photoUrl = 'https://raw.githubusercontent.com/exyyl/-taskgreot/main/taskyes.PNG';
                 
-                return await sendTelegramMessage(currentUser.id, message, 'HTML', replyMarkup);
+                return await sendTelegramPhoto(currentUser.id, photoUrl, caption, replyMarkup);
                 
             } catch (error) {
                 console.error('Ошибка формирования уведомления пользователю:', error);
@@ -2114,7 +2279,7 @@
             }
         }
 
-        // Отправка уведомления в группу
+        // Отправка уведомления в группу (с фото)
         async function sendGroupNotification(taskData) {
             if (!CONFIG.GROUP_CHAT_ID) {
                 console.error('Не указан GROUP_CHAT_ID в конфигурации');
@@ -2134,7 +2299,7 @@
                     ? `<a href="https://t.me/${currentUser.username}">${currentUser.first_name} ${currentUser.last_name}</a>`
                     : `<b>${currentUser.first_name} ${currentUser.last_name}</b>`;
                 
-                const message = `
+                const caption = `
 🔥 <b>НОВЫЙ ЗАКАЗ ПРИНЯТ!</b>
 
 👤 <b>Пользователь:</b> ${userLink}
@@ -2161,10 +2326,52 @@ ${currentUser.username ? `👥 <b>Username:</b> @${currentUser.username}\n` : ''
                     ]
                 };
                 
-                return await sendTelegramMessage(CONFIG.GROUP_CHAT_ID, message, 'HTML', replyMarkup);
+                const photoUrl = 'https://raw.githubusercontent.com/exyyl/-taskgreot/main/taskyes.PNG';
+                
+                return await sendTelegramPhoto(CONFIG.GROUP_CHAT_ID, photoUrl, caption, replyMarkup);
                 
             } catch (error) {
                 console.error('Ошибка формирования уведомления в группу:', error);
+                return false;
+            }
+        }
+
+        // Отправка уведомления о добавлении задания
+        async function sendAddTaskNotification(taskData) {
+            if (!currentUser || !currentUser.id) return false;
+            
+            try {
+                const now = new Date();
+                const timeString = now.toLocaleTimeString('ru-RU');
+                const dateString = now.toLocaleDateString('ru-RU');
+                
+                const userLink = currentUser.username 
+                    ? `<a href="https://t.me/${currentUser.username}">${currentUser.first_name} ${currentUser.last_name}</a>`
+                    : `<b>${currentUser.first_name} ${currentUser.last_name}</b>`;
+                
+                const message = `
+📝 <b>ПРЕДЛОЖЕНО НОВОЕ ЗАДАНИЕ!</b>
+
+👤 <b>Пользователь:</b> ${userLink}
+${currentUser.username ? `👥 <b>Username:</b> @${currentUser.username}\n` : ''}
+📋 <b>Название:</b> ${taskData.title}
+📄 <b>Описание:</b> ${taskData.desc}
+💰 <b>Награда:</b> ${taskData.reward} баллов
+🔗 <b>Инструкция:</b> ${taskData.instruction || 'Не указана'}
+
+🆔 <b>User ID:</b> <code>${currentUser.id}</code>
+⏰ <b>Время:</b> ${timeString}
+📅 <b>Дата:</b> ${dateString}
+
+<i>Рассмотрите предложение пользователя.</i>`;
+
+                if (CONFIG.ADMIN_CHAT_ID) {
+                    return await sendTelegramMessage(CONFIG.ADMIN_CHAT_ID, message, 'HTML');
+                }
+                return false;
+                
+            } catch (error) {
+                console.error('Ошибка отправки уведомления о новом задании:', error);
                 return false;
             }
         }
@@ -2185,14 +2392,10 @@ ${currentUser.username ? `👥 <b>Username:</b> @${currentUser.username}\n` : ''
         async function sendWithdrawNotification(amount, method, details = '') {
             try {
                 const now = new Date();
-                const timeString = now.toLocaleTimeString('ru-RU', {
-                    hour: '2-digit',
-                    minute: '2-digit'
-                });
+                const timeString = now.toLocaleTimeString('ru-RU');
                 const dateString = now.toLocaleDateString('ru-RU');
                 
-                // Уведомление пользователю
-                const userMessage = `
+                const userCaption = `
 💰 <b>Заявка на вывод средств создана!</b>
 
 💎 <b>Сумма:</b> ${amount} баллов (${amount * CONFIG.POINT_TO_RUB} ₽)
@@ -2204,14 +2407,14 @@ ${currentUser.username ? `👥 <b>Username:</b> @${currentUser.username}\n` : ''
 
 💬 <b>Техподдержка:</b> @TaskGreotSupport`;
 
-                const userSent = await sendTelegramMessage(currentUser.id, userMessage, 'HTML');
+                const userPhotoUrl = 'https://raw.githubusercontent.com/exyyl/-taskgreot/main/taskyes.PNG';
+                const userSent = await sendTelegramPhoto(currentUser.id, userPhotoUrl, userCaption);
                 
-                // Уведомление в группу
                 const userLink = currentUser.username 
                     ? `<a href="https://t.me/${currentUser.username}">${currentUser.first_name} ${currentUser.last_name}</a>`
                     : `<b>${currentUser.first_name} ${currentUser.last_name}</b>`;
                 
-                const groupMessage = `
+                const groupCaption = `
 💰 <b>НОВАЯ ЗАЯВКА НА ВЫВОД!</b>
 
 👤 <b>Пользователь:</b> ${userLink}
@@ -2225,24 +2428,8 @@ ${details ? `📄 <b>Детали вывода:</b>\n${details}\n` : ''}
 
 <i>Обработайте заявку в течение 24 часов.</i>`;
 
-                const groupSent = await sendTelegramMessage(CONFIG.GROUP_CHAT_ID, groupMessage, 'HTML');
-                
-                // Уведомление админу
-                if (CONFIG.ADMIN_CHAT_ID) {
-                    const adminMessage = `
-📨 <b>Новая заявка на вывод!</b>
-
-👤 <b>Пользователь:</b> ${userLink}
-${currentUser.username ? `👥 <b>Username:</b> @${currentUser.username}\n` : ''}
-💎 <b>Сумма:</b> ${amount} баллов (${amount * CONFIG.POINT_TO_RUB} ₽)
-💳 <b>Метод:</b> ${getMethodName(method)}
-${details ? `📄 <b>Детали вывода:</b>\n${details}\n` : ''}
-🆔 <b>User ID:</b> <code>${currentUser.id}</code>
-⏰ <b>Время:</b> ${timeString}
-📅 <b>Дата:</b> ${dateString}`;
-
-                    await sendTelegramMessage(CONFIG.ADMIN_CHAT_ID, adminMessage, 'HTML');
-                }
+                const groupPhotoUrl = 'https://raw.githubusercontent.com/exyyl/-taskgreot/main/taskyes.PNG';
+                const groupSent = await sendTelegramPhoto(CONFIG.GROUP_CHAT_ID, groupPhotoUrl, groupCaption);
                 
                 return userSent && groupSent;
                 
@@ -2507,6 +2694,54 @@ ${details ? `📄 <b>Детали вывода:</b>\n${details}\n` : ''}
             if (modal) {
                 modal.classList.remove('active');
                 document.body.style.overflow = '';
+            }
+        }
+
+        // Открытие модалки добавления задания
+        function openAddTaskModal() {
+            const modal = document.getElementById('add-task-modal');
+            modal.classList.add('active');
+            document.body.style.overflow = 'hidden';
+        }
+
+        // Закрытие модалки добавления задания
+        function closeAddTaskModal() {
+            const modal = document.getElementById('add-task-modal');
+            modal.classList.remove('active');
+            document.body.style.overflow = '';
+            
+            document.getElementById('task-title').value = '';
+            document.getElementById('task-desc').value = '';
+            document.getElementById('task-reward').value = '';
+            document.getElementById('task-instruction-url').value = '';
+        }
+
+        // Отправка задания на модерацию
+        async function submitTask() {
+            const title = document.getElementById('task-title').value.trim();
+            const desc = document.getElementById('task-desc').value.trim();
+            const reward = document.getElementById('task-reward').value.trim();
+            const instruction = document.getElementById('task-instruction-url').value.trim();
+
+            if (!title || !desc || !reward) {
+                showNotification('Заполните все обязательные поля', 'error');
+                return;
+            }
+
+            const taskData = {
+                title: title,
+                desc: desc,
+                reward: reward,
+                instruction: instruction || 'Не указана'
+            };
+
+            const sent = await sendAddTaskNotification(taskData);
+
+            if (sent) {
+                showNotification('✅ Задание отправлено на модерацию!', 'success');
+                closeAddTaskModal();
+            } else {
+                showNotification('❌ Ошибка при отправке', 'error');
             }
         }
 
@@ -2868,7 +3103,6 @@ ${details ? `📄 <b>Детали вывода:</b>\n${details}\n` : ''}
                     line = line.trim();
                     if (!line) continue;
                     
-                    // Формат: Номер – Ссылка на фото – Ссылка на инструкцию – Название – Описание – Награда
                     const parts = line.split('–').map(s => s.trim());
                     if (parts.length >= 6) {
                         const taskNumber = parts[0];
@@ -2924,14 +3158,13 @@ ${details ? `📄 <b>Детали вывода:</b>\n${details}\n` : ''}
             const titleEl = document.getElementById('task-modal-title');
             const subtitleEl = document.getElementById('task-modal-subtitle');
             const linkEl = document.getElementById('task-instruction-link');
-            const confirmBtn = document.getElementById('confirm-task-btn');
 
             titleEl.textContent = taskData.title || 'Задание';
             subtitleEl.textContent = `Награда: ${taskData.reward} баллов`;
             
             if (taskData.instruction) {
                 linkEl.href = taskData.instruction;
-                linkEl.textContent = 'Перейти к инструкции';
+                linkEl.textContent = 'Открыть инструкцию';
             } else {
                 linkEl.href = '#';
                 linkEl.textContent = 'Инструкция не указана';
@@ -3029,19 +3262,17 @@ ${details ? `📄 <b>Детали вывода:</b>\n${details}\n` : ''}
 
         // Инициализация при загрузке DOM
         document.addEventListener('DOMContentLoaded', async () => {
-            // Анимации
             document.querySelectorAll('.fade-in').forEach((el, i) => {
                 el.style.animationDelay = `${(i + 1) * 0.1}s`;
             });
             
-            // Загрузка кешированного пользователя
             try {
                 const cached = localStorage.getItem('tg_current_user');
                 if (cached && !currentUser) {
                     currentUser = JSON.parse(cached);
                     updateProfile();
                 }
-            } catch (e) { /* ignore cache parse errors */ }
+            } catch (e) {}
 
             await initTelegram();
             await loadBotToken();
@@ -3050,7 +3281,6 @@ ${details ? `📄 <b>Детали вывода:</b>\n${details}\n` : ''}
             
             handleTopBarVisibility();
             
-            // Переключение вкладок
             document.querySelectorAll('.tab-btn').forEach(btn => {
                 btn.addEventListener('click', () => {
                     const tabId = btn.dataset.tab;
@@ -3065,7 +3295,6 @@ ${details ? `📄 <b>Детали вывода:</b>\n${details}\n` : ''}
                 });
             });
             
-            // Переключение подвкладок (Обычные / Особые / Дополнительные)
             const subTabs = document.querySelectorAll('.sub-tab');
             const ordinarySection = document.getElementById('ordinary-tasks');
             const specialSection = document.getElementById('special-tasks');
@@ -3084,7 +3313,7 @@ ${details ? `📄 <b>Детали вывода:</b>\n${details}\n` : ''}
                     specialSection.style.display = '';
                 } else if (name === 'extra') {
                     extraSection.style.display = '';
-                    loadExtraTasks(); // Загружаем задания при переключении на вкладку
+                    loadExtraTasks();
                 }
             }
 
@@ -3096,7 +3325,6 @@ ${details ? `📄 <b>Детали вывода:</b>\n${details}\n` : ''}
 
             switchSubTab('ordinary');
             
-            // Обработчики кнопок "Начать задание"
             document.addEventListener('click', (e) => {
                 const startBtn = e.target.closest('.task-start-btn');
                 if (startBtn) {
@@ -3111,13 +3339,14 @@ ${details ? `📄 <b>Детали вывода:</b>\n${details}\n` : ''}
                 }
             });
             
+            document.getElementById('add-task-btn').addEventListener('click', openAddTaskModal);
+            
             document.getElementById('refresh-balance').addEventListener('click', () => {
                 updateBalance(true);
             });
             
             document.getElementById('withdraw-btn').addEventListener('click', openWithdrawModal);
             
-            // Обработчики для модалки вывода
             document.querySelectorAll('.method-option').forEach(option => {
                 option.addEventListener('click', () => {
                     const method = option.dataset.method;
@@ -3130,7 +3359,6 @@ ${details ? `📄 <b>Детали вывода:</b>\n${details}\n` : ''}
             document.getElementById('next-to-confirm').addEventListener('click', nextToConfirm);
             document.getElementById('submit-withdraw').addEventListener('click', processWithdraw);
             
-            // Обработчики ввода
             document.getElementById('stars-username').addEventListener('input', updateStarsInfo);
             document.getElementById('crypto-currency').addEventListener('change', updateCryptoInfo);
             document.getElementById('crypto-network').addEventListener('change', updateCryptoInfo);
@@ -3169,14 +3397,18 @@ ${details ? `📄 <b>Детали вывода:</b>\n${details}\n` : ''}
                 });
             });
             
-            // Кнопка подтверждения в модалке инструкции
             document.getElementById('confirm-task-btn').addEventListener('click', confirmTask);
 
-            // Закрытие модалок по клику на оверлей
+            window.copyToClipboard = copyToClipboard;
+            window.submitTask = submitTask;
+            window.closeAddTaskModal = closeAddTaskModal;
+
             document.querySelectorAll('.modal-overlay').forEach(modal => {
                 modal.addEventListener('click', (e) => {
                     if (e.target === modal && modal.id === 'task-instruction-modal') {
                         closeTaskInstructionModal();
+                    } else if (e.target === modal && modal.id === 'add-task-modal') {
+                        closeAddTaskModal();
                     } else if (e.target === modal && modal.id.startsWith('info-modal-')) {
                         const type = modal.id.replace('info-modal-', '');
                         closeInfoModal(type);
@@ -3186,7 +3418,6 @@ ${details ? `📄 <b>Детали вывода:</b>\n${details}\n` : ''}
                 });
             });
             
-            // Приветственное сообщение
             setTimeout(() => {
                 if (currentUser?.first_name) {
                     showNotification(`👋 Добро пожаловать, ${currentUser.first_name}!`, 'success');
@@ -3194,7 +3425,6 @@ ${details ? `📄 <b>Детали вывода:</b>\n${details}\n` : ''}
                 updateBalance();
             }, 500);
             
-            // Определение платформы
             (function() {
                 const isAndroid = /Android/i.test(navigator.userAgent || '');
                 if (!isAndroid) {
