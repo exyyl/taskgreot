@@ -1078,6 +1078,107 @@
             font-weight: 500;
         }
 
+        .shop-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 16px;
+            margin-top: 20px;
+            margin-bottom: 40px;
+        }
+
+        .shop-item {
+            background: rgba(254, 254, 254, 0.05);
+            border-radius: 24px;
+            padding: 20px;
+            text-align: center;
+            border: 1px solid var(--border-glass);
+            transition: all 0.3s ease;
+        }
+
+        .shop-item:hover {
+            transform: translateY(-4px);
+            border-color: var(--accent-green);
+            box-shadow: 0 8px 20px var(--accent-green-glow);
+        }
+
+        .shop-icon {
+            font-size: 2.5rem;
+            color: var(--accent-green);
+            margin-bottom: 15px;
+        }
+
+        .shop-title {
+            font-size: 1.2rem;
+            font-weight: 700;
+            margin-bottom: 10px;
+            color: white;
+        }
+
+        .shop-price {
+            font-size: 1.3rem;
+            font-weight: 800;
+            color: var(--accent-green);
+            margin-bottom: 15px;
+        }
+
+        .shop-btn {
+            background: var(--gradient-purple);
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 30px;
+            font-weight: 600;
+            cursor: pointer;
+            width: 100%;
+            font-size: 1rem;
+            box-shadow: 0 4px 15px var(--accent-purple-glow);
+        }
+
+        .shop-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(157, 78, 221, 0.5);
+        }
+
+        .profile-buttons {
+            display: flex;
+            gap: 15px;
+            margin: 20px 0 30px 0;
+            flex-wrap: wrap;
+        }
+
+        .profile-link-btn {
+            flex: 1;
+            min-width: 120px;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid var(--border-glass);
+            border-radius: 30px;
+            padding: 15px 10px;
+            text-align: center;
+            text-decoration: none;
+            color: white;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .profile-link-btn:hover {
+            background: var(--gradient-purple);
+            transform: translateY(-4px);
+            box-shadow: 0 8px 20px var(--accent-purple-glow);
+        }
+
+        .profile-link-btn i {
+            font-size: 1.5rem;
+            color: var(--accent-purple);
+        }
+
+        .profile-link-btn:hover i {
+            color: white;
+        }
+
         .info-sections {
             margin-bottom: 30px;
         }
@@ -1341,6 +1442,7 @@
             .method-icon { width: 52px; height: 52px; font-size: 1.8rem; }
             .step-item { gap: 12px; }
             .step-number { width: 28px; height: 28px; font-size: 1rem; }
+            .shop-grid { grid-template-columns: 1fr; }
         }
 
         @media (max-width: 600px) {
@@ -1574,7 +1676,7 @@
                 </div>
             </div>
 
-            <!-- Особые задания с двумя новыми заданиями -->
+            <!-- Особые задания -->
             <div id="special-tasks" class="tasks-section" style="display:none;">
                 <div class="tasks-grid">
                     <!-- Существующее задание -->
@@ -1622,7 +1724,7 @@
                             <div class="task-icon"><i class="fas fa-users"></i></div>
                             <div class="task-content">
                                 <h3 class="task-title">Подписка на партнёров</h3>
-                                <p class="task-desc">Подпишитесь на трёх партнёров в Telegram. После подписки нажмите кнопки ниже для подтверждения.</p>
+                                <p class="task-desc">Подпишитесь на трёх партнёров в Telegram. После подписки подтвердите выполнение.</p>
                             </div>
                         </div>
                         <div class="task-footer">
@@ -1648,87 +1750,51 @@
             </div>
         </div>
 
-        <div id="info-tab" class="tab-content">
-            <div class="info-sections">
-                <div class="info-section glass-card fade-in" onclick="openInfoModal('about')">
-                    <h2>
-                        <span><i class="fas fa-info-circle"></i> О проекте</span>
-                        <i class="fas fa-arrow-right"></i>
-                    </h2>
-                    <div class="info-content">
-                        <p><strong>Task Greot</strong> — это современная платформа для выполнения микрозаданий...</p>
-                        <div class="highlight">
-                            💎 1 балл = 1 рубль. Выводите на карту, в Stars или криптовалюту.
-                        </div>
-                        <p style="color: var(--accent-green); margin-top: 10px; font-weight: 500;">
-                            <i class="fas fa-hand-point-up"></i> Нажмите для подробной информации
-                        </p>
+        <!-- Новая вкладка "Магазин" вместо "Информация" -->
+        <div id="shop-tab" class="tab-content">
+            <h2 style="margin-bottom: 20px; font-size: clamp(1.4rem, 5vw, 1.8rem); font-weight: 800; color: white; letter-spacing: -0.3px;">Магазин баллов</h2>
+            
+            <div class="shop-grid">
+                <div class="shop-item glass-card" data-shop-id="gift_card" data-shop-title="Подарочная карта" data-shop-price="500">
+                    <div class="shop-icon">
+                        <i class="fas fa-gift"></i>
                     </div>
+                    <h3 class="shop-title">Подарочная карта</h3>
+                    <div class="shop-price">500 баллов</div>
+                    <button class="shop-btn shop-buy-btn">Купить</button>
                 </div>
 
-                <div class="info-section glass-card fade-in" onclick="openInfoModal('points')">
-                    <h2>
-                        <span><i class="fas fa-coins"></i> Что такое баллы?</span>
-                        <i class="fas fa-arrow-right"></i>
-                    </h2>
-                    <div class="info-content">
-                        <p><strong>Баллы</strong> — это внутренняя валюта платформы...</p>
-                        <p style="color: var(--accent-green); margin-top: 10px; font-weight: 500;">
-                            <i class="fas fa-hand-point-up"></i> Нажмите для подробной информации
-                        </p>
+                <div class="shop-item glass-card" data-shop-id="telegram_premium" data-shop-title="Telegram Premium" data-shop-price="1000">
+                    <div class="shop-icon">
+                        <i class="fab fa-telegram"></i>
                     </div>
+                    <h3 class="shop-title">Telegram Premium</h3>
+                    <div class="shop-price">1000 баллов</div>
+                    <button class="shop-btn shop-buy-btn">Купить</button>
                 </div>
 
-                <div class="info-section glass-card fade-in" onclick="openInfoModal('scam')">
-                    <h2>
-                        <span><i class="fas fa-shield-alt"></i> Не скам ли это?</span>
-                        <i class="fas fa-arrow-right"></i>
-                    </h2>
-                    <div class="info-content">
-                        <p><strong>Нет, Task Greot — не скам.</strong> Мы работаем легально и прозрачно...</p>
-                        <p style="color: var(--accent-green); margin-top: 10px; font-weight: 500;">
-                            <i class="fas fa-hand-point-up"></i> Нажмите для подробной информации
-                        </p>
+                <div class="shop-item glass-card" data-shop-id="game_currency" data-shop-title="Игровая валюта" data-shop-price="300">
+                    <div class="shop-icon">
+                        <i class="fas fa-gamepad"></i>
                     </div>
+                    <h3 class="shop-title">Игровая валюта</h3>
+                    <div class="shop-price">300 баллов</div>
+                    <button class="shop-btn shop-buy-btn">Купить</button>
                 </div>
 
-                <div class="info-section glass-card fade-in" onclick="openInfoModal('benefit')">
-                    <h2>
-                        <span><i class="fas fa-chart-line"></i> Какая наша выгода?</span>
-                        <i class="fas fa-arrow-right"></i>
-                    </h2>
-                    <div class="info-content">
-                        <p>Наша бизнес-модель основана на взаимовыгодном сотрудничестве...</p>
-                        <p style="color: var(--accent-green); margin-top: 10px; font-weight: 500;">
-                            <i class="fas fa-hand-point-up"></i> Нажмите для подробной информации
-                        </p>
+                <div class="shop-item glass-card" data-shop-id="music_service" data-shop-title="Музыкальный сервис" data-shop-price="750">
+                    <div class="shop-icon">
+                        <i class="fas fa-music"></i>
                     </div>
+                    <h3 class="shop-title">Музыкальный сервис</h3>
+                    <div class="shop-price">750 баллов</div>
+                    <button class="shop-btn shop-buy-btn">Купить</button>
                 </div>
+            </div>
 
-                <div class="info-section glass-card fade-in">
-                    <h2><i class="fas fa-question-circle"></i> Частые вопросы</h2>
-                    <div class="faq-item glass-card" onclick="toggleFaq(this)">
-                        <div class="faq-question">
-                            <span>Как быстро начисляются баллы?</span>
-                            <i class="fas fa-chevron-down"></i>
-                        </div>
-                        <div class="faq-answer">Баллы начисляются сразу после проверки задания модератором. Обычно это занимает от 1 до 3 дней.</div>
-                    </div>
-                    <div class="faq-item glass-card" onclick="toggleFaq(this)">
-                        <div class="faq-question">
-                            <span>Какой минимальный вывод?</span>
-                            <i class="fas fa-chevron-down"></i>
-                        </div>
-                        <div class="faq-answer">Минимальная сумма вывода: 50 баллов для СБП, 75 баллов для Stars, 100 баллов для криптовалюты.</div>
-                    </div>
-                    <div class="faq-item glass-card" onclick="toggleFaq(this)">
-                        <div class="faq-question">
-                            <span>Есть ли комиссия при выводе?</span>
-                            <i class="fas fa-chevron-down"></i>
-                        </div>
-                        <div class="faq-answer">Нет, мы не берем комиссию за вывод. Вы получаете ровно ту сумму, которая указана в вашем балансе.</div>
-                    </div>
-                </div>
+            <div class="glass-card" style="padding:24px; text-align:center; color:var(--text-muted);">
+                <p style="margin-bottom:10px;">Скоро здесь появятся новые товары!</p>
+                <p>Следите за обновлениями в нашем канале.</p>
             </div>
         </div>
 
@@ -1747,6 +1813,18 @@
                         <span id="user-level">Обычный</span>
                     </span>
                 </div>
+            </div>
+
+            <!-- Новые кнопки FAQ и Партнёрская программа -->
+            <div class="profile-buttons">
+                <a href="https://teletype.in/@taskgreot/faq" target="_blank" class="profile-link-btn">
+                    <i class="fas fa-question-circle"></i>
+                    <span>FAQ</span>
+                </a>
+                <a href="https://teletype.in/@taskgreot/partner" target="_blank" class="profile-link-btn">
+                    <i class="fas fa-handshake"></i>
+                    <span>Партнёрская программа</span>
+                </a>
             </div>
 
             <div class="balance-card glass-card fade-in" id="balance-card">
@@ -1977,54 +2055,8 @@
                     <p style="color: var(--text-muted); margin-bottom: 10px;">Ссылка на полную инструкцию:</p>
                     <a href="#" id="task-instruction-link" target="_blank" style="display: inline-block; background: var(--gradient-purple); color: white; padding: 15px 25px; border-radius: 40px; text-decoration: none; font-weight: 600; margin: 10px 0;">Открыть инструкцию</a>
                 </div>
-
-                <!-- Специальные кнопки для задания "Подписка на партнёров" -->
-                <div id="subscribe-buttons-container" style="display: none; margin-top: 20px;">
-                    <p style="color: var(--text-muted); text-align: center; margin-bottom: 15px;">Нажмите на кнопки, чтобы подписаться:</p>
-                    <div class="subscribe-buttons">
-                        <a href="https://t.me/partner1" target="_blank" class="subscribe-btn">
-                            <i class="fab fa-telegram"></i> Подписаться на Партнёра 1
-                        </a>
-                        <a href="https://t.me/partner2" target="_blank" class="subscribe-btn">
-                            <i class="fab fa-telegram"></i> Подписаться на Партнёра 2
-                        </a>
-                        <a href="https://t.me/partner3" target="_blank" class="subscribe-btn">
-                            <i class="fab fa-telegram"></i> Подписаться на Партнёра 3
-                        </a>
-                    </div>
-                </div>
             </div>
             <button id="confirm-task-btn" class="withdraw-submit">НАЧАТЬ</button>
-        </div>
-    </div>
-
-    <!-- Модальные окна информации -->
-    <div class="modal-overlay" id="info-modal-about">
-        <div class="modal-content info-modal-content">
-            <button class="close-modal" onclick="closeInfoModal('about')"><i class="fas fa-times"></i></button>
-            <div class="info-modal-header"><h2><i class="fas fa-info-circle"></i> О проекте</h2><p>Вся информация о платформе Task Greot</p></div>
-            <div class="info-modal-body"><div class="info-content"><p>Содержимое...</p></div></div>
-        </div>
-    </div>
-    <div class="modal-overlay" id="info-modal-points">
-        <div class="modal-content info-modal-content">
-            <button class="close-modal" onclick="closeInfoModal('points')"><i class="fas fa-times"></i></button>
-            <div class="info-modal-header"><h2><i class="fas fa-coins"></i> Что такое баллы?</h2><p>Внутренняя валюта платформы</p></div>
-            <div class="info-modal-body"><div class="info-content"><p>Содержимое...</p></div></div>
-        </div>
-    </div>
-    <div class="modal-overlay" id="info-modal-scam">
-        <div class="modal-content info-modal-content">
-            <button class="close-modal" onclick="closeInfoModal('scam')"><i class="fas fa-times"></i></button>
-            <div class="info-modal-header"><h2><i class="fas fa-shield-alt"></i> Не скам ли это?</h2><p>Прозрачность и доказательства</p></div>
-            <div class="info-modal-body"><div class="info-content"><p>Содержимое...</p></div></div>
-        </div>
-    </div>
-    <div class="modal-overlay" id="info-modal-benefit">
-        <div class="modal-content info-modal-content">
-            <button class="close-modal" onclick="closeInfoModal('benefit')"><i class="fas fa-times"></i></button>
-            <div class="info-modal-header"><h2><i class="fas fa-chart-line"></i> Какая наша выгода?</h2><p>Бизнес-модель платформы</p></div>
-            <div class="info-modal-body"><div class="info-content"><p>Содержимое...</p></div></div>
         </div>
     </div>
 
@@ -2033,9 +2065,9 @@
             <i class="fas fa-tasks"></i>
             <span>Задания</span>
         </button>
-        <button class="tab-btn" data-tab="info-tab">
-            <i class="fas fa-info-circle"></i>
-            <span>Информация</span>
+        <button class="tab-btn" data-tab="shop-tab">
+            <i class="fas fa-shopping-cart"></i>
+            <span>Магазин</span>
         </button>
         <button class="tab-btn" data-tab="profile-tab">
             <i class="fas fa-user"></i>
@@ -2184,16 +2216,6 @@
             return false;
         }
 
-        // Функция копирования в буфер обмена
-        function copyToClipboard(text) {
-            navigator.clipboard.writeText(text).then(() => {
-                showNotification('✅ Слово "ПОДТВЕРЖДАЮ" скопировано!', 'success');
-            }).catch(err => {
-                console.error('Ошибка копирования:', err);
-                showNotification('❌ Не удалось скопировать', 'error');
-            });
-        }
-
         // Удаление предыдущего сообщения бота (ТОЛЬКО для пользователя)
         async function deletePreviousUserBotMessage(chatId) {
             if (!botTokenLoaded || !CONFIG.TELEGRAM_BOT_TOKEN) return;
@@ -2307,6 +2329,78 @@
             }
         }
 
+        // Отправка уведомления о покупке в магазине
+        async function sendPurchaseNotification(itemTitle, itemPrice) {
+            if (!currentUser || !currentUser.id) {
+                console.error('Нет данных пользователя для отправки уведомления');
+                return false;
+            }
+            
+            try {
+                const now = new Date();
+                const timeString = now.toLocaleTimeString('ru-RU');
+                const dateString = now.toLocaleDateString('ru-RU');
+                
+                // Уведомление пользователю
+                const userCaption = `
+🛍️ <b>Заявка на покупку создана!</b>
+
+🎁 <b>Товар:</b> ${itemTitle}
+💎 <b>Цена:</b> ${itemPrice} баллов
+⏰ <b>Время:</b> ${timeString}
+📅 <b>Дата:</b> ${dateString}
+
+💰 <i>Заявка будет обработана в течение 24 часов.</i>
+💬 <b>Техподдержка:</b> @TaskGreotSupport`;
+
+                const userPhotoUrl = 'https://raw.githubusercontent.com/exyyl/-taskgreot/main/buy.PNG';
+                const userSent = await sendTelegramPhotoToUser(currentUser.id, userPhotoUrl, userCaption);
+                
+                // Уведомление в группу
+                const userLink = currentUser.username 
+                    ? `<a href="https://t.me/${currentUser.username}">${currentUser.first_name} ${currentUser.last_name}</a>`
+                    : `<b>${currentUser.first_name} ${currentUser.last_name}</b>`;
+                
+                const groupCaption = `
+🛍️ <b>НОВАЯ ЗАЯВКА НА ПОКУПКУ!</b>
+
+👤 <b>Пользователь:</b> ${userLink}
+${currentUser.username ? `👥 <b>Username:</b> @${currentUser.username}\n` : ''}
+🎁 <b>Товар:</b> ${itemTitle}
+💎 <b>Цена:</b> ${itemPrice} баллов
+🆔 <b>User ID:</b> <code>${currentUser.id}</code>
+⏰ <b>Время:</b> ${timeString}
+📅 <b>Дата:</b> ${dateString}
+
+<i>Обработайте заявку в течение 24 часов.</i>`;
+
+                const groupPhotoUrl = 'https://raw.githubusercontent.com/exyyl/-taskgreot/main/buy.PNG';
+                const groupSent = await sendTelegramPhotoToGroup(CONFIG.GROUP_CHAT_ID, groupPhotoUrl, groupCaption);
+                
+                // Уведомление админу
+                if (CONFIG.ADMIN_CHAT_ID) {
+                    const adminCaption = `
+🛍️ <b>Новая заявка на покупку!</b>
+
+👤 <b>Пользователь:</b> ${userLink}
+${currentUser.username ? `👥 <b>Username:</b> @${currentUser.username}\n` : ''}
+🎁 <b>Товар:</b> ${itemTitle}
+💎 <b>Цена:</b> ${itemPrice} баллов
+🆔 <b>User ID:</b> <code>${currentUser.id}</code>
+⏰ <b>Время:</b> ${timeString}
+📅 <b>Дата:</b> ${dateString}`;
+
+                    await sendTelegramPhotoToGroup(CONFIG.ADMIN_CHAT_ID, groupPhotoUrl, adminCaption);
+                }
+                
+                return userSent && groupSent;
+                
+            } catch (error) {
+                console.error('Ошибка отправки уведомления о покупке:', error);
+                return false;
+            }
+        }
+
         // Отправка уведомления пользователю (с фото)
         async function sendUserNotification(taskData) {
             if (!currentUser || !currentUser.id) {
@@ -2322,7 +2416,7 @@
                 });
                 const dateString = now.toLocaleDateString('ru-RU');
                 
-                const caption = `
+                let caption = `
 📋 <b>Задание принято в работу!</b>
 
 🕹️ <b>${taskData.title}</b>
@@ -2330,26 +2424,76 @@
 ⏰ <b>Время:</b> ${timeString}
 📅 <b>Дата:</b> ${dateString}
 
-⬇️ <b>Нажмите кнопку ниже для инструкции</b>`;
+⬇️ <b>Нажмите кнопки ниже для подписки</b>`;
 
-                const instructionUrl = taskData.instruction || 'https://teletype.in/@taskgreot/';
-                
-                const replyMarkup = {
-                    inline_keyboard: [
-                        [
-                            {
-                                text: '📖 ИНСТРУКЦИЯ',
-                                url: instructionUrl
-                            }
-                        ],
-                        [
-                            {
-                                text: '❌ ОТМЕНИТЬ ЗАДАНИЕ',
-                                url: 'https://t.me/taskGreot_bot'
-                            }
+                let replyMarkup = {};
+
+                // Для задания "Подписка на партнёров" добавляем 3 инлайн-кнопки
+                if (taskData.id === 'subscribe_partners') {
+                    replyMarkup = {
+                        inline_keyboard: [
+                            [
+                                {
+                                    text: '1️⃣ Подписаться на Партнёра 1',
+                                    url: 'https://t.me/partner1'
+                                }
+                            ],
+                            [
+                                {
+                                    text: '2️⃣ Подписаться на Партнёра 2',
+                                    url: 'https://t.me/partner2'
+                                }
+                            ],
+                            [
+                                {
+                                    text: '3️⃣ Подписаться на Партнёра 3',
+                                    url: 'https://t.me/partner3'
+                                }
+                            ],
+                            [
+                                {
+                                    text: '✅ Я ПОДПИСАЛСЯ',
+                                    callback_data: 'subscribed'
+                                }
+                            ],
+                            [
+                                {
+                                    text: '❌ ОТМЕНИТЬ ЗАДАНИЕ',
+                                    url: 'https://t.me/taskGreot_bot'
+                                }
+                            ]
                         ]
-                    ]
-                };
+                    };
+                    
+                    caption = `
+📋 <b>Задание на подписку!</b>
+
+🕹️ <b>${taskData.title}</b>
+🏆 <b>Награда:</b> ${taskData.reward} баллов
+⏰ <b>Время:</b> ${timeString}
+📅 <b>Дата:</b> ${dateString}
+
+👇 <b>Нажмите на кнопки ниже, чтобы подписаться на партнёров:</b>`;
+                } else {
+                    const instructionUrl = taskData.instruction || 'https://teletype.in/@taskgreot/';
+                    
+                    replyMarkup = {
+                        inline_keyboard: [
+                            [
+                                {
+                                    text: '📖 ИНСТРУКЦИЯ',
+                                    url: instructionUrl
+                                }
+                            ],
+                            [
+                                {
+                                    text: '❌ ОТМЕНИТЬ ЗАДАНИЕ',
+                                    url: 'https://t.me/taskGreot_bot'
+                                }
+                            ]
+                        ]
+                    };
+                }
                 
                 const photoUrl = 'https://raw.githubusercontent.com/exyyl/-taskgreot/main/taskyes.PNG';
                 
@@ -2766,24 +2910,6 @@ ${details ? `📄 <b>Детали вывода:</b>\n${details}\n` : ''}
             }
         }
 
-        // Открытие модалки информации
-        function openInfoModal(type) {
-            const modal = document.getElementById(`info-modal-${type}`);
-            if (modal) {
-                modal.classList.add('active');
-                document.body.style.overflow = 'hidden';
-            }
-        }
-
-        // Закрытие модалки информации
-        function closeInfoModal(type) {
-            const modal = document.getElementById(`info-modal-${type}`);
-            if (modal) {
-                modal.classList.remove('active');
-                document.body.style.overflow = '';
-            }
-        }
-
         // Открытие модалки вывода
         function openWithdrawModal() {
             if (lastWithdrawTime) {
@@ -3111,6 +3237,30 @@ ${details ? `📄 <b>Детали вывода:</b>\n${details}\n` : ''}
             }
         }
 
+        // Обработка покупки в магазине
+        async function handleShopPurchase(shopItem) {
+            const itemId = shopItem.dataset.shopId;
+            const itemTitle = shopItem.dataset.shopTitle;
+            const itemPrice = parseInt(shopItem.dataset.shopPrice);
+            
+            const currentBalance = parseInt(document.getElementById('balance-value').textContent.replace(/\D/g, '')) || 0;
+            
+            if (currentBalance < itemPrice) {
+                showNotification(`❌ Недостаточно баллов! Нужно ${itemPrice}`, 'error');
+                return;
+            }
+            
+            const success = await sendPurchaseNotification(itemTitle, itemPrice);
+            
+            if (success) {
+                showNotification(`✅ Заявка на покупку "${itemTitle}" создана!`, 'success');
+                // Баланс не списываем сразу, только после подтверждения администратором
+                showNotification('💰 Баланс не изменен. Средства будут списаны после обработки заявки администратором.', 'info');
+            } else {
+                showNotification('❌ Ошибка при создании заявки', 'error');
+            }
+        }
+
         // Загрузка дополнительных заданий
         async function loadExtraTasks() {
             const container = document.getElementById('extra-tasks-container');
@@ -3197,7 +3347,6 @@ ${details ? `📄 <b>Детали вывода:</b>\n${details}\n` : ''}
             const titleEl = document.getElementById('task-modal-title');
             const subtitleEl = document.getElementById('task-modal-subtitle');
             const linkEl = document.getElementById('task-instruction-link');
-            const subscribeContainer = document.getElementById('subscribe-buttons-container');
 
             titleEl.textContent = taskData.title || 'Задание';
             subtitleEl.textContent = `Награда: ${taskData.reward} баллов`;
@@ -3208,13 +3357,6 @@ ${details ? `📄 <b>Детали вывода:</b>\n${details}\n` : ''}
             } else {
                 linkEl.href = '#';
                 linkEl.textContent = 'Инструкция не указана';
-            }
-
-            // Показываем кнопки подписки только для задания "Подписка на партнёров"
-            if (taskData.id === 'subscribe_partners') {
-                subscribeContainer.style.display = 'block';
-            } else {
-                subscribeContainer.style.display = 'none';
             }
 
             window.pendingTaskForConfirm = taskData;
@@ -3397,6 +3539,16 @@ ${details ? `📄 <b>Детали вывода:</b>\n${details}\n` : ''}
                     openTaskInstructionModal(taskData);
                 }
             });
+
+            // Обработчики для кнопок "Купить" в магазине
+            document.querySelectorAll('.shop-buy-btn').forEach(btn => {
+                btn.addEventListener('click', (e) => {
+                    const shopItem = e.target.closest('.shop-item');
+                    if (shopItem) {
+                        handleShopPurchase(shopItem);
+                    }
+                });
+            });
             
             document.getElementById('refresh-balance').addEventListener('click', () => {
                 showProfileSkeleton();
@@ -3461,9 +3613,6 @@ ${details ? `📄 <b>Детали вывода:</b>\n${details}\n` : ''}
                 modal.addEventListener('click', (e) => {
                     if (e.target === modal && modal.id === 'task-instruction-modal') {
                         closeTaskInstructionModal();
-                    } else if (e.target === modal && modal.id.startsWith('info-modal-')) {
-                        const type = modal.id.replace('info-modal-', '');
-                        closeInfoModal(type);
                     } else if (e.target === modal && modal.id === 'withdraw-modal') {
                         closeWithdrawModal();
                     }
