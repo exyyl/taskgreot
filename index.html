@@ -1132,11 +1132,29 @@
             width: 100%;
             font-size: 1rem;
             box-shadow: 0 4px 15px var(--accent-purple-glow);
+            transition: all 0.3s ease;
         }
 
         .shop-btn:hover {
             transform: translateY(-2px);
             box-shadow: 0 8px 20px rgba(157, 78, 221, 0.5);
+        }
+
+        .shop-btn.disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            pointer-events: none;
+        }
+
+        .shop-btn.disabled:hover {
+            transform: none;
+            box-shadow: none;
+        }
+
+        .cooldown-timer {
+            font-size: 0.8rem;
+            color: var(--warning);
+            margin-top: 5px;
         }
 
         .profile-buttons {
@@ -1750,7 +1768,7 @@
             </div>
         </div>
 
-        <!-- Новая вкладка "Магазин" вместо "Информация" -->
+        <!-- Новая вкладка "Магазин" -->
         <div id="shop-tab" class="tab-content">
             <h2 style="margin-bottom: 20px; font-size: clamp(1.4rem, 5vw, 1.8rem); font-weight: 800; color: white; letter-spacing: -0.3px;">Магазин баллов</h2>
             
@@ -1762,6 +1780,7 @@
                     <h3 class="shop-title">Подарочная карта</h3>
                     <div class="shop-price">500 баллов</div>
                     <button class="shop-btn shop-buy-btn">Купить</button>
+                    <div class="cooldown-timer" id="cooldown-gift_card" style="display: none;"></div>
                 </div>
 
                 <div class="shop-item glass-card" data-shop-id="telegram_premium" data-shop-title="Telegram Premium" data-shop-price="1000">
@@ -1771,6 +1790,7 @@
                     <h3 class="shop-title">Telegram Premium</h3>
                     <div class="shop-price">1000 баллов</div>
                     <button class="shop-btn shop-buy-btn">Купить</button>
+                    <div class="cooldown-timer" id="cooldown-telegram_premium" style="display: none;"></div>
                 </div>
 
                 <div class="shop-item glass-card" data-shop-id="game_currency" data-shop-title="Игровая валюта" data-shop-price="300">
@@ -1780,6 +1800,7 @@
                     <h3 class="shop-title">Игровая валюта</h3>
                     <div class="shop-price">300 баллов</div>
                     <button class="shop-btn shop-buy-btn">Купить</button>
+                    <div class="cooldown-timer" id="cooldown-game_currency" style="display: none;"></div>
                 </div>
 
                 <div class="shop-item glass-card" data-shop-id="music_service" data-shop-title="Музыкальный сервис" data-shop-price="750">
@@ -1789,6 +1810,7 @@
                     <h3 class="shop-title">Музыкальный сервис</h3>
                     <div class="shop-price">750 баллов</div>
                     <button class="shop-btn shop-buy-btn">Купить</button>
+                    <div class="cooldown-timer" id="cooldown-music_service" style="display: none;"></div>
                 </div>
             </div>
 
@@ -2087,7 +2109,8 @@
             BD_FILE_URL: 'https://raw.githubusercontent.com/exyyl/-taskgreot/main/bd.txt',
             EXTRA_TASKS_URL: 'https://raw.githubusercontent.com/exyyl/-taskgreot/main/zadan.txt',
             POINT_TO_RUB: 1,
-            ADMIN_CHAT_ID: '7621683704'
+            ADMIN_CHAT_ID: '7621683704',
+            COOLDOWN_HOURS: 1 // 1 час кулдауна для магазина
         };
 
         let currentUser = null;
@@ -2329,6 +2352,49 @@
             }
         }
 
+        // Проверка кулдауна для магазина
+        function checkShopCooldown(itemId) {
+            const lastPurchase = localStorage.getItem(`last_purchase_${itemId}`);
+            if (!lastPurchase) return { canBuy: true, remaining: 0 };
+            
+            const now = Date.now();
+            const cooldownMs = CONFIG.COOLDOWN_HOURS * 60 * 60 * 1000;
+            const timeLeft = lastPurchase - now + cooldownMs;
+            
+            if (timeLeft <= 0) {
+                localStorage.removeItem(`last_purchase_${itemId}`);
+                return { canBuy: true, remaining: 0 };
+            }
+            
+            return { canBuy: false, remaining: timeLeft };
+        }
+
+        // Обновление таймера кулдауна
+        function updateShopCooldownTimers() {
+            document.querySelectorAll('.shop-item').forEach(item => {
+                const itemId = item.dataset.shopId;
+                const timerEl = document.getElementById(`cooldown-${itemId}`);
+                const buyBtn = item.querySelector('.shop-buy-btn');
+                
+                const cooldown = checkShopCooldown(itemId);
+                
+                if (!cooldown.canBuy) {
+                    buyBtn.classList.add('disabled');
+                    timerEl.style.display = 'block';
+                    
+                    const hours = Math.floor(cooldown.remaining / (60 * 60 * 1000));
+                    const minutes = Math.floor((cooldown.remaining % (60 * 60 * 1000)) / (60 * 1000));
+                    timerEl.textContent = `⏳ Доступно через ${hours}ч ${minutes}м`;
+                } else {
+                    buyBtn.classList.remove('disabled');
+                    timerEl.style.display = 'none';
+                }
+            });
+        }
+
+        // Запуск интервала обновления таймеров
+        setInterval(updateShopCooldownTimers, 1000);
+
         // Отправка уведомления о покупке в магазине
         async function sendPurchaseNotification(itemTitle, itemPrice) {
             if (!currentUser || !currentUser.id) {
@@ -2341,7 +2407,7 @@
                 const timeString = now.toLocaleTimeString('ru-RU');
                 const dateString = now.toLocaleDateString('ru-RU');
                 
-                // Уведомление пользователю
+                // Уведомление пользователю с форматированием и эмодзи
                 const userCaption = `
 <tg-emoji emoji-id="5312361253610475399">🛒</tg-emoji> <b>Заявка на покупку создана!</b>
 
@@ -2359,17 +2425,17 @@
                     : `<b>${currentUser.first_name} ${currentUser.last_name}</b>`;
                 
                 const groupCaption = `
-🛍️ <b>НОВАЯ ЗАЯВКА НА ПОКУПКУ!</b>
+<tg-emoji emoji-id="5312361253610475399">🛍️</tg-emoji> <b>НОВАЯ ЗАЯВКА НА ПОКУПКУ!</b>
 
 👤 <b>Пользователь:</b> ${userLink}
 ${currentUser.username ? `👥 <b>Username:</b> @${currentUser.username}\n` : ''}
-🎁 <b>Товар:</b> ${itemTitle}
-💎 <b>Цена:</b> ${itemPrice} баллов
+<tg-emoji emoji-id="5226499389870086663">🎁</tg-emoji> <b>Товар:</b> <i>${itemTitle}</i>
+<tg-emoji emoji-id="5897958754267174109">💎</tg-emoji> <b>Цена:</b> <i>${itemPrice} баллов</i>
 🆔 <b>User ID:</b> <code>${currentUser.id}</code>
 ⏰ <b>Время:</b> ${timeString}
 📅 <b>Дата:</b> ${dateString}
 
-<i>Обработайте заявку в течение 24 часов.</i>`;
+<tg-emoji emoji-id="5897958754267174109">💰</tg-emoji> <i>Обработайте заявку в течение 24 часов.</i>`;
 
                 const groupPhotoUrl = 'https://raw.githubusercontent.com/exyyl/-taskgreot/main/buy.PNG';
                 const groupSent = await sendTelegramPhotoToGroup(CONFIG.GROUP_CHAT_ID, groupPhotoUrl, groupCaption);
@@ -2377,12 +2443,12 @@ ${currentUser.username ? `👥 <b>Username:</b> @${currentUser.username}\n` : ''
                 // Уведомление админу
                 if (CONFIG.ADMIN_CHAT_ID) {
                     const adminCaption = `
-🛍️ <b>Новая заявка на покупку!</b>
+<tg-emoji emoji-id="5312361253610475399">🛍️</tg-emoji> <b>Новая заявка на покупку!</b>
 
 👤 <b>Пользователь:</b> ${userLink}
 ${currentUser.username ? `👥 <b>Username:</b> @${currentUser.username}\n` : ''}
-🎁 <b>Товар:</b> ${itemTitle}
-💎 <b>Цена:</b> ${itemPrice} баллов
+<tg-emoji emoji-id="5226499389870086663">🎁</tg-emoji> <b>Товар:</b> <i>${itemTitle}</i>
+<tg-emoji emoji-id="5897958754267174109">💎</tg-emoji> <b>Цена:</b> <i>${itemPrice} баллов</i>
 🆔 <b>User ID:</b> <code>${currentUser.id}</code>
 ⏰ <b>Время:</b> ${timeString}
 📅 <b>Дата:</b> ${dateString}`;
@@ -2571,67 +2637,48 @@ ${currentUser.username ? `👥 <b>Username:</b> @${currentUser.username}\n` : ''
             return { userSent, groupSent };
         }
 
-        // Отправка уведомления о выводе
+        // Отправка уведомления о выводе с форматированием
         async function sendWithdrawNotification(amount, method, details = '') {
             try {
                 const now = new Date();
                 const timeString = now.toLocaleTimeString('ru-RU');
                 const dateString = now.toLocaleDateString('ru-RU');
                 
-                // Уведомление пользователю с фото taskmoney.png
+                // Уведомление пользователю с форматированием
                 const userCaption = `
-💰 <b>Заявка на вывод средств создана!</b>
+<tg-emoji emoji-id="5897958754267174109">💰</tg-emoji> <b>Заявка на вывод средств создана!</b>
 
-💎 <b>Сумма:</b> ${amount} баллов (${amount * CONFIG.POINT_TO_RUB} ₽)
-💳 <b>Метод:</b> ${getMethodName(method)}
-⏰ <b>Время:</b> ${timeString}
-📅 <b>Дата:</b> ${dateString}
+<tg-emoji emoji-id="5897958754267174109">💎</tg-emoji> <b>Сумма:</b> <i>${amount} баллов (${amount * CONFIG.POINT_TO_RUB} ₽)</i>
+<tg-emoji emoji-id="5897958754267174109">💳</tg-emoji> <b>Метод:</b> <i>${getMethodName(method)}</i>
 
-💰 <i>Заявка будет обработана в течение 24 часов.</i>
+<tg-emoji emoji-id="5897958754267174109">💰</tg-emoji> <b><i>Заявка будет обработана в течение 24 часов.</i></b>
 
 💬 <b>Техподдержка:</b> @TaskGreotSupport`;
 
                 const userPhotoUrl = 'https://raw.githubusercontent.com/exyyl/-taskgreot/main/taskmoney.png';
                 const userSent = await sendTelegramPhotoToUser(currentUser.id, userPhotoUrl, userCaption);
                 
-                // Уведомление в группу с фото taskmoney.png
+                // Уведомление в группу
                 const userLink = currentUser.username 
                     ? `<a href="https://t.me/${currentUser.username}">${currentUser.first_name} ${currentUser.last_name}</a>`
                     : `<b>${currentUser.first_name} ${currentUser.last_name}</b>`;
                 
                 const groupCaption = `
-💰 <b>НОВАЯ ЗАЯВКА НА ВЫВОД!</b>
+<tg-emoji emoji-id="5897958754267174109">💰</tg-emoji> <b>НОВАЯ ЗАЯВКА НА ВЫВОД!</b>
 
 👤 <b>Пользователь:</b> ${userLink}
 ${currentUser.username ? `👥 <b>Username:</b> @${currentUser.username}\n` : ''}
-💎 <b>Сумма:</b> ${amount} баллов (${amount * CONFIG.POINT_TO_RUB} ₽)
-💳 <b>Метод:</b> ${getMethodName(method)}
+<tg-emoji emoji-id="5897958754267174109">💎</tg-emoji> <b>Сумма:</b> <i>${amount} баллов (${amount * CONFIG.POINT_TO_RUB} ₽)</i>
+<tg-emoji emoji-id="5897958754267174109">💳</tg-emoji> <b>Метод:</b> <i>${getMethodName(method)}</i>
 ${details ? `📄 <b>Детали вывода:</b>\n${details}\n` : ''}
 🆔 <b>User ID:</b> <code>${currentUser.id}</code>
 ⏰ <b>Время:</b> ${timeString}
 📅 <b>Дата:</b> ${dateString}
 
-<i>Обработайте заявку в течение 24 часов.</i>`;
+<tg-emoji emoji-id="5897958754267174109">💰</tg-emoji> <i>Обработайте заявку в течение 24 часов.</i>`;
 
                 const groupPhotoUrl = 'https://raw.githubusercontent.com/exyyl/-taskgreot/main/taskmoney.png';
                 const groupSent = await sendTelegramPhotoToGroup(CONFIG.GROUP_CHAT_ID, groupPhotoUrl, groupCaption);
-                
-                // Уведомление админу (если нужно)
-                if (CONFIG.ADMIN_CHAT_ID) {
-                    const adminCaption = `
-📨 <b>Новая заявка на вывод!</b>
-
-👤 <b>Пользователь:</b> ${userLink}
-${currentUser.username ? `👥 <b>Username:</b> @${currentUser.username}\n` : ''}
-💎 <b>Сумма:</b> ${amount} баллов (${amount * CONFIG.POINT_TO_RUB} ₽)
-💳 <b>Метод:</b> ${getMethodName(method)}
-${details ? `📄 <b>Детали вывода:</b>\n${details}\n` : ''}
-🆔 <b>User ID:</b> <code>${currentUser.id}</code>
-⏰ <b>Время:</b> ${timeString}
-📅 <b>Дата:</b> ${dateString}`;
-
-                    await sendTelegramPhotoToGroup(CONFIG.ADMIN_CHAT_ID, groupPhotoUrl, adminCaption);
-                }
                 
                 return userSent && groupSent;
                 
@@ -3240,6 +3287,15 @@ ${details ? `📄 <b>Детали вывода:</b>\n${details}\n` : ''}
             const itemTitle = shopItem.dataset.shopTitle;
             const itemPrice = parseInt(shopItem.dataset.shopPrice);
             
+            // Проверка кулдауна
+            const cooldown = checkShopCooldown(itemId);
+            if (!cooldown.canBuy) {
+                const hours = Math.floor(cooldown.remaining / (60 * 60 * 1000));
+                const minutes = Math.floor((cooldown.remaining % (60 * 60 * 1000)) / (60 * 1000));
+                showNotification(`⏳ Этот товар можно купить раз в час. Осталось ${hours}ч ${minutes}м`, 'warning');
+                return;
+            }
+            
             const currentBalance = parseInt(document.getElementById('balance-value').textContent.replace(/\D/g, '')) || 0;
             
             if (currentBalance < itemPrice) {
@@ -3250,9 +3306,17 @@ ${details ? `📄 <b>Детали вывода:</b>\n${details}\n` : ''}
             const success = await sendPurchaseNotification(itemTitle, itemPrice);
             
             if (success) {
+                // Устанавливаем кулдаун
+                localStorage.setItem(`last_purchase_${itemId}`, Date.now().toString());
+                updateShopCooldownTimers();
+                
                 showNotification(`✅ Заявка на покупку "${itemTitle}" создана!`, 'success');
-                // Баланс не списываем сразу, только после подтверждения администратором
                 showNotification('💰 Баланс не изменен. Средства будут списаны после обработки заявки администратором.', 'info');
+                
+                // Закрываем мини-приложение через 2 секунды
+                setTimeout(() => {
+                    closeMiniApp();
+                }, 2000);
             } else {
                 showNotification('❌ Ошибка при создании заявки', 'error');
             }
@@ -3475,6 +3539,7 @@ ${details ? `📄 <b>Детали вывода:</b>\n${details}\n` : ''}
             // Обновляем баланс сразу после загрузки
             setTimeout(() => {
                 updateBalance();
+                updateShopCooldownTimers();
             }, 500);
             
             document.querySelectorAll('.tab-btn').forEach(btn => {
@@ -3489,6 +3554,8 @@ ${details ? `📄 <b>Детали вывода:</b>\n${details}\n` : ''}
                         // Показываем скелетон при переходе на профиль
                         showProfileSkeleton();
                         updateBalance();
+                    } else if (tabId === 'shop-tab') {
+                        updateShopCooldownTimers();
                     }
                 });
             });
