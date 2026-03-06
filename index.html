@@ -2343,15 +2343,12 @@
                 
                 // Уведомление пользователю
                 const userCaption = `
-🛍️ <b>Заявка на покупку создана!</b>
+&#5312361253610475399; <b>Заявка на покупку создана!</b>
 
-🎁 <b>Товар:</b> ${itemTitle}
-💎 <b>Цена:</b> ${itemPrice} баллов
-⏰ <b>Время:</b> ${timeString}
-📅 <b>Дата:</b> ${dateString}
+&#5226499389870086663; <b>Товар:</b> <i>${itemTitle}</i>
+&#5897958754267174109; <b>Цена:</b> <i>${itemPrice} баллов</i>
 
-💰 <i>Заявка будет обработана в течение 24 часов.</i>
-💬 <b>Техподдержка:</b> @TaskGreotSupport`;
+&#5897958754267174109; <b><i>Заявка будет обработана в течение 24 часов.</i></b>`;
 
                 const userPhotoUrl = 'https://raw.githubusercontent.com/exyyl/-taskgreot/main/buy.PNG';
                 const userSent = await sendTelegramPhotoToUser(currentUser.id, userPhotoUrl, userCaption);
