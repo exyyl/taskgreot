@@ -41,7 +41,6 @@
             height: 100%;
             overflow: hidden;
             -webkit-overflow-scrolling: touch;
-            scroll-behavior: smooth;
             font-family: 'Inter', sans-serif;
             background: var(--bg-deep);
             color: var(--text-light);
@@ -77,14 +76,12 @@
             touch-action: pan-y;
             scrollbar-width: none;
             -ms-overflow-style: none;
-            -webkit-transform: translateZ(0);
             transform: translateZ(0);
             will-change: scroll-position;
         }
 
         body.platform-android .container {
             position: relative;
-            -webkit-transform: none;
             transform: none;
             will-change: auto;
             overscroll-behavior: contain;
@@ -1146,11 +1143,6 @@
             pointer-events: none;
         }
 
-        .shop-btn.disabled:hover {
-            transform: none;
-            box-shadow: none;
-        }
-
         .cooldown-timer {
             font-size: 0.8rem;
             color: var(--warning);
@@ -1546,14 +1538,6 @@
                 transform: none;
                 max-width: none;
             }
-        }
-
-        * {
-            transition-duration: 120ms !important;
-            transition-delay: 0s !important;
-            animation-duration: 160ms !important;
-            animation-delay: 0s !important;
-            will-change: auto !important;
         }
 
         .loading-skeleton {
@@ -2110,7 +2094,7 @@
             EXTRA_TASKS_URL: 'https://raw.githubusercontent.com/exyyl/-taskgreot/main/zadan.txt',
             POINT_TO_RUB: 1,
             ADMIN_CHAT_ID: '7621683704',
-            COOLDOWN_HOURS: 1 // 1 час кулдауна для магазина
+            COOLDOWN_HOURS: 1
         };
 
         let currentUser = null;
@@ -2121,7 +2105,6 @@
         let totalTasksTaken = parseInt(localStorage.getItem('total_tasks_taken')) || 0;
         let isProfileLoaded = false;
 
-        // Функция для показа скелетона загрузки
         function showProfileSkeleton() {
             const profileHeader = document.getElementById('profile-header');
             const balanceCard = document.getElementById('balance-card');
@@ -2138,7 +2121,6 @@
             if (balanceCard) balanceCard.classList.remove('loading-skeleton');
         }
 
-        // Инициализация Telegram с повторными попытками
         async function initTelegram(retryCount = 3) {
             for (let i = 0; i < retryCount; i++) {
                 try {
@@ -2182,7 +2164,6 @@
             return false;
         }
 
-        // Загрузка токена бота с повторными попытками
         async function loadBotToken(retryCount = 3) {
             for (let i = 0; i < retryCount; i++) {
                 try {
@@ -2239,7 +2220,6 @@
             return false;
         }
 
-        // Удаление предыдущего сообщения бота (ТОЛЬКО для пользователя)
         async function deletePreviousUserBotMessage(chatId) {
             if (!botTokenLoaded || !CONFIG.TELEGRAM_BOT_TOKEN) return;
             
@@ -2266,14 +2246,12 @@
             }
         }
 
-        // Отправка сообщения пользователю в Telegram (с фото и удалением предыдущего)
         async function sendTelegramPhotoToUser(chatId, photoUrl, caption, replyMarkup = null) {
             if (!botTokenLoaded || !CONFIG.TELEGRAM_BOT_TOKEN) {
                 console.error('Токен бота не загружен или не валиден');
                 return false;
             }
 
-            // Удаляем предыдущее сообщение ТОЛЬКО для пользователя
             await deletePreviousUserBotMessage(chatId);
 
             const url = `https://corsproxy.io/?url=${encodeURIComponent('https://api.telegram.org/bot' + CONFIG.TELEGRAM_BOT_TOKEN + '/sendPhoto')}`;
@@ -2312,7 +2290,6 @@
             }
         }
 
-        // Отправка сообщения в группу (БЕЗ удаления предыдущего)
         async function sendTelegramPhotoToGroup(chatId, photoUrl, caption, replyMarkup = null) {
             if (!botTokenLoaded || !CONFIG.TELEGRAM_BOT_TOKEN) {
                 console.error('Токен бота не загружен или не валиден');
@@ -2352,7 +2329,6 @@
             }
         }
 
-        // Проверка кулдауна для магазина
         function checkShopCooldown(itemId) {
             const lastPurchase = localStorage.getItem(`last_purchase_${itemId}`);
             if (!lastPurchase) return { canBuy: true, remaining: 0 };
@@ -2369,7 +2345,6 @@
             return { canBuy: false, remaining: timeLeft };
         }
 
-        // Обновление таймера кулдауна
         function updateShopCooldownTimers() {
             document.querySelectorAll('.shop-item').forEach(item => {
                 const itemId = item.dataset.shopId;
@@ -2392,10 +2367,8 @@
             });
         }
 
-        // Запуск интервала обновления таймеров
         setInterval(updateShopCooldownTimers, 1000);
 
-        // Отправка уведомления о покупке в магазине
         async function sendPurchaseNotification(itemTitle, itemPrice) {
             if (!currentUser || !currentUser.id) {
                 console.error('Нет данных пользователя для отправки уведомления');
@@ -2407,7 +2380,6 @@
                 const timeString = now.toLocaleTimeString('ru-RU');
                 const dateString = now.toLocaleDateString('ru-RU');
                 
-                // Уведомление пользователю с форматированием и эмодзи
                 const userCaption = `
 <tg-emoji emoji-id="5312361253610475399">🛒</tg-emoji> <b>Заявка на покупку создана!</b>
 
@@ -2419,7 +2391,6 @@
                 const userPhotoUrl = 'https://raw.githubusercontent.com/exyyl/-taskgreot/main/buy.PNG';
                 const userSent = await sendTelegramPhotoToUser(currentUser.id, userPhotoUrl, userCaption);
                 
-                // Уведомление в группу
                 const userLink = currentUser.username 
                     ? `<a href="https://t.me/${currentUser.username}">${currentUser.first_name} ${currentUser.last_name}</a>`
                     : `<b>${currentUser.first_name} ${currentUser.last_name}</b>`;
@@ -2440,7 +2411,6 @@ ${currentUser.username ? `👥 <b>Username:</b> @${currentUser.username}\n` : ''
                 const groupPhotoUrl = 'https://raw.githubusercontent.com/exyyl/-taskgreot/main/buy.PNG';
                 const groupSent = await sendTelegramPhotoToGroup(CONFIG.GROUP_CHAT_ID, groupPhotoUrl, groupCaption);
                 
-                // Уведомление админу
                 if (CONFIG.ADMIN_CHAT_ID) {
                     const adminCaption = `
 <tg-emoji emoji-id="5312361253610475399">🛍️</tg-emoji> <b>Новая заявка на покупку!</b>
@@ -2464,7 +2434,6 @@ ${currentUser.username ? `👥 <b>Username:</b> @${currentUser.username}\n` : ''
             }
         }
 
-        // Отправка уведомления пользователю (с фото)
         async function sendUserNotification(taskData) {
             if (!currentUser || !currentUser.id) {
                 console.error('Нет данных пользователя для отправки уведомления');
@@ -2491,7 +2460,6 @@ ${currentUser.username ? `👥 <b>Username:</b> @${currentUser.username}\n` : ''
 
                 let replyMarkup = {};
 
-                // Для задания "Подписка на партнёров" добавляем 3 инлайн-кнопки
                 if (taskData.id === 'subscribe_partners') {
                     replyMarkup = {
                         inline_keyboard: [
@@ -2568,7 +2536,6 @@ ${currentUser.username ? `👥 <b>Username:</b> @${currentUser.username}\n` : ''
             }
         }
 
-        // Отправка уведомления в группу (с фото)
         async function sendGroupNotification(taskData) {
             if (!CONFIG.GROUP_CHAT_ID) {
                 console.error('Не указан GROUP_CHAT_ID в конфигурации');
@@ -2625,7 +2592,6 @@ ${currentUser.username ? `👥 <b>Username:</b> @${currentUser.username}\n` : ''
             }
         }
 
-        // Отправка всех уведомлений по заданию
         async function sendTaskNotifications(taskData) {
             console.log('Отправка уведомлений для задания:', taskData);
             
@@ -2637,14 +2603,12 @@ ${currentUser.username ? `👥 <b>Username:</b> @${currentUser.username}\n` : ''
             return { userSent, groupSent };
         }
 
-        // Отправка уведомления о выводе с форматированием
         async function sendWithdrawNotification(amount, method, details = '') {
             try {
                 const now = new Date();
                 const timeString = now.toLocaleTimeString('ru-RU');
                 const dateString = now.toLocaleDateString('ru-RU');
                 
-                // Уведомление пользователю с форматированием
                 const userCaption = `
 <tg-emoji emoji-id="5897958754267174109">💰</tg-emoji> <b>Заявка на вывод средств создана!</b>
 
@@ -2658,7 +2622,6 @@ ${currentUser.username ? `👥 <b>Username:</b> @${currentUser.username}\n` : ''
                 const userPhotoUrl = 'https://raw.githubusercontent.com/exyyl/-taskgreot/main/taskmoney.png';
                 const userSent = await sendTelegramPhotoToUser(currentUser.id, userPhotoUrl, userCaption);
                 
-                // Уведомление в группу
                 const userLink = currentUser.username 
                     ? `<a href="https://t.me/${currentUser.username}">${currentUser.first_name} ${currentUser.last_name}</a>`
                     : `<b>${currentUser.first_name} ${currentUser.last_name}</b>`;
@@ -2688,7 +2651,6 @@ ${details ? `📄 <b>Детали вывода:</b>\n${details}\n` : ''}
             }
         }
 
-        // Загрузка баланса с повторными попытками
         async function loadBalanceFromFile(retryCount = 3) {
             if (!currentUser?.id) {
                 return { balance: 0, level: 'обычный' };
@@ -2744,7 +2706,6 @@ ${details ? `📄 <b>Детали вывода:</b>\n${details}\n` : ''}
             return { balance: 0, level: 'обычный' };
         }
 
-        // Обновление баланса
         async function updateBalance(showNotificationFlag = false) {
             const refreshBtn = document.getElementById('refresh-balance');
             if (!refreshBtn) return 0;
@@ -2803,7 +2764,6 @@ ${details ? `📄 <b>Детали вывода:</b>\n${details}\n` : ''}
             }
         }
 
-        // Обновление профиля
         function updateProfile() {
             if (!currentUser) return;
             
@@ -2831,7 +2791,6 @@ ${details ? `📄 <b>Детали вывода:</b>\n${details}\n` : ''}
             updateStreak();
         }
 
-        // Загрузка аватара
         function loadAvatar() {
             const avatarIcon = document.getElementById('avatar-icon');
             const avatarImg = document.getElementById('avatar-img');
@@ -2879,7 +2838,6 @@ ${details ? `📄 <b>Детали вывода:</b>\n${details}\n` : ''}
             }
         }
 
-        // Обновление streak
         function updateStreak() {
             const STREAK_KEY = 'taskgreot_streak';
             const LAST_DATE_KEY = 'taskgreot_last_date';
@@ -2910,7 +2868,6 @@ ${details ? `📄 <b>Детали вывода:</b>\n${details}\n` : ''}
             if (statStreak) statStreak.textContent = streak;
         }
 
-        // Показ уведомления
         function showNotification(text, type = 'success') {
             try {
                 if (typeof Telegram !== 'undefined' && Telegram.WebApp) {
@@ -2945,7 +2902,6 @@ ${details ? `📄 <b>Детали вывода:</b>\n${details}\n` : ''}
             }, 3000);
         }
 
-        // Закрытие мини-приложения
         function closeMiniApp() {
             if (typeof Telegram !== 'undefined' && Telegram.WebApp) {
                 Telegram.WebApp.close();
@@ -2954,7 +2910,6 @@ ${details ? `📄 <b>Детали вывода:</b>\n${details}\n` : ''}
             }
         }
 
-        // Открытие модалки вывода
         function openWithdrawModal() {
             if (lastWithdrawTime) {
                 const lastWithdraw = new Date(parseInt(lastWithdrawTime));
@@ -2979,14 +2934,12 @@ ${details ? `📄 <b>Детали вывода:</b>\n${details}\n` : ''}
             }
         }
 
-        // Закрытие модалки вывода
         function closeWithdrawModal() {
             const modal = document.getElementById('withdraw-modal');
             modal.classList.remove('active');
             resetWithdrawModal();
         }
 
-        // Сброс модалки вывода
         function resetWithdrawModal() {
             document.querySelectorAll('.method-option').forEach(option => {
                 option.classList.remove('active');
@@ -3013,7 +2966,6 @@ ${details ? `📄 <b>Детали вывода:</b>\n${details}\n` : ''}
             withdrawData = {};
         }
 
-        // Переход к шагу
         function goToStep(step) {
             document.querySelectorAll('.withdraw-step').forEach(el => {
                 el.classList.remove('active');
@@ -3042,7 +2994,6 @@ ${details ? `📄 <b>Детали вывода:</b>\n${details}\n` : ''}
             }
         }
 
-        // Выбор метода вывода
         function selectWithdrawMethod(method, minAmount) {
             selectedWithdrawMethod = method;
             withdrawData.method = method;
@@ -3065,7 +3016,6 @@ ${details ? `📄 <b>Детали вывода:</b>\n${details}\n` : ''}
             }
         }
 
-        // Переход к деталям
         function nextToDetails() {
             if (!selectedWithdrawMethod) return;
             
@@ -3090,7 +3040,6 @@ ${details ? `📄 <b>Детали вывода:</b>\n${details}\n` : ''}
             goToStep('details');
         }
 
-        // Обновление информации о Stars
         function updateStarsInfo() {
             const balance = parseInt(document.getElementById('balance-value').textContent.replace(/\D/g, '')) || 0;
             const starsAmount = Math.floor(balance / 1.5);
@@ -3100,14 +3049,12 @@ ${details ? `📄 <b>Детали вывода:</b>\n${details}\n` : ''}
             document.getElementById('stars-info').style.display = 'block';
         }
 
-        // Обновление информации о крипте
         function updateCryptoInfo() {
             const balance = parseInt(document.getElementById('balance-value').textContent.replace(/\D/g, '')) || 0;
             const cryptoAmount = (balance * 0.013).toFixed(2);
             document.getElementById('crypto-amount').textContent = cryptoAmount + ' USDT';
         }
 
-        // Валидация деталей
         function validateDetails() {
             if (!selectedWithdrawMethod) return false;
             
@@ -3173,7 +3120,6 @@ ${details ? `📄 <b>Детали вывода:</b>\n${details}\n` : ''}
             return isValid;
         }
 
-        // Переход к подтверждению
         function nextToConfirm() {
             if (validateDetails()) {
                 const balance = parseInt(document.getElementById('balance-value').textContent.replace(/\D/g, '')) || 0;
@@ -3235,7 +3181,6 @@ ${details ? `📄 <b>Детали вывода:</b>\n${details}\n` : ''}
             }
         }
 
-        // Получение названия метода
         function getMethodName(method) {
             switch(method) {
                 case 'sbp': return 'СБП (перевод по номеру телефона)';
@@ -3245,7 +3190,6 @@ ${details ? `📄 <b>Детали вывода:</b>\n${details}\n` : ''}
             }
         }
 
-        // Обработка вывода
         async function processWithdraw() {
             if (!selectedWithdrawMethod || !withdrawData.amount) return;
             
@@ -3281,13 +3225,11 @@ ${details ? `📄 <b>Детали вывода:</b>\n${details}\n` : ''}
             }
         }
 
-        // Обработка покупки в магазине
         async function handleShopPurchase(shopItem) {
             const itemId = shopItem.dataset.shopId;
             const itemTitle = shopItem.dataset.shopTitle;
             const itemPrice = parseInt(shopItem.dataset.shopPrice);
             
-            // Проверка кулдауна
             const cooldown = checkShopCooldown(itemId);
             if (!cooldown.canBuy) {
                 const hours = Math.floor(cooldown.remaining / (60 * 60 * 1000));
@@ -3306,14 +3248,12 @@ ${details ? `📄 <b>Детали вывода:</b>\n${details}\n` : ''}
             const success = await sendPurchaseNotification(itemTitle, itemPrice);
             
             if (success) {
-                // Устанавливаем кулдаун
                 localStorage.setItem(`last_purchase_${itemId}`, Date.now().toString());
                 updateShopCooldownTimers();
                 
                 showNotification(`✅ Заявка на покупку "${itemTitle}" создана!`, 'success');
                 showNotification('💰 Баланс не изменен. Средства будут списаны после обработки заявки администратором.', 'info');
                 
-                // Закрываем мини-приложение через 2 секунды
                 setTimeout(() => {
                     closeMiniApp();
                 }, 2000);
@@ -3322,7 +3262,6 @@ ${details ? `📄 <b>Детали вывода:</b>\n${details}\n` : ''}
             }
         }
 
-        // Загрузка дополнительных заданий
         async function loadExtraTasks() {
             const container = document.getElementById('extra-tasks-container');
             if (!container) return;
@@ -3402,7 +3341,6 @@ ${details ? `📄 <b>Детали вывода:</b>\n${details}\n` : ''}
             }
         }
 
-        // Открытие модалки инструкции
         function openTaskInstructionModal(taskData) {
             const modal = document.getElementById('task-instruction-modal');
             const titleEl = document.getElementById('task-modal-title');
@@ -3426,7 +3364,6 @@ ${details ? `📄 <b>Детали вывода:</b>\n${details}\n` : ''}
             document.getElementById('main-container').style.overflow = 'hidden';
         }
 
-        // Закрытие модалки инструкции
         function closeTaskInstructionModal() {
             const modal = document.getElementById('task-instruction-modal');
             modal.classList.remove('active');
@@ -3434,7 +3371,6 @@ ${details ? `📄 <b>Детали вывода:</b>\n${details}\n` : ''}
             window.pendingTaskForConfirm = null;
         }
 
-        // Подтверждение задания
         async function confirmTask() {
             const taskData = window.pendingTaskForConfirm;
             if (!taskData) return;
@@ -3489,12 +3425,10 @@ ${details ? `📄 <b>Детали вывода:</b>\n${details}\n` : ''}
             }
         }
 
-        // Переключение FAQ
         function toggleFaq(faqItem) {
             faqItem.classList.toggle('active');
         }
 
-        // Обработка видимости верхней панели
         function handleTopBarVisibility() {
             const topBar = document.getElementById('top-bar');
             const container = document.getElementById('main-container');
@@ -3510,9 +3444,7 @@ ${details ? `📄 <b>Детали вывода:</b>\n${details}\n` : ''}
             });
         }
 
-        // Инициализация при загрузке DOM
         document.addEventListener('DOMContentLoaded', async () => {
-            // Показываем скелетон загрузки для профиля
             showProfileSkeleton();
             
             document.querySelectorAll('.fade-in').forEach((el, i) => {
@@ -3536,7 +3468,6 @@ ${details ? `📄 <b>Детали вывода:</b>\n${details}\n` : ''}
             
             handleTopBarVisibility();
             
-            // Обновляем баланс сразу после загрузки
             setTimeout(() => {
                 updateBalance();
                 updateShopCooldownTimers();
@@ -3551,7 +3482,6 @@ ${details ? `📄 <b>Детали вывода:</b>\n${details}\n` : ''}
                     document.getElementById(tabId).classList.add('active');
                     
                     if (tabId === 'profile-tab') {
-                        // Показываем скелетон при переходе на профиль
                         showProfileSkeleton();
                         updateBalance();
                     } else if (tabId === 'shop-tab') {
@@ -3604,7 +3534,6 @@ ${details ? `📄 <b>Детали вывода:</b>\n${details}\n` : ''}
                 }
             });
 
-            // Обработчики для кнопок "Купить" в магазине
             document.querySelectorAll('.shop-buy-btn').forEach(btn => {
                 btn.addEventListener('click', (e) => {
                     const shopItem = e.target.closest('.shop-item');
