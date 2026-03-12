@@ -82,7 +82,7 @@
             animation: slowDrift 60s infinite alternate ease-in-out;
         }
 
-        /* УЛУЧШЕННЫЕ МИНИ-ИКОНКИ - теперь меньше и стабильнее */
+        /* УЛУЧШЕННЫЕ МИНИ-ИКОНКИ ПО ВСЕМУ ФОНУ */
         .floating-icons {
             position: fixed;
             top: 0;
@@ -92,66 +92,57 @@
             pointer-events: none;
             z-index: -1;
             overflow: hidden;
-            opacity: 0.6;
         }
 
         .float-icon {
             position: absolute;
-            font-size: 1rem;
-            color: rgba(255, 255, 255, 0.05);
-            animation: floatIcon 30s infinite linear;
-            filter: drop-shadow(0 0 5px rgba(157, 78, 221, 0.1));
-            will-change: transform, opacity;
-            transform: translateZ(0);
-            backface-visibility: hidden;
+            font-size: 1.8rem;
+            color: rgba(255, 255, 255, 0.03);
+            animation: floatIcon 25s infinite linear;
+            filter: drop-shadow(0 0 10px rgba(157, 78, 221, 0.1));
         }
 
-        /* Множество иконок с фиксированными позициями */
-        .float-icon-1 { top: 5%; left: 3%; animation-delay: 0s; animation-duration: 35s; }
-        .float-icon-2 { top: 12%; right: 8%; animation-delay: 3s; animation-duration: 40s; }
-        .float-icon-3 { top: 25%; left: 15%; animation-delay: 6s; animation-duration: 38s; }
-        .float-icon-4 { top: 35%; right: 20%; animation-delay: 9s; animation-duration: 42s; }
-        .float-icon-5 { top: 45%; left: 25%; animation-delay: 12s; animation-duration: 36s; }
-        .float-icon-6 { top: 55%; right: 30%; animation-delay: 15s; animation-duration: 44s; }
-        .float-icon-7 { top: 65%; left: 35%; animation-delay: 18s; animation-duration: 39s; }
-        .float-icon-8 { top: 75%; right: 40%; animation-delay: 21s; animation-duration: 41s; }
-        .float-icon-9 { top: 85%; left: 45%; animation-delay: 24s; animation-duration: 37s; }
-        .float-icon-10 { top: 95%; right: 50%; animation-delay: 27s; animation-duration: 43s; }
-        .float-icon-11 { top: 15%; left: 60%; animation-delay: 5s; animation-duration: 40s; }
-        .float-icon-12 { top: 25%; right: 70%; animation-delay: 8s; animation-duration: 36s; }
-        .float-icon-13 { top: 35%; left: 80%; animation-delay: 11s; animation-duration: 42s; }
-        .float-icon-14 { top: 45%; right: 90%; animation-delay: 14s; animation-duration: 38s; }
-        .float-icon-15 { top: 55%; left: 95%; animation-delay: 17s; animation-duration: 44s; }
-        .float-icon-16 { top: 8%; right: 15%; animation-delay: 2s; animation-duration: 37s; }
-        .float-icon-17 { top: 18%; left: 70%; animation-delay: 7s; animation-duration: 41s; }
-        .float-icon-18 { top: 28%; right: 45%; animation-delay: 10s; animation-duration: 39s; }
-        .float-icon-19 { top: 38%; left: 55%; animation-delay: 13s; animation-duration: 43s; }
-        .float-icon-20 { top: 48%; right: 65%; animation-delay: 16s; animation-duration: 38s; }
+        /* Множество иконок по всему фону */
+        .float-icon-1 { top: 5%; left: 3%; animation-delay: 0s; animation-duration: 22s; }
+        .float-icon-2 { top: 12%; right: 8%; animation-delay: 2s; animation-duration: 28s; }
+        .float-icon-3 { top: 25%; left: 15%; animation-delay: 4s; animation-duration: 24s; }
+        .float-icon-4 { top: 35%; right: 20%; animation-delay: 6s; animation-duration: 30s; }
+        .float-icon-5 { top: 45%; left: 25%; animation-delay: 8s; animation-duration: 26s; }
+        .float-icon-6 { top: 55%; right: 30%; animation-delay: 10s; animation-duration: 32s; }
+        .float-icon-7 { top: 65%; left: 35%; animation-delay: 12s; animation-duration: 28s; }
+        .float-icon-8 { top: 75%; right: 40%; animation-delay: 14s; animation-duration: 24s; }
+        .float-icon-9 { top: 85%; left: 45%; animation-delay: 16s; animation-duration: 30s; }
+        .float-icon-10 { top: 95%; right: 50%; animation-delay: 18s; animation-duration: 26s; }
+        .float-icon-11 { top: 15%; left: 60%; animation-delay: 20s; animation-duration: 32s; }
+        .float-icon-12 { top: 25%; right: 70%; animation-delay: 22s; animation-duration: 28s; }
+        .float-icon-13 { top: 35%; left: 80%; animation-delay: 24s; animation-duration: 24s; }
+        .float-icon-14 { top: 45%; right: 90%; animation-delay: 26s; animation-duration: 30s; }
+        .float-icon-15 { top: 55%; left: 95%; animation-delay: 28s; animation-duration: 26s; }
 
         @keyframes floatIcon {
             0% { 
                 transform: translateY(0) rotate(0deg) scale(1); 
-                opacity: 0.03; 
+                opacity: 0.02; 
             }
             25% { 
-                transform: translateY(-8px) rotate(45deg) scale(1.05); 
-                opacity: 0.05; 
+                transform: translateY(-15px) rotate(90deg) scale(1.1); 
+                opacity: 0.04; 
             }
             50% { 
-                transform: translateY(-15px) rotate(90deg) scale(1.1); 
-                opacity: 0.07; 
+                transform: translateY(-30px) rotate(180deg) scale(1.2); 
+                opacity: 0.06; 
             }
             75% { 
-                transform: translateY(-8px) rotate(135deg) scale(1.05); 
-                opacity: 0.05; 
+                transform: translateY(-15px) rotate(270deg) scale(1.1); 
+                opacity: 0.04; 
             }
             100% { 
-                transform: translateY(0) rotate(180deg) scale(1); 
-                opacity: 0.03; 
+                transform: translateY(0) rotate(360deg) scale(1); 
+                opacity: 0.02; 
             }
         }
 
-        /* Блестящие точки - более стабильные */
+        /* Блестящие точки */
         .glitter {
             position: fixed;
             top: 0;
@@ -161,25 +152,23 @@
             pointer-events: none;
             z-index: -1;
             background: 
-                radial-gradient(circle at 15% 25%, rgba(255, 255, 255, 0.02) 0%, transparent 3%),
-                radial-gradient(circle at 85% 45%, rgba(255, 255, 255, 0.02) 0%, transparent 3%),
-                radial-gradient(circle at 35% 75%, rgba(255, 255, 255, 0.02) 0%, transparent 3%),
-                radial-gradient(circle at 65% 15%, rgba(255, 255, 255, 0.02) 0%, transparent 3%),
-                radial-gradient(circle at 45% 95%, rgba(255, 255, 255, 0.02) 0%, transparent 3%),
-                radial-gradient(circle at 95% 65%, rgba(255, 255, 255, 0.02) 0%, transparent 3%),
-                radial-gradient(circle at 5% 85%, rgba(255, 255, 255, 0.02) 0%, transparent 3%),
-                radial-gradient(circle at 25% 35%, rgba(255, 255, 255, 0.02) 0%, transparent 3%),
-                radial-gradient(circle at 75% 55%, rgba(255, 255, 255, 0.02) 0%, transparent 3%);
-            animation: twinkle 8s infinite alternate ease-in-out;
+                radial-gradient(circle at 15% 25%, rgba(255, 255, 255, 0.02) 0%, transparent 2%),
+                radial-gradient(circle at 85% 45%, rgba(255, 255, 255, 0.02) 0%, transparent 2%),
+                radial-gradient(circle at 35% 75%, rgba(255, 255, 255, 0.02) 0%, transparent 2%),
+                radial-gradient(circle at 65% 15%, rgba(255, 255, 255, 0.02) 0%, transparent 2%),
+                radial-gradient(circle at 45% 95%, rgba(255, 255, 255, 0.02) 0%, transparent 2%),
+                radial-gradient(circle at 95% 65%, rgba(255, 255, 255, 0.02) 0%, transparent 2%),
+                radial-gradient(circle at 5% 85%, rgba(255, 255, 255, 0.02) 0%, transparent 2%);
+            animation: twinkle 6s infinite alternate;
         }
 
         @keyframes twinkle {
             0% { opacity: 0.2; }
-            50% { opacity: 0.4; }
-            100% { opacity: 0.2; }
+            50% { opacity: 0.5; }
+            100% { opacity: 0.3; }
         }
 
-        /* Плавающие точки - более плавные */
+        /* Плавающие точки */
         .floating-dots {
             position: fixed;
             top: 0;
@@ -187,7 +176,7 @@
             right: 0;
             bottom: 0;
             pointer-events: none;
-            z-index: -2;
+            z-index: -1;
             overflow: hidden;
         }
 
@@ -196,83 +185,81 @@
             background: rgba(255, 255, 255, 0.02);
             border-radius: 50%;
             pointer-events: none;
-            will-change: transform;
-            transform: translateZ(0);
         }
 
         .dot-1 {
-            width: 200px;
-            height: 200px;
+            width: 250px;
+            height: 250px;
             top: 5%;
             left: -5%;
             background: radial-gradient(circle, rgba(157, 78, 221, 0.08) 0%, transparent 70%);
-            animation: float1 35s infinite alternate ease-in-out;
+            animation: float1 28s infinite alternate ease-in-out;
         }
 
         .dot-2 {
-            width: 280px;
-            height: 280px;
+            width: 350px;
+            height: 350px;
             bottom: 0;
             right: -8%;
             background: radial-gradient(circle, rgba(50, 173, 93, 0.06) 0%, transparent 70%);
-            animation: float2 40s infinite alternate ease-in-out;
+            animation: float2 32s infinite alternate ease-in-out;
         }
 
         .dot-3 {
-            width: 150px;
-            height: 150px;
+            width: 200px;
+            height: 200px;
             top: 40%;
             left: 40%;
             background: radial-gradient(circle, rgba(255, 215, 0, 0.04) 0%, transparent 70%);
-            animation: float3 45s infinite alternate ease-in-out;
+            animation: float3 35s infinite alternate ease-in-out;
         }
 
         .dot-4 {
-            width: 120px;
-            height: 120px;
+            width: 180px;
+            height: 180px;
             bottom: 20%;
             left: 15%;
             background: radial-gradient(circle, rgba(157, 78, 221, 0.05) 0%, transparent 70%);
-            animation: float4 30s infinite alternate ease-in-out;
+            animation: float4 25s infinite alternate ease-in-out;
         }
 
         .dot-5 {
-            width: 180px;
-            height: 180px;
+            width: 280px;
+            height: 280px;
             top: 70%;
             right: 10%;
             background: radial-gradient(circle, rgba(50, 173, 93, 0.05) 0%, transparent 70%);
-            animation: float5 38s infinite alternate ease-in-out;
+            animation: float5 30s infinite alternate ease-in-out;
         }
 
         @keyframes slowDrift {
             0% { transform: translate(0, 0) rotate(0deg); }
-            100% { transform: translate(1%, 1%) rotate(3deg); }
+            100% { transform: translate(2%, 2%) rotate(5deg); }
         }
 
         @keyframes float1 {
             0% { transform: translate(0, 0) scale(1); }
-            100% { transform: translate(4%, 3%) scale(1.1); }
+            100% { transform: translate(6%, 4%) scale(1.15); }
         }
 
         @keyframes float2 {
             0% { transform: translate(0, 0) scale(1); }
-            100% { transform: translate(-5%, -4%) scale(1.15); }
+            100% { transform: translate(-8%, -6%) scale(1.2); }
         }
 
         @keyframes float3 {
             0% { transform: translate(-50%, -50%) scale(1); }
-            100% { transform: translate(-48%, -48%) scale(1.15); }
+            100% { transform: translate(-45%, -45%) scale(1.25); }
         }
 
         @keyframes float4 {
             0% { transform: translate(0, 0) scale(1); }
-            100% { transform: translate(4%, -3%) scale(1.08); }
+            100% { transform: translate(5%, -5%) scale(1.1); }
         }
 
         @keyframes float5 {
             0% { transform: translate(0, 0) scale(1); }
-            100% { transform: translate(-5%, 3%) scale(1.12); }
+            100% { transform: translate(-7%, 4%) scale(1.15); }
         }
 
         /* Блестящие линии */
@@ -314,7 +301,7 @@
             transform: translateZ(0);
             will-change: scroll-position;
             backface-visibility: hidden;
-            margin-bottom: calc(90px + env(safe-area-inset-bottom));
+            margin-bottom: calc(84px + env(safe-area-inset-bottom));
         }
 
         /* iOS оптимизации */
@@ -388,9 +375,9 @@
             left: 5%;
             top: 50%;
             transform: translateY(-50%);
-            font-size: 1rem;
+            font-size: 1.2rem;
             color: rgba(255, 255, 255, 0.03);
-            animation: rotateSlow 30s infinite linear;
+            animation: rotateSlow 20s infinite linear;
         }
 
         .top-bar-decoration::after {
@@ -399,9 +386,9 @@
             right: 5%;
             top: 50%;
             transform: translateY(-50%);
-            font-size: 1rem;
+            font-size: 1.2rem;
             color: rgba(255, 255, 255, 0.03);
-            animation: rotateSlow 25s infinite reverse linear;
+            animation: rotateSlow 15s infinite reverse linear;
         }
 
         @keyframes rotateSlow {
@@ -409,7 +396,7 @@
             to { transform: translateY(-50%) rotate(360deg); }
         }
 
-        /* ОПТИМИЗИРОВАННАЯ навигация - для всех экранов */
+        /* ИСПРАВЛЕННАЯ навигация - теперь без торчащего фона */
         .tab-navigation {
             position: fixed;
             bottom: 0;
@@ -420,7 +407,7 @@
             align-items: flex-end;
             z-index: 100;
             pointer-events: none;
-            height: calc(100px + env(safe-area-inset-bottom));
+            height: calc(84px + env(safe-area-inset-bottom));
             background: transparent;
             margin: 0;
             padding: 0;
@@ -428,24 +415,23 @@
             box-shadow: none;
         }
 
-        /* Контейнер для кнопок - адаптивный для всех экранов */
+        /* Контейнер для кнопок - плавает над пустым пространством */
         .nav-container {
             display: flex;
-            gap: clamp(6px, 2vw, 8px);
+            gap: 8px;
             background: rgba(22, 23, 43, 0.4);
             backdrop-filter: blur(25px) saturate(200%);
             -webkit-backdrop-filter: blur(25px) saturate(200%);
-            padding: clamp(8px, 2vw, 10px);
+            padding: 10px;
             border-radius: 34px;
             border: 1px solid rgba(255, 255, 255, 0.08);
-            width: calc(100% - clamp(30px, 8vw, 40px));
+            width: calc(100% - 40px);
             max-width: 380px;
             box-shadow: 0 10px 30px -10px rgba(0, 0, 0, 0.5);
-            margin-bottom: clamp(15px, 3vh, 25px);
+            margin-bottom: calc(20px + env(safe-area-inset-bottom));
             pointer-events: auto;
             position: relative;
             overflow: hidden;
-            transform: translateZ(0);
         }
 
         /* Убираем любые возможные лишние элементы */
@@ -470,7 +456,7 @@
                 rgba(255, 255, 255, 0.1) 50%, 
                 rgba(255, 255, 255, 0.05) 75%, 
                 transparent 100%);
-            animation: shimmer 10s infinite;
+            animation: shimmer 8s infinite;
             pointer-events: none;
         }
 
@@ -480,13 +466,13 @@
             100% { transform: translateX(100%); }
         }
 
-        /* Кнопки навигации - адаптивные */
+        /* Кнопки навигации */
         .tab-btn {
             flex: 1;
             display: flex;
             flex-direction: column;
             align-items: center;
-            padding: clamp(8px, 2vw, 10px) clamp(3px, 1vw, 5px);
+            padding: 10px 5px;
             border: none;
             background: transparent;
             color: var(--text-muted);
@@ -494,15 +480,15 @@
             cursor: pointer;
             transition: all 0.2s ease;
             font-weight: 500;
-            font-size: clamp(0.7rem, 2.5vw, 0.85rem);
+            font-size: clamp(0.75rem, 3vw, 0.85rem);
             position: relative;
             z-index: 2;
             overflow: hidden;
         }
 
         .tab-btn i {
-            font-size: clamp(1.1rem, 4vw, 1.3rem);
-            margin-bottom: clamp(2px, 1vh, 4px);
+            font-size: clamp(1.2rem, 5vw, 1.3rem);
+            margin-bottom: 4px;
             transition: all 0.2s ease;
             filter: drop-shadow(0 2px 4px rgba(0,0,0,0.3));
         }
@@ -551,7 +537,7 @@
         }
 
         .logo-small {
-            font-size: clamp(1.2rem, 4vw, 1.8rem);
+            font-size: clamp(1.4rem, 5vw, 1.8rem);
             font-weight: 900;
             background: linear-gradient(90deg, var(--accent-purple), var(--accent-green));
             -webkit-background-clip: text;
@@ -568,14 +554,14 @@
         .topbar-user {
             display: flex;
             align-items: center;
-            gap: clamp(5px, 2vw, 10px);
+            gap: 10px;
             max-width: 60%;
             overflow: hidden;
         }
 
         .topbar-avatar {
-            width: clamp(30px, 6vw, 36px);
-            height: clamp(30px, 6vw, 36px);
+            width: 36px;
+            height: 36px;
             border-radius: 50%;
             overflow: hidden;
             display: flex;
@@ -619,7 +605,7 @@
         .topbar-name {
             font-weight: 700;
             color: var(--text-light);
-            font-size: clamp(0.8rem, 3vw, 1rem);
+            font-size: clamp(0.95rem, 3.5vw, 1rem);
             white-space: nowrap;
             overflow: hidden;
             text-overflow: ellipsis;
@@ -630,9 +616,9 @@
         .balance-mini {
             display: flex;
             align-items: center;
-            gap: clamp(4px, 1.5vw, 8px);
+            gap: 8px;
             background: rgba(50, 173, 93, 0.15);
-            padding: clamp(6px, 1.5vh, 8px) clamp(10px, 3vw, 16px);
+            padding: 8px 16px;
             border-radius: 20px;
             border: 1px solid rgba(50, 173, 93, 0.3);
             box-shadow: 0 0 15px var(--accent-green-glow);
@@ -645,12 +631,12 @@
         .balance-mini::before {
             content: '💎';
             position: absolute;
-            left: -8px;
+            left: -10px;
             top: 50%;
             transform: translateY(-50%);
-            font-size: 1.2rem;
+            font-size: 1.5rem;
             opacity: 0.1;
-            animation: rotateSlow 15s infinite linear;
+            animation: rotateSlow 10s infinite linear;
         }
 
         .balance-mini::after {
@@ -662,19 +648,19 @@
             height: 200%;
             background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 70%);
             opacity: 0;
-            animation: shimmerBalance 4s infinite;
+            animation: shimmerBalance 3s infinite;
         }
 
         @keyframes shimmerBalance {
             0% { transform: translateX(-100%) rotate(45deg); opacity: 0; }
-            10% { opacity: 0.3; }
+            10% { opacity: 0.5; }
             20% { transform: translateX(100%) rotate(45deg); opacity: 0; }
             100% { opacity: 0; }
         }
 
         .balance-mini-value {
             font-weight: 700;
-            font-size: clamp(0.8rem, 3vw, 1rem);
+            font-size: clamp(0.9rem, 4vw, 1rem);
             color: var(--accent-green);
             position: relative;
             z-index: 1;
@@ -682,14 +668,14 @@
 
         .balance-mini i {
             color: var(--accent-green);
-            font-size: clamp(0.7rem, 2.5vw, 0.9rem);
+            font-size: 0.9rem;
             position: relative;
             z-index: 1;
         }
 
         header {
             text-align: center;
-            padding: clamp(15px, 4vh, 40px) clamp(12px, 3vw, 20px) clamp(15px, 4vh, 30px);
+            padding: clamp(20px, 5vw, 40px) clamp(16px, 4vw, 20px) clamp(20px, 5vw, 30px);
             position: relative;
         }
 
@@ -716,27 +702,27 @@
 
         .header-decoration i {
             position: absolute;
-            font-size: 0.8rem;
-            color: rgba(255, 255, 255, 0.04);
-            animation: floatDecoration 4s infinite alternate;
+            font-size: 1rem;
+            color: rgba(255, 255, 255, 0.05);
+            animation: floatDecoration 3s infinite alternate;
         }
 
-        .header-decoration i:nth-child(1) { top: 20%; left: 5%; }
-        .header-decoration i:nth-child(2) { top: 30%; right: 8%; animation-delay: 1s; }
-        .header-decoration i:nth-child(3) { bottom: 20%; left: 8%; animation-delay: 2s; }
-        .header-decoration i:nth-child(4) { bottom: 30%; right: 10%; animation-delay: 1.5s; }
-        .header-decoration i:nth-child(5) { top: 15%; left: 30%; animation-delay: 2.5s; }
-        .header-decoration i:nth-child(6) { bottom: 40%; right: 25%; animation-delay: 3s; }
-        .header-decoration i:nth-child(7) { top: 60%; left: 50%; animation-delay: 1.2s; }
+        .header-decoration i:nth-child(1) { top: 20%; left: 10%; }
+        .header-decoration i:nth-child(2) { top: 30%; right: 15%; animation-delay: 1s; }
+        .header-decoration i:nth-child(3) { bottom: 20%; left: 20%; animation-delay: 2s; }
+        .header-decoration i:nth-child(4) { bottom: 30%; right: 25%; animation-delay: 1.5s; }
+        .header-decoration i:nth-child(5) { top: 15%; left: 40%; animation-delay: 2.5s; }
+        .header-decoration i:nth-child(6) { bottom: 40%; right: 45%; animation-delay: 3s; }
+        .header-decoration i:nth-child(7) { top: 60%; left: 70%; animation-delay: 1.2s; }
         .header-decoration i:nth-child(8) { bottom: 15%; right: 5%; animation-delay: 2.2s; }
 
         @keyframes floatDecoration {
             from { transform: translateY(0); }
-            to { transform: translateY(-3px); }
+            to { transform: translateY(-5px); }
         }
 
         .logo {
-            font-size: clamp(2rem, 7vw, 3.2rem);
+            font-size: clamp(2.4rem, 8vw, 3.2rem);
             font-weight: 900;
             background: linear-gradient(90deg, var(--accent-purple), var(--accent-green));
             -webkit-background-clip: text;
@@ -749,7 +735,7 @@
 
         /* Исправленный логотип - теперь .png без фона */
         .logo img {
-            max-width: clamp(250px, 70vw, 320px);
+            max-width: 320px;
             width: 100%;
             height: auto;
             object-fit: contain;
@@ -762,7 +748,7 @@
 
         .tagline {
             color: var(--text-muted);
-            font-size: clamp(0.8rem, 3vw, 1.05rem);
+            font-size: clamp(0.9rem, 3.5vw, 1.05rem);
             font-weight: 400;
             letter-spacing: 0.5px;
             max-width: 600px;
@@ -777,28 +763,28 @@
         .tagline::after {
             content: '✦';
             color: var(--accent-purple);
-            margin: 0 6px;
+            margin: 0 8px;
             opacity: 0.5;
-            font-size: 0.7rem;
+            font-size: 0.8rem;
         }
 
         .sub-tab-navigation {
             display: flex;
-            gap: clamp(4px, 1.5vw, 8px);
-            margin: 15px 0;
+            gap: 8px;
+            margin: 18px 0;
             justify-content: center;
             flex-wrap: wrap;
         }
 
         .sub-tab {
-            padding: clamp(6px, 1.5vh, 8px) clamp(10px, 3vw, 14px);
+            padding: 8px 14px;
             border-radius: 20px;
             background: rgba(255,255,255,0.03);
             color: var(--text-muted);
             border: 1px solid transparent;
             cursor: pointer;
             font-weight: 600;
-            font-size: clamp(0.75rem, 2.8vw, 1rem);
+            font-size: clamp(0.85rem, 3.5vw, 1rem);
             transition: all 0.2s ease;
             white-space: nowrap;
             position: relative;
@@ -832,7 +818,7 @@
             display: none;
             flex: 1;
             animation: fadeIn 0.3s ease;
-            padding: 0 clamp(12px, 4vw, 16px);
+            padding: 0 16px;
         }
 
         .tab-content.active {
@@ -853,7 +839,7 @@
         .tasks-grid {
             display: grid;
             grid-template-columns: 1fr;
-            gap: clamp(10px, 2.5vh, 20px);
+            gap: clamp(12px, 3vw, 20px);
             margin-top: 16px;
             margin-bottom: 40px;
             width: 100%;
@@ -862,11 +848,11 @@
         .task-card {
             position: relative;
             overflow: hidden;
-            padding: clamp(14px, 3vh, 24px);
+            padding: clamp(16px, 4vw, 24px);
             border-radius: 28px;
             display: flex;
             flex-direction: column;
-            gap: clamp(12px, 2vh, 16px);
+            gap: 16px;
             transition: all 0.2s ease;
             background: rgba(254, 254, 254, 0.03);
             backdrop-filter: blur(10px);
@@ -894,19 +880,19 @@
 
         .task-row {
             display: flex;
-            gap: clamp(10px, 2.5vw, 18px);
+            gap: clamp(12px, 3vw, 18px);
             align-items: flex-start;
         }
 
         .task-icon {
-            width: clamp(40px, 10vw, 64px);
-            height: clamp(40px, 10vw, 64px);
+            width: clamp(48px, 12vw, 64px);
+            height: clamp(48px, 12vw, 64px);
             display: flex;
             align-items: center;
             justify-content: center;
             background: rgba(50, 173, 93, 0.1);
             border-radius: 20px;
-            font-size: clamp(1.2rem, 4vw, 2rem);
+            font-size: clamp(1.4rem, 5vw, 2rem);
             color: var(--accent-green);
             border: 1px solid rgba(50, 173, 93, 0.3);
             flex-shrink: 0;
@@ -943,9 +929,9 @@
         }
 
         .task-title {
-            font-size: clamp(0.95rem, 3.5vw, 1.2rem);
+            font-size: clamp(1rem, 4vw, 1.2rem);
             font-weight: 700;
-            margin: 0 0 4px 0;
+            margin: 0 0 6px 0;
             color: var(--text-light);
             line-height: 1.3;
             word-wrap: break-word;
@@ -953,7 +939,7 @@
 
         .task-desc {
             color: var(--text-muted);
-            font-size: clamp(0.75rem, 3vw, 0.95rem);
+            font-size: clamp(0.85rem, 3.5vw, 0.95rem);
             line-height: 1.5;
             display: -webkit-box;
             -webkit-line-clamp: 3;
@@ -967,28 +953,28 @@
             justify-content: space-between;
             align-items: center;
             margin-top: 8px;
-            padding-top: 12px;
+            padding-top: 16px;
             border-top: 1px solid var(--border-glass);
-            gap: 10px;
+            gap: 12px;
             flex-wrap: wrap;
         }
 
         .task-reward {
             color: var(--accent-green);
             font-weight: 700;
-            font-size: clamp(0.85rem, 3vw, 1.1rem);
+            font-size: clamp(0.95rem, 4vw, 1.1rem);
             display: inline-flex;
             align-items: center;
-            gap: 6px;
+            gap: 8px;
             background: rgba(50, 173, 93, 0.1);
-            padding: clamp(6px, 1.5vh, 8px) clamp(12px, 4vw, 18px);
+            padding: 8px 18px;
             border-radius: 30px;
             border: 1px solid rgba(50, 173, 93, 0.2);
             white-space: nowrap;
         }
 
         .task-reward i {
-            font-size: 0.85rem;
+            font-size: 0.95rem;
             color: var(--accent-green);
         }
 
@@ -996,16 +982,16 @@
             background: var(--gradient-green);
             color: white;
             border: none;
-            padding: clamp(8px, 2vh, 12px) clamp(16px, 5vw, 28px);
+            padding: clamp(10px, 3vw, 12px) clamp(20px, 6vw, 28px);
             border-radius: 30px;
             font-weight: 600;
             cursor: pointer;
             transition: all 0.2s ease;
             box-shadow: 0 6px 16px var(--accent-green-glow);
-            font-size: clamp(0.8rem, 3vw, 1rem);
+            font-size: clamp(0.9rem, 3.5vw, 1rem);
             display: inline-flex;
             align-items: center;
-            gap: 6px;
+            gap: 8px;
             white-space: nowrap;
             position: relative;
             overflow: hidden;
@@ -1036,7 +1022,7 @@
         .shop-grid {
             display: grid;
             grid-template-columns: repeat(2, 1fr);
-            gap: clamp(10px, 2.5vw, 16px);
+            gap: 16px;
             margin-top: 20px;
             margin-bottom: 40px;
         }
@@ -1044,14 +1030,14 @@
         .shop-item {
             background: rgba(254, 254, 254, 0.05);
             border-radius: 24px;
-            padding: clamp(12px, 3vh, 20px) clamp(10px, 3vw, 16px);
+            padding: 20px 16px;
             text-align: center;
             border: 1px solid var(--border-glass);
             transition: all 0.2s ease;
             display: flex;
             flex-direction: column;
             align-items: center;
-            gap: 6px;
+            gap: 8px;
             position: relative;
             overflow: hidden;
         }
@@ -1076,7 +1062,7 @@
         }
 
         .shop-emoji {
-            font-size: clamp(2rem, 8vw, 2.8rem);
+            font-size: 2.8rem;
             line-height: 1;
             margin-bottom: 4px;
             filter: drop-shadow(0 4px 10px rgba(0,0,0,0.3));
@@ -1088,7 +1074,7 @@
         }
 
         .shop-title {
-            font-size: clamp(0.85rem, 3vw, 1rem);
+            font-size: 1rem;
             font-weight: 700;
             color: white;
             margin: 0;
@@ -1100,7 +1086,7 @@
         }
 
         .shop-price {
-            font-size: clamp(1rem, 4vw, 1.2rem);
+            font-size: 1.2rem;
             font-weight: 800;
             color: var(--accent-green);
             margin: 4px 0;
@@ -1108,7 +1094,7 @@
             align-items: center;
             gap: 4px;
             background: rgba(50, 173, 93, 0.1);
-            padding: clamp(4px, 1.5vh, 6px) clamp(8px, 3vw, 12px);
+            padding: 6px 12px;
             border-radius: 30px;
             border: 1px solid rgba(50, 173, 93, 0.2);
             position: relative;
@@ -1116,7 +1102,7 @@
         }
 
         .shop-price i {
-            font-size: 0.8rem;
+            font-size: 0.9rem;
             color: var(--accent-green);
         }
 
@@ -1124,15 +1110,15 @@
             background: var(--gradient-green);
             color: white;
             border: none;
-            padding: clamp(8px, 2vh, 12px) clamp(12px, 4vw, 20px);
+            padding: 12px 20px;
             border-radius: 30px;
             font-weight: 600;
             cursor: pointer;
             width: 100%;
-            font-size: clamp(0.8rem, 3vw, 0.95rem);
+            font-size: 0.95rem;
             box-shadow: 0 4px 15px var(--accent-green-glow);
             transition: all 0.2s ease;
-            margin-top: 6px;
+            margin-top: 8px;
             position: relative;
             overflow: hidden;
         }
@@ -1165,9 +1151,9 @@
         }
 
         .cooldown-timer {
-            font-size: 0.7rem;
+            font-size: 0.75rem;
             color: var(--warning);
-            margin-top: 6px;
+            margin-top: 8px;
             font-weight: 500;
             animation: pulse 2s infinite;
         }
@@ -1182,20 +1168,20 @@
         @media (max-width: 480px) {
             .shop-grid {
                 grid-template-columns: 1fr;
-                gap: 10px;
+                gap: 12px;
             }
             
             .shop-item {
                 flex-direction: row;
                 text-align: left;
-                padding: 14px;
-                gap: 10px;
+                padding: 16px;
+                gap: 12px;
             }
             
             .shop-emoji {
-                font-size: 2rem;
+                font-size: 2.2rem;
                 margin-bottom: 0;
-                min-width: 44px;
+                min-width: 48px;
             }
             
             .shop-content {
@@ -1204,21 +1190,21 @@
             
             .shop-title {
                 min-height: auto;
-                font-size: 1rem;
+                font-size: 1.1rem;
                 justify-content: flex-start;
             }
             
             .shop-price {
                 width: fit-content;
-                font-size: 0.9rem;
-                padding: 3px 8px;
+                font-size: 1rem;
+                padding: 4px 10px;
             }
             
             .shop-btn {
                 width: auto;
-                min-width: 90px;
+                min-width: 100px;
                 margin-top: 0;
-                padding: 8px 14px;
+                padding: 10px 16px;
             }
         }
 
@@ -1235,9 +1221,9 @@
         .profile-header {
             display: flex;
             align-items: center;
-            gap: clamp(12px, 3vw, 24px);
-            padding: clamp(16px, 4vh, 32px);
-            margin-bottom: 20px;
+            gap: clamp(16px, 4vw, 24px);
+            padding: clamp(20px, 5vw, 32px);
+            margin-bottom: 24px;
             background: rgba(254, 254, 254, 0.05);
             border-radius: 28px;
             border: 1px solid var(--border-glass);
@@ -1245,14 +1231,14 @@
         }
 
         .avatar {
-            width: clamp(70px, 18vw, 110px);
-            height: clamp(70px, 18vw, 110px);
+            width: clamp(80px, 20vw, 110px);
+            height: clamp(80px, 20vw, 110px);
             border-radius: 50%;
             background: var(--gradient-purple);
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: clamp(1.8rem, 6vw, 2.8rem);
+            font-size: clamp(2rem, 7vw, 2.8rem);
             color: white;
             overflow: hidden;
             border: 4px solid rgba(255, 255, 255, 0.15);
@@ -1285,11 +1271,11 @@
 
         .profile-info {
             flex: 1;
-            min-width: 180px;
+            min-width: 200px;
         }
 
         .profile-info h2 {
-            font-size: clamp(1.2rem, 4vw, 1.8rem);
+            font-size: clamp(1.4rem, 5vw, 1.8rem);
             margin-bottom: 6px;
             color: white;
             font-weight: 800;
@@ -1299,34 +1285,34 @@
 
         .profile-info p {
             color: var(--text-muted);
-            font-size: clamp(0.8rem, 3vw, 1rem);
+            font-size: clamp(0.9rem, 3.5vw, 1rem);
             margin-bottom: 4px;
             display: flex;
             align-items: center;
-            gap: 6px;
+            gap: 8px;
             flex-wrap: wrap;
         }
 
         .level-badge {
             display: inline-flex;
             align-items: center;
-            gap: 6px;
+            gap: 8px;
             background: rgba(50, 173, 93, 0.15);
             color: var(--accent-green);
-            padding: 6px 14px;
+            padding: 8px 18px;
             border-radius: 30px;
             font-weight: 700;
-            font-size: clamp(0.75rem, 3vw, 0.9rem);
+            font-size: clamp(0.85rem, 3.5vw, 0.9rem);
             border: 1px solid rgba(50, 173, 93, 0.3);
-            margin-top: 10px;
+            margin-top: 12px;
             box-shadow: 0 0 15px var(--accent-green-glow);
             flex-wrap: wrap;
         }
 
         .balance-card {
-            padding: clamp(20px, 5vh, 36px) clamp(16px, 4vw, 32px);
+            padding: clamp(24px, 6vw, 36px) clamp(20px, 5vw, 32px);
             text-align: center;
-            margin-bottom: 20px;
+            margin-bottom: 24px;
             background: rgba(254, 254, 254, 0.05);
             border-radius: 28px;
             border: 1px solid var(--border-glass);
@@ -1349,17 +1335,17 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 16px;
+            margin-bottom: 20px;
             flex-wrap: wrap;
-            gap: 10px;
+            gap: 12px;
         }
 
         .balance-label {
             display: flex;
             align-items: center;
-            gap: 10px;
+            gap: 12px;
             color: var(--text-muted);
-            font-size: clamp(0.9rem, 3vw, 1.1rem);
+            font-size: clamp(1rem, 4vw, 1.1rem);
             font-weight: 500;
         }
 
@@ -1367,14 +1353,14 @@
             background: rgba(50, 173, 93, 0.15);
             border: 1px solid rgba(50, 173, 93, 0.3);
             color: var(--accent-green);
-            width: clamp(40px, 8vw, 48px);
-            height: clamp(40px, 8vw, 48px);
+            width: clamp(44px, 10vw, 48px);
+            height: clamp(44px, 10vw, 48px);
             border-radius: 16px;
             cursor: pointer;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: clamp(1.1rem, 4vw, 1.3rem);
+            font-size: clamp(1.2rem, 5vw, 1.3rem);
             transition: all 0.2s ease;
             box-shadow: 0 0 15px var(--accent-green-glow);
         }
@@ -1393,13 +1379,13 @@
         }
 
         .balance-amount {
-            font-size: clamp(2.5rem, 10vw, 4.2rem);
+            font-size: clamp(3rem, 12vw, 4.2rem);
             font-weight: 900;
             background: var(--gradient-green);
             -webkit-background-clip: text;
             background-clip: text;
             color: transparent;
-            margin: 12px 0;
+            margin: 15px 0;
             text-shadow: 0 0 30px var(--accent-green-glow);
             letter-spacing: -1px;
             word-wrap: break-word;
@@ -1407,21 +1393,21 @@
 
         .balance-subtext {
             color: var(--text-muted);
-            margin-bottom: 20px;
-            font-size: clamp(0.8rem, 3vw, 1rem);
+            margin-bottom: 24px;
+            font-size: clamp(0.9rem, 3.5vw, 1rem);
         }
 
         .withdraw-btn {
             background: var(--gradient-green);
             color: white;
             border: none;
-            padding: clamp(12px, 3vh, 18px) clamp(20px, 6vw, 36px);
+            padding: clamp(14px, 4vw, 18px) clamp(24px, 8vw, 36px);
             border-radius: 40px;
             font-weight: 600;
             cursor: pointer;
             width: 100%;
             max-width: 280px;
-            font-size: clamp(0.9rem, 3.5vw, 1.1rem);
+            font-size: clamp(1rem, 4vw, 1.1rem);
             letter-spacing: 0.5px;
             transition: all 0.2s ease;
             box-shadow: 0 8px 25px var(--accent-green-glow);
@@ -1434,24 +1420,24 @@
         }
 
         .balance-info {
-            margin-top: 16px;
-            font-size: 0.75rem;
+            margin-top: 20px;
+            font-size: 0.85rem;
             color: var(--text-muted);
             display: flex;
             align-items: center;
             justify-content: center;
-            gap: 6px;
+            gap: 8px;
         }
 
         .stats-grid {
             display: grid;
             grid-template-columns: repeat(2, 1fr);
-            gap: clamp(10px, 2.5vw, 18px);
-            margin-bottom: 30px;
+            gap: clamp(12px, 3vw, 18px);
+            margin-bottom: 32px;
         }
 
         .stat-card {
-            padding: clamp(16px, 4vh, 28px) clamp(12px, 3vw, 22px);
+            padding: clamp(20px, 5vw, 28px) clamp(16px, 4vw, 22px);
             text-align: center;
             transition: all 0.2s ease;
             background: rgba(254, 254, 254, 0.05);
@@ -1464,16 +1450,16 @@
         }
 
         .stat-value {
-            font-size: clamp(1.8rem, 7vw, 2.4rem);
+            font-size: clamp(2rem, 8vw, 2.4rem);
             font-weight: 800;
             color: var(--accent-green);
-            margin-bottom: 6px;
+            margin-bottom: 8px;
             text-shadow: 0 0 20px var(--accent-green-glow);
         }
 
         .stat-label {
             color: var(--text-muted);
-            font-size: clamp(0.75rem, 3vw, 0.95rem);
+            font-size: clamp(0.85rem, 3.5vw, 0.95rem);
             font-weight: 500;
         }
 
@@ -1507,7 +1493,7 @@
             -webkit-backdrop-filter: blur(30px) saturate(180%);
             border-radius: 40px;
             border: 1px solid var(--border-glass);
-            padding: clamp(20px, 5vh, 36px);
+            padding: clamp(24px, 6vw, 36px);
             width: 90%;
             max-width: 420px;
             max-height: 90vh;
@@ -1523,23 +1509,23 @@
         }
 
         .modal-header {
-            margin-bottom: 20px;
+            margin-bottom: 24px;
             text-align: center;
             padding-right: 30px;
         }
 
         .modal-header h2 {
-            font-size: clamp(1.4rem, 5vw, 2rem);
+            font-size: clamp(1.6rem, 6vw, 2rem);
             font-weight: 800;
             color: white;
-            margin-bottom: 8px;
+            margin-bottom: 10px;
             letter-spacing: -0.3px;
             word-wrap: break-word;
         }
 
         .modal-header p {
             color: var(--text-muted);
-            font-size: clamp(0.85rem, 3vw, 1.05rem);
+            font-size: clamp(0.95rem, 4vw, 1.05rem);
             word-wrap: break-word;
         }
 
@@ -1550,10 +1536,10 @@
             background: none;
             border: none;
             color: var(--text-muted);
-            font-size: 1.3rem;
+            font-size: 1.5rem;
             cursor: pointer;
-            width: 40px;
-            height: 40px;
+            width: 44px;
+            height: 44px;
             display: flex;
             align-items: center;
             justify-content: center;
@@ -1569,10 +1555,10 @@
 
         .notification {
             position: fixed;
-            top: calc(70px + env(safe-area-inset-top));
-            right: max(12px, env(safe-area-inset-right));
-            left: max(12px, env(safe-area-inset-left));
-            padding: 14px 20px;
+            top: calc(80px + env(safe-area-inset-top));
+            right: max(16px, env(safe-area-inset-right));
+            left: max(16px, env(safe-area-inset-left));
+            padding: 16px 24px;
             background: rgba(22, 23, 43, 0.98);
             border: 1px solid var(--border-glass);
             border-radius: 30px;
@@ -1581,12 +1567,11 @@
             transform: translateX(150%);
             transition: transform 0.3s ease;
             box-shadow: 0 15px 45px rgba(0, 0, 0, 0.4);
-            max-width: 320px;
+            max-width: 340px;
             backdrop-filter: blur(25px) saturate(180%);
             -webkit-backdrop-filter: blur(25px) saturate(180%);
             margin: 0 auto;
             text-align: center;
-            font-size: 0.9rem;
         }
 
         .notification.show {
@@ -1607,8 +1592,8 @@
 
         .loader {
             display: inline-block;
-            width: 20px;
-            height: 20px;
+            width: 22px;
+            height: 22px;
             border: 3px solid rgba(255, 255, 255, 0.1);
             border-radius: 50%;
             border-top-color: var(--accent-green);
@@ -1622,18 +1607,18 @@
 
         .profile-buttons {
             display: flex;
-            gap: 12px;
-            margin: 18px 0 28px 0;
+            gap: 15px;
+            margin: 20px 0 30px 0;
             flex-wrap: wrap;
         }
 
         .profile-link-btn {
             flex: 1;
-            min-width: 110px;
+            min-width: 120px;
             background: rgba(255, 255, 255, 0.05);
             border: 1px solid var(--border-glass);
             border-radius: 30px;
-            padding: 12px 8px;
+            padding: 15px 10px;
             text-align: center;
             text-decoration: none;
             color: white;
@@ -1642,7 +1627,7 @@
             display: flex;
             flex-direction: column;
             align-items: center;
-            gap: 6px;
+            gap: 8px;
         }
 
         .profile-link-btn:active {
@@ -1651,7 +1636,7 @@
         }
 
         .profile-link-btn i {
-            font-size: 1.3rem;
+            font-size: 1.5rem;
             color: var(--accent-purple);
         }
 
@@ -1662,15 +1647,15 @@
         .method-selection {
             display: grid;
             grid-template-columns: repeat(3, 1fr);
-            gap: clamp(6px, 1.5vw, 16px);
-            margin-bottom: 20px;
+            gap: clamp(8px, 2vw, 16px);
+            margin-bottom: 24px;
         }
 
         .method-option {
             display: flex;
             flex-direction: column;
             align-items: center;
-            padding: clamp(10px, 3vh, 22px) clamp(6px, 2vw, 14px);
+            padding: clamp(12px, 4vw, 22px) clamp(8px, 3vw, 14px);
             background: rgba(255, 255, 255, 0.03);
             border: 2px solid var(--border-glass);
             border-radius: 24px;
@@ -1692,15 +1677,15 @@
         }
 
         .method-icon {
-            width: clamp(35px, 8vw, 60px);
-            height: clamp(35px, 8vw, 60px);
+            width: clamp(40px, 10vw, 60px);
+            height: clamp(40px, 10vw, 60px);
             border-radius: 20px;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: clamp(1.3rem, 4vw, 2rem);
+            font-size: clamp(1.5rem, 5vw, 2rem);
             color: white;
-            margin-bottom: 8px;
+            margin-bottom: 10px;
         }
 
         .sbp-icon {
@@ -1716,38 +1701,38 @@
         }
 
         .method-name {
-            font-size: clamp(0.8rem, 3vw, 1rem);
+            font-size: clamp(0.9rem, 3.5vw, 1rem);
             font-weight: 700;
             color: white;
-            margin-bottom: 2px;
+            margin-bottom: 4px;
         }
 
         .method-min {
             color: var(--warning);
-            font-size: 0.7rem;
+            font-size: 0.8rem;
             font-weight: 600;
         }
 
         .input-group {
-            margin-bottom: 16px;
+            margin-bottom: 20px;
         }
 
         .input-group label {
             display: block;
             color: var(--text-muted);
-            font-size: clamp(0.8rem, 3vw, 1rem);
-            margin-bottom: 6px;
+            font-size: clamp(0.9rem, 3.5vw, 1rem);
+            margin-bottom: 8px;
             font-weight: 500;
         }
 
         .input-group input, .input-group select {
             width: 100%;
-            padding: clamp(10px, 2.5vh, 16px) clamp(12px, 3vw, 18px);
+            padding: clamp(12px, 3vw, 16px) clamp(14px, 4vw, 18px);
             background: rgba(255, 255, 255, 0.05);
             border: 2px solid var(--border-glass);
             border-radius: 20px;
             color: white;
-            font-size: clamp(0.85rem, 3vw, 1.05rem);
+            font-size: clamp(0.95rem, 4vw, 1.05rem);
             font-family: 'Inter', sans-serif;
             transition: all 0.2s ease;
         }
@@ -1764,30 +1749,30 @@
 
         .phone-prefix {
             position: absolute;
-            left: 16px;
+            left: 18px;
             top: 50%;
             transform: translateY(-50%);
             color: var(--text-muted);
-            font-size: 0.9rem;
+            font-size: 1rem;
             pointer-events: none;
         }
 
         .phone-input input {
-            padding-left: 38px;
+            padding-left: 42px;
         }
 
         .withdraw-submit {
             background: var(--gradient-green);
             color: white;
             border: none;
-            padding: clamp(12px, 3vh, 18px);
+            padding: clamp(14px, 4vw, 18px);
             border-radius: 40px;
             font-weight: 600;
             cursor: pointer;
             width: 100%;
-            font-size: clamp(0.9rem, 3.5vw, 1.1rem);
+            font-size: clamp(1rem, 4vw, 1.1rem);
             transition: all 0.2s ease;
-            margin-top: 16px;
+            margin-top: 20px;
             box-shadow: 0 8px 25px var(--accent-green-glow);
         }
 
@@ -1815,23 +1800,23 @@
         .step-header {
             display: flex;
             align-items: center;
-            margin-bottom: 16px;
+            margin-bottom: 20px;
         }
 
         .step-back {
             background: none;
             border: none;
             color: var(--text-muted);
-            font-size: 1.1rem;
+            font-size: 1.2rem;
             cursor: pointer;
-            width: 36px;
-            height: 36px;
+            width: 40px;
+            height: 40px;
             display: flex;
             align-items: center;
             justify-content: center;
             border-radius: 50%;
             transition: all 0.2s ease;
-            margin-right: 10px;
+            margin-right: 12px;
         }
 
         .step-back:active {
@@ -1841,7 +1826,7 @@
 
         .step-title {
             flex: 1;
-            font-size: clamp(1.2rem, 4vw, 1.6rem);
+            font-size: clamp(1.3rem, 5vw, 1.6rem);
             font-weight: 800;
             color: white;
             letter-spacing: -0.2px;
@@ -1849,23 +1834,23 @@
 
         .step-description {
             color: var(--text-muted);
-            margin-bottom: 20px;
+            margin-bottom: 24px;
             line-height: 1.5;
-            font-size: clamp(0.85rem, 3vw, 1.05rem);
+            font-size: clamp(0.95rem, 4vw, 1.05rem);
         }
 
         .withdraw-info {
             background: rgba(255, 255, 255, 0.03);
             border-radius: 24px;
-            padding: 16px;
-            margin-bottom: 20px;
+            padding: 20px;
+            margin-bottom: 24px;
         }
 
         .withdraw-info-item {
             display: flex;
             justify-content: space-between;
-            margin-bottom: 10px;
-            font-size: 0.9rem;
+            margin-bottom: 12px;
+            font-size: 1rem;
         }
 
         .withdraw-info-item:last-child {
@@ -1883,25 +1868,25 @@
 
         .stars-conversion {
             color: var(--warning);
-            font-size: 0.8rem;
+            font-size: 0.9rem;
             text-align: center;
-            margin-top: 10px;
+            margin-top: 12px;
             font-weight: 500;
         }
 
         .instruction-steps {
             background: rgba(50, 173, 93, 0.05);
             border-radius: 24px;
-            padding: clamp(14px, 3vh, 24px);
-            margin: 16px 0;
+            padding: clamp(16px, 4vw, 24px);
+            margin: 20px 0;
             border: 1px solid rgba(50, 173, 93, 0.2);
         }
 
         .step-item {
             display: flex;
             align-items: flex-start;
-            gap: 12px;
-            margin-bottom: 16px;
+            gap: 15px;
+            margin-bottom: 20px;
         }
 
         .step-item:last-child {
@@ -1909,8 +1894,8 @@
         }
 
         .step-number {
-            width: 28px;
-            height: 28px;
+            width: 32px;
+            height: 32px;
             background: var(--accent-green);
             border-radius: 50%;
             display: flex;
@@ -1919,14 +1904,14 @@
             font-weight: 800;
             color: white;
             flex-shrink: 0;
-            font-size: 1rem;
+            font-size: 1.1rem;
             box-shadow: 0 0 15px var(--accent-green-glow);
         }
 
         .step-text {
             flex: 1;
             color: var(--text-light);
-            font-size: clamp(0.85rem, 3vw, 1rem);
+            font-size: clamp(0.95rem, 3.5vw, 1rem);
             line-height: 1.5;
         }
 
@@ -1951,11 +1936,11 @@
             background: var(--gradient-purple);
             color: white;
             text-decoration: none;
-            padding: 14px;
+            padding: 16px;
             border-radius: 30px;
             text-align: center;
             font-weight: 600;
-            margin: 16px 0;
+            margin: 20px 0;
             box-shadow: 0 4px 15px var(--accent-purple-glow);
             transition: all 0.2s ease;
         }
@@ -1966,12 +1951,12 @@
         }
 
         .add-task-btn i {
-            margin-right: 6px;
+            margin-right: 8px;
         }
     </style>
 </head>
 <body>
-    <!-- УЛУЧШЕННЫЕ декоративные элементы с множеством иконок - теперь меньше и стабильнее -->
+    <!-- УЛУЧШЕННЫЕ декоративные элементы с множеством иконок -->
     <div class="floating-icons">
         <i class="fas fa-coins float-icon float-icon-1"></i>
         <i class="fas fa-bolt float-icon float-icon-2"></i>
@@ -1988,11 +1973,6 @@
         <i class="fas fa-wallet float-icon float-icon-13"></i>
         <i class="fas fa-money-bill-wave float-icon float-icon-14"></i>
         <i class="fas fa-sack-dollar float-icon float-icon-15"></i>
-        <i class="fas fa-coins float-icon float-icon-16"></i>
-        <i class="fas fa-bolt float-icon float-icon-17"></i>
-        <i class="fas fa-gem float-icon float-icon-18"></i>
-        <i class="fas fa-rocket float-icon float-icon-19"></i>
-        <i class="fas fa-star float-icon float-icon-20"></i>
     </div>
     <div class="glitter"></div>
     <div class="floating-dots">
@@ -2042,7 +2022,7 @@
 
         <!-- Вкладка "Задания" -->
         <div id="tasks-tab" class="tab-content active">
-            <h2 style="margin-bottom: 12px; font-size: clamp(1.2rem, 4vw, 1.8rem); font-weight: 800; color: white; letter-spacing: -0.3px;">Доступные задания</h2>
+            <h2 style="margin-bottom: 12px; font-size: clamp(1.4rem, 5vw, 1.8rem); font-weight: 800; color: white; letter-spacing: -0.3px;">Доступные задания</h2>
 
             <div class="sub-tab-navigation">
                 <button class="sub-tab active" data-sub="ordinary">Обычные</button>
@@ -2182,7 +2162,7 @@
 
         <!-- ВОССТАНОВЛЕННЫЙ магазин -->
         <div id="shop-tab" class="tab-content">
-            <h2 style="margin-bottom: 16px; font-size: clamp(1.2rem, 4vw, 1.8rem); font-weight: 800; color: white; letter-spacing: -0.3px;">Магазин баллов</h2>
+            <h2 style="margin-bottom: 20px; font-size: clamp(1.4rem, 5vw, 1.8rem); font-weight: 800; color: white; letter-spacing: -0.3px;">Магазин баллов</h2>
             
             <div class="shop-grid">
                 <!-- Мишка в тг - 23 балла -->
@@ -2264,8 +2244,8 @@
                 </div>
             </div>
 
-            <div class="glass-card" style="padding:20px; text-align:center; color:var(--text-muted);">
-                <p style="margin-bottom:8px;">Скоро здесь появятся новые товары!</p>
+            <div class="glass-card" style="padding:24px; text-align:center; color:var(--text-muted);">
+                <p style="margin-bottom:10px;">Скоро здесь появятся новые товары!</p>
                 <p>Следите за обновлениями в нашем канале.</p>
             </div>
         </div>
@@ -2320,7 +2300,7 @@
                 </div>
             </div>
 
-            <h2 style="margin-bottom: 20px; font-size: clamp(1.2rem, 4vw, 1.8rem); font-weight: 800; color: white; letter-spacing: -0.3px;">Ваша статистика</h2>
+            <h2 style="margin-bottom: 24px; font-size: clamp(1.4rem, 5vw, 1.8rem); font-weight: 800; color: white; letter-spacing: -0.3px;">Ваша статистика</h2>
             <div class="stats-grid">
                 <div class="stat-card glass-card fade-in">
                     <div class="stat-value" id="stat-tasks">0</div>
@@ -2442,7 +2422,7 @@
                         <label for="crypto-wallet">Адрес кошелька TON</label>
                         <input type="text" id="crypto-wallet" placeholder="Введите адрес кошелька TON">
                     </div>
-                    <div class="withdraw-info" style="margin-top: 16px;">
+                    <div class="withdraw-info" style="margin-top: 20px;">
                         <div class="withdraw-info-item">
                             <span class="withdraw-info-label">Курс обмена:</span>
                             <span class="withdraw-info-value">1 балл = 0.013 USDT</span>
@@ -2483,7 +2463,7 @@
                     <div id="confirm-details"></div>
                 </div>
 
-                <div class="step-description" style="font-size: 0.85rem; color: var(--text-muted); margin-top: 20px;">
+                <div class="step-description" style="font-size: 0.95rem; color: var(--text-muted); margin-top: 24px;">
                     <i class="fas fa-info-circle"></i> Заявка будет обработана в течение 24 часов. После отправки вы получите уведомление в Telegram.
                 </div>
 
@@ -2522,16 +2502,16 @@
                     </div>
                 </div>
                 
-                <div id="task-instruction-link-container" style="text-align: center; margin: 16px 0;">
-                    <p style="color: var(--text-muted); margin-bottom: 8px;">Ссылка на полную инструкцию:</p>
-                    <a href="#" id="task-instruction-link" target="_blank" style="display: inline-block; background: var(--gradient-purple); color: white; padding: 12px 20px; border-radius: 40px; text-decoration: none; font-weight: 600; margin: 8px 0;">Открыть инструкцию</a>
+                <div id="task-instruction-link-container" style="text-align: center; margin: 20px 0;">
+                    <p style="color: var(--text-muted); margin-bottom: 10px;">Ссылка на полную инструкцию:</p>
+                    <a href="#" id="task-instruction-link" target="_blank" style="display: inline-block; background: var(--gradient-purple); color: white; padding: 15px 25px; border-radius: 40px; text-decoration: none; font-weight: 600; margin: 10px 0;">Открыть инструкцию</a>
                 </div>
             </div>
             <button id="confirm-task-btn" class="withdraw-submit">НАЧАТЬ</button>
         </div>
     </div>
 
-    <!-- ОПТИМИЗИРОВАННАЯ нижняя навигация для всех экранов -->
+    <!-- ПОЛНОСТЬЮ ОТДЕЛЬНАЯ нижняя навигация без лишних элементов -->
     <nav class="tab-navigation">
         <div class="nav-container">
             <button class="tab-btn active" data-tab="tasks-tab">
@@ -2556,7 +2536,7 @@
     <script>
         // Оптимизированная конфигурация
         const CONFIG = {
-            TOKEN_FILE_URL: 'token.txt',
+            TOKEN_FILE_URL: 'https://raw.githubusercontent.com/exyyl/-taskgreot/main/token.txt',
             GROUP_CHAT_ID: '-1003683579168',
             TELEGRAM_BOT_TOKEN: '',
             BD_FILE_URL: 'https://raw.githubusercontent.com/exyyl/-taskgreot/main/bd.txt',
@@ -3208,7 +3188,7 @@ ${currentUser.username ? `👥 <b>Username:</b> @${currentUser.username}\n` : ''
             const container = document.getElementById('extra-tasks-container');
             if (!container) return;
             
-            container.innerHTML = '<div style="text-align:center; padding:30px;"><div class="loader"></div></div>';
+            container.innerHTML = '<div style="text-align:center; padding:40px;"><div class="loader"></div></div>';
             
             try {
                 const response = await fetch(CONFIG.EXTRA_TASKS_URL + '?t=' + Date.now(), {
@@ -3219,7 +3199,7 @@ ${currentUser.username ? `👥 <b>Username:</b> @${currentUser.username}\n` : ''
                 
                 const text = await response.text();
                 if (!text?.trim()) {
-                    container.innerHTML = '<div class="glass-card" style="padding:20px; text-align:center;"><p>Нет заданий</p></div>';
+                    container.innerHTML = '<div class="glass-card" style="padding:24px; text-align:center;"><p>Нет заданий</p></div>';
                     return;
                 }
                 
@@ -3250,10 +3230,10 @@ ${currentUser.username ? `👥 <b>Username:</b> @${currentUser.username}\n` : ''
                     }
                 }
                 
-                container.innerHTML = tasksHtml || '<div class="glass-card" style="padding:20px; text-align:center;"><p>Нет заданий</p></div>';
+                container.innerHTML = tasksHtml || '<div class="glass-card" style="padding:24px; text-align:center;"><p>Нет заданий</p></div>';
                 
             } catch (error) {
-                container.innerHTML = '<div class="glass-card" style="padding:20px; text-align:center;"><p>Ошибка загрузки</p></div>';
+                container.innerHTML = '<div class="glass-card" style="padding:24px; text-align:center;"><p>Ошибка загрузки</p></div>';
             }
         }
 
