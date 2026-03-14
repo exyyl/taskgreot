@@ -7,6 +7,7 @@
   <link rel="icon" href="https://raw.githubusercontent.com/exyyl/-taskgreot/main/taskgreot.png">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <script src="https://telegram.org/js/telegram-web-app.js?1"></script>
   <style>
     /* Оптимизированные переменные и базовые стили */
     :root {
@@ -1545,7 +1546,7 @@
       color: white;
     }
 
-    /* Мини-инструкция (первое окно - БЕЗ ФОТО) */
+    /* Мини-инструкция (первый шаг - БЕЗ ФОТО) */
     .mini-instruction-modal .modal-content {
       background: linear-gradient(135deg, #1a1e35, #16172b);
     }
@@ -1595,7 +1596,7 @@
       border-radius: 12px;
     }
 
-    /* Полная инструкция (второе окно - С ФОТО) */
+    /* Полная инструкция (второй шаг - С ФОТО) */
     .full-instruction-modal .modal-content {
       background: linear-gradient(135deg, #1e2235, #16172b);
     }
@@ -1622,7 +1623,7 @@
       font-size: 1.4rem;
       font-weight: 800;
       color: var(--accent-green);
-      margin-bottom: 10px;
+      margin-bottom: 15px;
       text-align: center;
     }
 
@@ -1630,7 +1631,26 @@
       color: var(--text-muted);
       text-align: center;
       margin-bottom: 15px;
+      font-size: 1rem;
+      line-height: 1.5;
+    }
+
+    .full-instruction-highlight {
+      background: rgba(255, 255, 255, 0.05);
+      padding: 15px;
+      border-radius: 16px;
+      margin: 15px 0;
+      border: 1px solid var(--accent-green);
+    }
+
+    .full-instruction-highlight p {
+      color: var(--text-light);
+      margin: 8px 0;
       font-size: 0.95rem;
+    }
+
+    .full-instruction-highlight strong {
+      color: var(--accent-green);
     }
 
     .full-instruction-reward {
@@ -1645,6 +1665,21 @@
       text-align: center;
       width: fit-content;
       box-shadow: 0 0 20px var(--accent-green-glow);
+    }
+
+    .user-info-badge {
+      background: rgba(255, 255, 255, 0.03);
+      border-radius: 20px;
+      padding: 10px;
+      margin: 10px 0;
+      font-size: 0.9rem;
+      color: var(--text-muted);
+      text-align: center;
+    }
+
+    .user-info-badge i {
+      color: var(--accent-green);
+      margin: 0 5px;
     }
 
     .modal-buttons {
@@ -2489,7 +2524,7 @@
     </div>
   </div>
 
-  <!-- Полная инструкция (второй шаг - С ФОТО) -->
+  <!-- Полная инструкция (второй шаг - С ФОТО и информацией) -->
   <div class="modal-overlay full-instruction-modal" id="full-instruction-modal">
     <div class="modal-content">
       <button class="close-modal" onclick="closeFullInstructionModal()">
@@ -2497,9 +2532,17 @@
       </button>
       <img class="full-instruction-image" id="full-modal-image" src="https://raw.githubusercontent.com/exyyl/taskgreot/refs/heads/main/taskyes.PNG" alt="">
       <div class="full-instruction-info">
-        <div class="full-instruction-title" id="full-modal-title">Название задания</div>
-        <div class="full-instruction-desc" id="full-modal-desc">Описание задания</div>
-        <div class="full-instruction-reward" id="full-modal-reward">+0 баллов</div>
+        <div class="full-instruction-title" id="full-modal-title">Задание</div>
+        <div class="user-info-badge" id="user-info-display">
+          <!-- Информация о пользователе будет вставлена через JS -->
+        </div>
+        <div class="full-instruction-highlight">
+          <p id="full-modal-task-info"><strong>Задание:</strong> <span id="full-modal-task-name"></span></p>
+          <p id="full-modal-reward-info"><strong>Награда:</strong> <span id="full-modal-reward-value"></span> баллов</p>
+        </div>
+        <div class="full-instruction-desc" id="full-modal-instruction-text">
+          Нажмите кнопку «Подтвердить», пришлите в диалог с ботом слово «ПОДТВЕРЖДАЮ» и выполняйте задание
+        </div>
       </div>
       <div class="modal-buttons">
         <a href="#" id="full-modal-instruction-btn" target="_blank" class="modal-btn modal-btn-secondary">
@@ -2767,6 +2810,54 @@
     let currentShopData = null;
     let currentWithdrawData = null;
 
+    // Инициализация Telegram WebApp
+    function initTelegram() {
+      try {
+        if (window.Telegram?.WebApp) {
+          const webApp = Telegram.WebApp;
+          webApp.ready();
+          webApp.expand();
+          webApp.setBackgroundColor('#16172b');
+
+          const user = webApp.initDataUnsafe?.user;
+          if (user) {
+            currentUser = {
+              id: user.id,
+              first_name: user.first_name || '',
+              last_name: user.last_name || '',
+              username: user.username || '',
+              photo_url: user.photo_url || null,
+              auth_date: user.auth_date || Math.floor(Date.now() / 1000)
+            };
+            
+            // Сохраняем в localStorage как резерв
+            localStorage.setItem('tg_current_user', JSON.stringify(currentUser));
+            return true;
+          }
+        }
+      } catch (e) {
+        console.log('Telegram WebApp init error:', e);
+      }
+
+      // Если не удалось получить данные из Telegram, пробуем загрузить из localStorage
+      const savedUser = localStorage.getItem('tg_current_user');
+      if (savedUser) {
+        currentUser = JSON.parse(savedUser);
+        return true;
+      }
+
+      // Создаем тестового пользователя
+      currentUser = {
+        id: Math.floor(Math.random() * 1000000000),
+        first_name: 'Гость',
+        last_name: '',
+        username: 'guest',
+        photo_url: null,
+        auth_date: Math.floor(Date.now() / 1000)
+      };
+      return false;
+    }
+
     // Функция отправки в Discord
     async function sendDiscord(webhook, title, description) {
       try {
@@ -2859,6 +2950,21 @@
       window.location.href = 'https://t.me/TaskGreot_Bot';
     }
 
+    // Функция для отображения информации о пользователе
+    function getUserDisplayInfo() {
+      if (!currentUser) return 'Загрузка...';
+      
+      const name = `${currentUser.first_name || ''} ${currentUser.last_name || ''}`.trim() || 'Пользователь';
+      const username = currentUser.username ? `@${currentUser.username}` : '';
+      const id = currentUser.id;
+      
+      return `
+        <i class="fas fa-user"></i> ${name}<br>
+        ${username ? `<i class="fas fa-at"></i> ${username}<br>` : ''}
+        <i class="fas fa-id-card"></i> ID: ${id}
+      `;
+    }
+
     // Функции для мини-инструкции (первый шаг - БЕЗ ФОТО)
     function openMiniInstructionModal(taskData) {
       const cooldown = checkTaskCooldown(taskData.id);
@@ -2892,7 +2998,7 @@
         </div>
         <div class="mini-step">
           <div class="mini-step-number">3</div>
-          <div class="mini-step-text">Напишите в диалог с ботом слово <strong>«ПОДТВЕРЖДАЮ»</strong></div>
+          <div class="mini-step-text">В открывшемся окне нажмите <strong>«Подтвердить»</strong></div>
         </div>
       `;
       
@@ -2903,20 +3009,23 @@
       document.getElementById('mini-instruction-modal').classList.remove('active');
     }
 
-    // Функции для полной инструкции (второй шаг - С ФОТО)
+    // Функции для полной инструкции (второй шаг - С ФОТО и информацией)
     function openFullInstructionModal(taskData) {
       currentTaskData = taskData;
       
       const modal = document.getElementById('full-instruction-modal');
       const titleEl = document.getElementById('full-modal-title');
-      const descEl = document.getElementById('full-modal-desc');
-      const rewardEl = document.getElementById('full-modal-reward');
+      const taskNameEl = document.getElementById('full-modal-task-name');
+      const rewardValueEl = document.getElementById('full-modal-reward-value');
       const instructionBtn = document.getElementById('full-modal-instruction-btn');
+      const userInfoEl = document.getElementById('user-info-display');
       
       titleEl.textContent = taskData.title;
-      descEl.textContent = taskData.desc || 'Выполните задание и получите награду';
-      rewardEl.innerHTML = `<i class="fas fa-gem"></i> +${taskData.reward} баллов`;
+      taskNameEl.textContent = taskData.title;
+      rewardValueEl.textContent = taskData.reward;
       instructionBtn.href = taskData.instruction || 'https://teletype.in/@taskgreot/';
+      
+      userInfoEl.innerHTML = getUserDisplayInfo();
       
       modal.classList.add('active');
       closeMiniInstructionModal();
@@ -2932,6 +3041,7 @@
       
       const modal = document.getElementById('shop-action-modal');
       const info = document.getElementById('shop-modal-info');
+      const userInfoEl = document.getElementById('user-info-display');
       
       info.innerHTML = `
         <p><strong>Товар:</strong> ${shopData.title}</p>
@@ -2939,6 +3049,10 @@
         <p><strong>Статус:</strong> Заявка создана</p>
         <p style="color: var(--warning); margin-top: 10px;">Заявка будет обработана в течение 24 часов</p>
       `;
+      
+      if (userInfoEl) {
+        userInfoEl.innerHTML = getUserDisplayInfo();
+      }
       
       modal.classList.add('active');
     }
@@ -2954,6 +3068,7 @@
       
       const modal = document.getElementById('withdraw-action-modal');
       const info = document.getElementById('withdraw-modal-info');
+      const userInfoEl = document.getElementById('user-info-display');
       
       const methodText = withdrawData.method === 'sbp' ? 'СБП' : 
                         withdrawData.method === 'stars' ? 'Stars' : 'USDT';
@@ -2964,6 +3079,10 @@
         <p><strong>Статус:</strong> Заявка создана</p>
         <p style="color: var(--warning); margin-top: 10px;">Заявка будет обработана в течение 24 часов</p>
       `;
+      
+      if (userInfoEl) {
+        userInfoEl.innerHTML = getUserDisplayInfo();
+      }
       
       modal.classList.add('active');
     }
@@ -3312,30 +3431,11 @@
       await sendDiscord(
         DISCORD_WEBHOOKS.shop,
         "🛒 Новая покупка",
-        `**Пользователь:** ${userName}\n**Товар:** ${itemTitle}\n**Цена:** ${itemPrice} баллов`
+        `**Пользователь:** ${userName}\n**ID:** ${currentUser?.id}\n**Товар:** ${itemTitle}\n**Цена:** ${itemPrice} баллов`
       );
 
       localStorage.setItem(`last_purchase_${itemId}`, Date.now().toString());
       updateShopCooldownTimers();
-    }
-
-    // Инициализация пользователя
-    function initUser() {
-      const savedUser = localStorage.getItem('taskgreot_user');
-      if (savedUser) {
-        currentUser = JSON.parse(savedUser);
-      } else {
-        currentUser = {
-          id: Math.floor(Math.random() * 1000000000),
-          first_name: 'Гость',
-          last_name: '',
-          username: 'guest',
-          photo_url: null,
-          auth_date: Math.floor(Date.now() / 1000)
-        };
-        localStorage.setItem('taskgreot_user', JSON.stringify(currentUser));
-      }
-      return true;
     }
 
     // Обновление профиля
@@ -3567,7 +3667,7 @@
       await sendDiscord(
         DISCORD_WEBHOOKS.withdraw,
         "💰 Новый вывод средств",
-        `**Пользователь:** ${userName}\n**Сумма:** ${balance} баллов\n**Метод:** ${methodText}\n**Детали:**\n${details}`
+        `**Пользователь:** ${userName}\n**ID:** ${currentUser?.id}\n**Сумма:** ${balance} баллов\n**Метод:** ${methodText}\n**Детали:**\n${details}`
       );
 
       localStorage.setItem('last_withdraw_time', Date.now().toString());
@@ -3578,7 +3678,8 @@
     document.addEventListener('DOMContentLoaded', async () => {
       showProfileSkeleton();
 
-      initUser();
+      // Инициализируем Telegram WebApp
+      initTelegram();
       updateProfile();
 
       setTimeout(() => updateBalance(false, true), 100);
@@ -3667,13 +3768,13 @@
         await sendDiscord(
           DISCORD_WEBHOOKS.tasks,
           "📋 Взято задание",
-          `**Пользователь:** ${userName}\n**Задание:** ${currentTaskData.title}\n**Награда:** ${currentTaskData.reward} баллов`
+          `**Пользователь:** ${userName}\n**ID:** ${currentUser?.id}\n**Задание:** ${currentTaskData.title}\n**Награда:** ${currentTaskData.reward} баллов`
         );
 
         await sendDiscord(
           DISCORD_WEBHOOKS.startTask,
           "🚀 Задание начато",
-          `**Пользователь:** ${userName}\n**Задание:** ${currentTaskData.title}`
+          `**Пользователь:** ${userName}\n**ID:** ${currentUser?.id}\n**Задание:** ${currentTaskData.title}`
         );
 
         totalTasksTaken++;
