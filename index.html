@@ -1596,7 +1596,7 @@
       border-radius: 12px;
     }
 
-    /* Полная инструкция (второй шаг - С ФОТО) */
+    /* Полная инструкция (второй шаг - С ФОТО и информацией) */
     .full-instruction-modal .modal-content {
       background: linear-gradient(135deg, #1e2235, #16172b);
     }
@@ -2785,7 +2785,8 @@
       EXTRA_TASKS_URL: 'https://raw.githubusercontent.com/exyyl/-taskgreot/main/zadan.txt',
       POINT_TO_RUB: 1,
       COOLDOWN_HOURS: 1,
-      CACHE_TIME: 5 * 60 * 1000
+      CACHE_TIME: 5 * 60 * 1000,
+      TELEGRAPH_URL: 'https://telegra.ph/Priyom-zadanij-Task-Greot-03-14'
     };
 
     // Карта кулдаунов для заданий
@@ -2810,6 +2811,51 @@
     let currentShopData = null;
     let currentWithdrawData = null;
 
+    // Функция для показа приветствия новичкам
+    function showWelcomeNotification() {
+      const hasSeenWelcome = localStorage.getItem('has_seen_welcome');
+      
+      if (!hasSeenWelcome && window.Telegram?.WebApp) {
+        Telegram.WebApp.showPopup({
+          title: '👋 Добро пожаловать!',
+          message: 'Вы впервые на нашей платформе. Хотите узнать, как здесь всё работает и как зарабатывать баллы?',
+          buttons: [
+            { id: 'skip', type: 'default', text: 'Пропустить' },
+            { id: 'learn', type: 'ok', text: 'Да, узнать' }
+          ]
+        }, (buttonId) => {
+          if (buttonId === 'learn') {
+            // Открываем Telegra.ph с инструкцией
+            window.open(CONFIG.TELEGRAPH_URL, '_blank');
+          }
+          localStorage.setItem('has_seen_welcome', 'true');
+        });
+      }
+    }
+
+    // Функция для показа подтверждения покупки
+    function showPurchaseConfirmation(shopData, onConfirm) {
+      if (window.Telegram?.WebApp) {
+        Telegram.WebApp.showPopup({
+          title: '🛒 Подтверждение покупки',
+          message: `Вы уверены, что хотите купить "${shopData.title}" за ${shopData.price} баллов?`,
+          buttons: [
+            { id: 'cancel', type: 'cancel', text: 'Отмена' },
+            { id: 'confirm', type: 'ok', text: 'Купить' }
+          ]
+        }, (buttonId) => {
+          if (buttonId === 'confirm') {
+            onConfirm();
+          }
+        });
+      } else {
+        // Если не в Telegram, показываем обычное подтверждение
+        if (confirm(`Подтвердите покупку "${shopData.title}" за ${shopData.price} баллов?`)) {
+          onConfirm();
+        }
+      }
+    }
+
     // Инициализация Telegram WebApp
     function initTelegram() {
       try {
@@ -2832,6 +2878,10 @@
             
             // Сохраняем в localStorage как резерв
             localStorage.setItem('tg_current_user', JSON.stringify(currentUser));
+            
+            // Показываем приветствие для новых пользователей
+            showWelcomeNotification();
+            
             return true;
           }
         }
@@ -3041,7 +3091,6 @@
       
       const modal = document.getElementById('shop-action-modal');
       const info = document.getElementById('shop-modal-info');
-      const userInfoEl = document.getElementById('user-info-display');
       
       info.innerHTML = `
         <p><strong>Товар:</strong> ${shopData.title}</p>
@@ -3049,10 +3098,6 @@
         <p><strong>Статус:</strong> Заявка создана</p>
         <p style="color: var(--warning); margin-top: 10px;">Заявка будет обработана в течение 24 часов</p>
       `;
-      
-      if (userInfoEl) {
-        userInfoEl.innerHTML = getUserDisplayInfo();
-      }
       
       modal.classList.add('active');
     }
@@ -3068,7 +3113,6 @@
       
       const modal = document.getElementById('withdraw-action-modal');
       const info = document.getElementById('withdraw-modal-info');
-      const userInfoEl = document.getElementById('user-info-display');
       
       const methodText = withdrawData.method === 'sbp' ? 'СБП' : 
                         withdrawData.method === 'stars' ? 'Stars' : 'USDT';
@@ -3079,10 +3123,6 @@
         <p><strong>Статус:</strong> Заявка создана</p>
         <p style="color: var(--warning); margin-top: 10px;">Заявка будет обработана в течение 24 часов</p>
       `;
-      
-      if (userInfoEl) {
-        userInfoEl.innerHTML = getUserDisplayInfo();
-      }
       
       modal.classList.add('active');
     }
@@ -3422,20 +3462,26 @@
         return;
       }
 
-      openShopActionModal({
-        title: itemTitle,
-        price: itemPrice
-      });
+      // Показываем подтверждение через Telegram WebApp
+      showPurchaseConfirmation(
+        { title: itemTitle, price: itemPrice },
+        async () => {
+          openShopActionModal({
+            title: itemTitle,
+            price: itemPrice
+          });
 
-      const userName = currentUser?.first_name || 'Пользователь';
-      await sendDiscord(
-        DISCORD_WEBHOOKS.shop,
-        "🛒 Новая покупка",
-        `**Пользователь:** ${userName}\n**ID:** ${currentUser?.id}\n**Товар:** ${itemTitle}\n**Цена:** ${itemPrice} баллов`
+          const userName = currentUser?.first_name || 'Пользователь';
+          await sendDiscord(
+            DISCORD_WEBHOOKS.shop,
+            "🛒 Новая покупка",
+            `**Пользователь:** ${userName}\n**ID:** ${currentUser?.id}\n**Товар:** ${itemTitle}\n**Цена:** ${itemPrice} баллов`
+          );
+
+          localStorage.setItem(`last_purchase_${itemId}`, Date.now().toString());
+          updateShopCooldownTimers();
+        }
       );
-
-      localStorage.setItem(`last_purchase_${itemId}`, Date.now().toString());
-      updateShopCooldownTimers();
     }
 
     // Обновление профиля
