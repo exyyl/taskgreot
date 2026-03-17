@@ -1739,6 +1739,12 @@
       transform: scale(0.95);
     }
 
+    .modal-btn:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+      pointer-events: none;
+    }
+
     .notification {
       position: fixed;
       top: calc(80px + env(safe-area-inset-top));
@@ -2812,6 +2818,7 @@
     let currentShopData = null;
     let currentWithdrawData = null;
     let lastTaskTime = localStorage.getItem('last_task_time');
+    let isTaskConfirming = false; // Флаг для предотвращения повторных нажатий
 
     // Функция для проверки глобального кулдауна заданий
     function checkGlobalTaskCooldown() {
@@ -2938,6 +2945,7 @@
           ]
         }, (buttonId) => {
           if (buttonId === 'learn') {
+            // Открываем ссылку в новой вкладке
             window.open(CONFIG.WELCOME_URL, '_blank');
           }
           localStorage.setItem('has_seen_welcome', 'true');
@@ -3269,17 +3277,23 @@
           line = line.trim();
           if (!line) continue;
 
+          // Новый формат: номер – фото – ссылка – название – описание – награда – кулдаун (в минутах)
           const parts = line.split('–').map(s => s.trim());
-          if (parts.length >= 6) {
+          if (parts.length >= 7) {
             const taskNumber = parts[0];
             const photoUrl = parts[1];
             const instructionUrl = parts[2];
             const taskTitle = parts[3];
             const taskDesc = parts[4];
             const taskReward = parts[5];
+            const cooldownMinutes = parseInt(parts[6]) || 1440; // По умолчанию 24 часа (1440 минут)
             const rewardNumber = parseInt(taskReward) || 0;
 
             taskCount++;
+
+            // Конвертируем минуты в формат для data-cooldown
+            let cooldownType = 'custom';
+            let cooldownValue = cooldownMinutes;
 
             tasksHtml += `
               <div class="task-card glass-card fade-in" 
@@ -3288,7 +3302,8 @@
                    data-task-instruction="${instructionUrl}"
                    data-task-title="${taskTitle}"
                    data-task-desc="${taskDesc}"
-                   data-cooldown="1d">
+                   data-cooldown-type="${cooldownType}"
+                   data-cooldown-minutes="${cooldownValue}">
                 <div class="task-row">
                   <div class="task-icon">
                     <img src="${photoUrl}" alt="icon" onerror="this.src='https://via.placeholder.com/64/32ad5d/ffffff?text=Task'; this.onerror=null;">
@@ -3307,7 +3322,9 @@
                           data-task-title="${taskTitle}" 
                           data-task-reward="${rewardNumber}" 
                           data-task-instruction="${instructionUrl}"
-                          data-task-desc="${taskDesc}">
+                          data-task-desc="${taskDesc}"
+                          data-cooldown-type="${cooldownType}"
+                          data-cooldown-minutes="${cooldownValue}">
                     <i class="fas fa-play-circle"></i> Начать задание
                   </button>
                 </div>
@@ -3887,12 +3904,19 @@
         if (startBtn) {
           e.preventDefault();
           const card = startBtn.closest('.task-card');
+          
+          // Получаем данные о кулдауне из data-атрибутов
+          const cooldownType = card?.dataset.cooldownType || 'default';
+          const cooldownMinutes = card?.dataset.cooldownMinutes ? parseInt(card.dataset.cooldownMinutes) : null;
+          
           openMiniInstructionModal({
             id: card?.dataset.taskId || Date.now().toString(),
             title: startBtn?.dataset.taskTitle || card?.querySelector('.task-title')?.textContent || 'Задание',
             reward: card?.dataset.taskReward || '0',
             instruction: startBtn?.dataset.taskInstruction || card?.dataset.taskInstruction || null,
-            desc: card?.dataset.taskDesc || startBtn?.dataset.taskDesc || ''
+            desc: card?.dataset.taskDesc || startBtn?.dataset.taskDesc || '',
+            cooldownType: cooldownType,
+            cooldownMinutes: cooldownMinutes
           });
         }
       });
@@ -3904,48 +3928,63 @@
         }
       });
 
-      // Обработчик подтверждения задания
-      document.getElementById('full-modal-confirm-btn')?.addEventListener('click', async () => {
+      // Обработчик подтверждения задания с защитой от повторных нажатий
+      document.getElementById('full-modal-confirm-btn')?.addEventListener('click', async function(e) {
+        if (isTaskConfirming) return; // Предотвращаем повторные нажатия
+        
         if (!currentTaskData) return;
 
-        await copyToClipboard('ПОДТВЕРДИТЬ');
+        const confirmBtn = this;
+        confirmBtn.disabled = true;
+        confirmBtn.textContent = 'Подождите...';
+        isTaskConfirming = true;
 
-        const cooldownKey = `task_cooldown_${currentTaskData.id}`;
-        localStorage.setItem(cooldownKey, Date.now().toString());
-        
-        // Сохраняем время последнего задания для глобального кулдауна
-        localStorage.setItem('last_task_time', Date.now().toString());
+        try {
+          await copyToClipboard('ПОДТВЕРДИТЬ');
 
-        await sendDiscordLog(
-          DISCORD_WEBHOOKS.tasks,
-          'task',
-          {
-            title: currentTaskData.title,
-            reward: currentTaskData.reward,
-            id: currentTaskData.id
-          }
-        );
+          const cooldownKey = `task_cooldown_${currentTaskData.id}`;
+          localStorage.setItem(cooldownKey, Date.now().toString());
+          
+          // Сохраняем время последнего задания для глобального кулдауна
+          localStorage.setItem('last_task_time', Date.now().toString());
 
-        await sendDiscordLog(
-          DISCORD_WEBHOOKS.startTask,
-          'start',
-          {
-            title: currentTaskData.title,
-            reward: currentTaskData.reward
-          }
-        );
+          await sendDiscordLog(
+            DISCORD_WEBHOOKS.tasks,
+            'task',
+            {
+              title: currentTaskData.title,
+              reward: currentTaskData.reward,
+              id: currentTaskData.id
+            }
+          );
 
-        totalTasksTaken++;
-        localStorage.setItem('total_tasks_taken', totalTasksTaken);
-        document.getElementById('stat-tasks').textContent = totalTasksTaken;
+          await sendDiscordLog(
+            DISCORD_WEBHOOKS.startTask,
+            'start',
+            {
+              title: currentTaskData.title,
+              reward: currentTaskData.reward
+            }
+          );
 
-        closeFullInstructionModal();
+          totalTasksTaken++;
+          localStorage.setItem('total_tasks_taken', totalTasksTaken);
+          document.getElementById('stat-tasks').textContent = totalTasksTaken;
 
-        showTaskConfirmationNotification();
+          closeFullInstructionModal();
 
-        setTimeout(() => {
-          closeMiniApp();
-        }, 500);
+          showTaskConfirmationNotification();
+
+          setTimeout(() => {
+            closeMiniApp();
+          }, 500);
+        } catch (error) {
+          console.error('Ошибка при подтверждении задания:', error);
+          showNotification('❌ Произошла ошибка', 'error');
+          confirmBtn.disabled = false;
+          confirmBtn.textContent = 'Подтвердить';
+          isTaskConfirming = false;
+        }
       });
 
       // Обработчик подтверждения покупки
