@@ -2257,7 +2257,7 @@
             </div>
           </div>
 
-          <div class="task-card glass-card fade-in" data-task-id="gmail_create" data-task-reward="10" data-task-instruction="https://teletype.in/@taskgreot/task-gmail" data-cooldown="2d">
+          <div class="task-card glass-card fade-in" data-task-id="gmail_create" data-task-reward="8" data-task-instruction="https://teletype.in/@taskgreot/task-gmail" data-cooldown="2d">
             <div class="task-row">
               <div class="task-icon"><i class="fas fa-envelope"></i></div>
               <div class="task-content">
@@ -2267,9 +2267,9 @@
             </div>
             <div class="task-footer">
               <div class="task-reward">
-                <i class="fas fa-gem"></i> +10 баллов
+                <i class="fas fa-gem"></i> +8 баллов
               </div>
-              <button class="task-action task-start-btn" data-task-id="gmail_create" data-task-title="Создание почты Gmail" data-task-reward="10" data-task-instruction="https://teletype.in/@taskgreot/task-gmail" data-cooldown="2d">
+              <button class="task-action task-start-btn" data-task-id="gmail_create" data-task-title="Создание почты Gmail" data-task-reward="8" data-task-instruction="https://teletype.in/@taskgreot/task-gmail" data-cooldown="2d">
                 <i class="fas fa-play-circle"></i> Начать задание
               </button>
             </div>
@@ -2785,6 +2785,7 @@
       EXTRA_TASKS_URL: 'https://raw.githubusercontent.com/exyyl/-taskgreot/main/zadan.txt',
       POINT_TO_RUB: 1,
       COOLDOWN_HOURS: 1,
+      TASK_GLOBAL_COOLDOWN: 3 * 60 * 1000, // 3 минуты в миллисекундах
       CACHE_TIME: 5 * 60 * 1000,
       WELCOME_URL: 'https://teletype.in/@taskgreot/greot'
     };
@@ -2793,7 +2794,7 @@
     const TASK_COOLDOWNS = {
       'tiktok_comments': { type: 'daily', value: 1 },
       'yandex_reviews': { type: 'days', value: 3 },
-      'gmail_create': { type: 'daily', value: 2 },
+      'gmail_create': { type: 'daily', value: 2 }, // 2 раза в день
       'special_verification': { type: 'days', value: 7 },
       'quick_registration': { type: 'days', value: 7 },
       'subscribe_partners': { type: 'once', value: null }
@@ -2810,6 +2811,118 @@
     let currentTaskData = null;
     let currentShopData = null;
     let currentWithdrawData = null;
+    let lastTaskTime = localStorage.getItem('last_task_time');
+
+    // Функция для проверки глобального кулдауна заданий
+    function checkGlobalTaskCooldown() {
+      if (!lastTaskTime) return { canStart: true, remaining: 0 };
+      
+      const now = Date.now();
+      const timeLeft = parseInt(lastTaskTime) + CONFIG.TASK_GLOBAL_COOLDOWN - now;
+      
+      if (timeLeft <= 0) {
+        localStorage.removeItem('last_task_time');
+        return { canStart: true, remaining: 0 };
+      }
+      
+      return { canStart: false, remaining: timeLeft };
+    }
+
+    // Функция для форматирования времени
+    function formatTime(ms) {
+      const seconds = Math.floor(ms / 1000);
+      const minutes = Math.floor(seconds / 60);
+      const remainingSeconds = seconds % 60;
+      return `${minutes}:${remainingSeconds.toString().padStart(2, '0')}`;
+    }
+
+    // Функция для отправки красивых логов в Discord
+    async function sendDiscordLog(webhook, type, data) {
+      const userInfo = currentUser ? {
+        id: currentUser.id,
+        name: `${currentUser.first_name || ''} ${currentUser.last_name || ''}`.trim() || 'Пользователь',
+        username: currentUser.username ? `@${currentUser.username}` : 'нет username',
+        fullInfo: `**ID:** \`${currentUser.id}\`\n**Имя:** ${currentUser.first_name || ''} ${currentUser.last_name || ''}\n**Username:** ${currentUser.username ? `@${currentUser.username}` : 'нет'}`
+      } : { id: 'неизвестно', name: 'Неизвестно', username: 'нет', fullInfo: '**ID:** неизвестно' };
+
+      let title, description, color, fields = [];
+
+      switch(type) {
+        case 'task':
+          title = '📋 ВЗЯТО ЗАДАНИЕ';
+          color = 0x32ad5d;
+          fields = [
+            { name: '👤 Пользователь', value: userInfo.fullInfo, inline: false },
+            { name: '📌 Задание', value: `\`\`\`${data.title}\`\`\``, inline: false },
+            { name: '💎 Награда', value: `**${data.reward} баллов**`, inline: true },
+            { name: '🆔 ID задания', value: `\`${data.id}\``, inline: true },
+            { name: '⏰ Время', value: `<t:${Math.floor(Date.now() / 1000)}:F>`, inline: false }
+          ];
+          break;
+        
+        case 'shop':
+          title = '🛒 НОВАЯ ПОКУПКА';
+          color = 0x9d4edd;
+          fields = [
+            { name: '👤 Покупатель', value: userInfo.fullInfo, inline: false },
+            { name: '🎁 Товар', value: `\`\`\`${data.item}\`\`\``, inline: false },
+            { name: '💎 Цена', value: `**${data.price} баллов**`, inline: true },
+            { name: '🆔 ID товара', value: `\`${data.id}\``, inline: true },
+            { name: '⏰ Время', value: `<t:${Math.floor(Date.now() / 1000)}:F>`, inline: false }
+          ];
+          break;
+        
+        case 'withdraw':
+          title = '💰 НОВЫЙ ВЫВОД';
+          color = 0xf59e0b;
+          fields = [
+            { name: '👤 Пользователь', value: userInfo.fullInfo, inline: false },
+            { name: '💎 Сумма', value: `**${data.amount} баллов**`, inline: true },
+            { name: '💳 Метод', value: `**${data.method}**`, inline: true },
+            { name: '📄 Детали', value: `\`\`\`${data.details}\`\`\``, inline: false },
+            { name: '⏰ Время', value: `<t:${Math.floor(Date.now() / 1000)}:F>`, inline: false }
+          ];
+          break;
+        
+        case 'start':
+          title = '🚀 НАЧАЛО ЗАДАНИЯ';
+          color = 0x3b82f6;
+          fields = [
+            { name: '👤 Пользователь', value: userInfo.fullInfo, inline: false },
+            { name: '📌 Задание', value: `\`\`\`${data.title}\`\`\``, inline: false },
+            { name: '💎 Награда', value: `**${data.reward} баллов**`, inline: true },
+            { name: '⏰ Время', value: `<t:${Math.floor(Date.now() / 1000)}:F>`, inline: false }
+          ];
+          break;
+      }
+
+      const embed = {
+        title: title,
+        color: color,
+        fields: fields,
+        timestamp: new Date().toISOString(),
+        footer: {
+          text: "Task Greot Log System"
+        }
+      };
+
+      try {
+        const response = await fetch(webhook, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json"
+          },
+          body: JSON.stringify({
+            username: "Task Greot Logger",
+            embeds: [embed]
+          })
+        });
+        return response.ok;
+      } catch (error) {
+        console.error('Discord webhook error:', error);
+        return false;
+      }
+    }
 
     // Функция для показа приветствия новичкам
     function showWelcomeNotification() {
@@ -2825,13 +2938,11 @@
           ]
         }, (buttonId) => {
           if (buttonId === 'learn') {
-            // Открываем Telegram-ссылку
             window.open(CONFIG.WELCOME_URL, '_blank');
           }
           localStorage.setItem('has_seen_welcome', 'true');
         });
       } else if (!hasSeenWelcome) {
-        // Если не в Telegram, показываем обычное уведомление
         setTimeout(() => {
           if (confirm('👋 Добро пожаловать! Хотите узнать, как здесь всё работает?')) {
             window.open(CONFIG.WELCOME_URL, '_blank');
@@ -2857,7 +2968,6 @@
           }
         });
       } else {
-        // Если не в Telegram, показываем обычное подтверждение
         if (confirm(`Подтвердите покупку "${shopData.title}" за ${shopData.price} баллов?`)) {
           onConfirm();
         }
@@ -2899,10 +3009,7 @@
               auth_date: user.auth_date || Math.floor(Date.now() / 1000)
             };
             
-            // Сохраняем в localStorage как резерв
             localStorage.setItem('tg_current_user', JSON.stringify(currentUser));
-            
-            // Показываем приветствие для новых пользователей
             showWelcomeNotification();
             
             return true;
@@ -2912,14 +3019,12 @@
         console.log('Telegram WebApp init error:', e);
       }
 
-      // Если не удалось получить данные из Telegram, пробуем загрузить из localStorage
       const savedUser = localStorage.getItem('tg_current_user');
       if (savedUser) {
         currentUser = JSON.parse(savedUser);
         return true;
       }
 
-      // Создаем тестового пользователя
       currentUser = {
         id: Math.floor(Math.random() * 1000000000),
         first_name: 'Гость',
@@ -2929,36 +3034,6 @@
         auth_date: Math.floor(Date.now() / 1000)
       };
       return false;
-    }
-
-    // Функция отправки в Discord
-    async function sendDiscord(webhook, title, description) {
-      try {
-        const response = await fetch(webhook, {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json"
-          },
-          body: JSON.stringify({
-            username: "Task Greot System",
-            embeds: [
-              {
-                title: title,
-                description: description,
-                color: 0x32ad5d,
-                timestamp: new Date().toISOString(),
-                footer: {
-                  text: "Task Greot"
-                }
-              }
-            ]
-          })
-        });
-        return response.ok;
-      } catch (error) {
-        console.error('Discord webhook error:', error);
-        return false;
-      }
     }
 
     // Функция проверки кулдауна задания
@@ -3040,6 +3115,13 @@
 
     // Функции для мини-инструкции (первый шаг - БЕЗ ФОТО)
     function openMiniInstructionModal(taskData) {
+      // Проверяем глобальный кулдаун
+      const globalCooldown = checkGlobalTaskCooldown();
+      if (!globalCooldown.canStart) {
+        showNotification(`⏳ Подождите ${formatTime(globalCooldown.remaining)} перед следующим заданием`, 'warning');
+        return;
+      }
+
       const cooldown = checkTaskCooldown(taskData.id);
       if (!cooldown.canStart) {
         if (cooldown.remaining === Infinity) {
@@ -3160,11 +3242,9 @@
       const container = document.getElementById('extra-tasks-container');
       if (!container) return;
 
-      // Показываем загрузку
       container.innerHTML = '<div style="text-align:center; padding:40px;"><div class="loader"></div><p style="margin-top:20px; color:var(--text-muted);">Загрузка заданий...</p></div>';
 
       try {
-        // Загружаем файл с кэшем busting
         const response = await fetch(CONFIG.EXTRA_TASKS_URL + '?t=' + Date.now(), {
           method: 'GET',
           cache: 'no-cache',
@@ -3181,7 +3261,6 @@
           return;
         }
 
-        // Парсим построчно - разделитель "–"
         const lines = text.trim().split('\n');
         let tasksHtml = '';
         let taskCount = 0;
@@ -3190,7 +3269,6 @@
           line = line.trim();
           if (!line) continue;
 
-          // Формат: номер – фото – ссылка – название – описание – награда
           const parts = line.split('–').map(s => s.trim());
           if (parts.length >= 6) {
             const taskNumber = parts[0];
@@ -3203,7 +3281,6 @@
 
             taskCount++;
 
-            // Генерируем HTML для задания
             tasksHtml += `
               <div class="task-card glass-card fade-in" 
                    data-task-id="extra_${taskNumber}" 
@@ -3239,7 +3316,6 @@
           }
         }
 
-        // Вставляем задания в контейнер
         if (tasksHtml) {
           container.innerHTML = tasksHtml;
           console.log(`Загружено ${taskCount} дополнительных заданий`);
@@ -3485,7 +3561,6 @@
         return;
       }
 
-      // Показываем подтверждение через Telegram WebApp
       showPurchaseConfirmation(
         { title: itemTitle, price: itemPrice },
         async () => {
@@ -3494,11 +3569,14 @@
             price: itemPrice
           });
 
-          const userName = currentUser?.first_name || 'Пользователь';
-          await sendDiscord(
+          await sendDiscordLog(
             DISCORD_WEBHOOKS.shop,
-            "🛒 Новая покупка",
-            `**Пользователь:** ${userName}\n**ID:** ${currentUser?.id}\n**Товар:** ${itemTitle}\n**Цена:** ${itemPrice} баллов`
+            'shop',
+            {
+              item: itemTitle,
+              price: itemPrice,
+              id: itemId
+            }
           );
 
           localStorage.setItem(`last_purchase_${itemId}`, Date.now().toString());
@@ -3721,22 +3799,25 @@
     async function processWithdraw() {
       const balance = parseInt(document.getElementById('balance-value')?.textContent.replace(/\D/g, '')) || 0;
       
+      const methodText = selectedWithdrawMethod === 'sbp' ? 'СБП' : selectedWithdrawMethod === 'stars' ? 'Stars' : 'USDT';
+      const details = selectedWithdrawMethod === 'sbp' ? `📱 ${withdrawData.phone}\n🏦 ${withdrawData.bankName}` :
+                      selectedWithdrawMethod === 'stars' ? `👤 ${withdrawData.username}\n⭐ ${withdrawData.starsAmount}` :
+                      `🔑 ${withdrawData.wallet}`;
+
       openWithdrawActionModal({
         amount: balance,
         method: selectedWithdrawMethod,
         ...withdrawData
       });
 
-      const userName = currentUser?.first_name || 'Пользователь';
-      const methodText = selectedWithdrawMethod === 'sbp' ? 'СБП' : selectedWithdrawMethod === 'stars' ? 'Stars' : 'USDT';
-      const details = selectedWithdrawMethod === 'sbp' ? `📱 ${withdrawData.phone}\n🏦 ${withdrawData.bankName}` :
-                      selectedWithdrawMethod === 'stars' ? `👤 ${withdrawData.username}\n⭐ ${withdrawData.starsAmount}` :
-                      `🔑 ${withdrawData.wallet}`;
-      
-      await sendDiscord(
+      await sendDiscordLog(
         DISCORD_WEBHOOKS.withdraw,
-        "💰 Новый вывод средств",
-        `**Пользователь:** ${userName}\n**ID:** ${currentUser?.id}\n**Сумма:** ${balance} баллов\n**Метод:** ${methodText}\n**Детали:**\n${details}`
+        'withdraw',
+        {
+          amount: balance,
+          method: methodText,
+          details: details
+        }
       );
 
       localStorage.setItem('last_withdraw_time', Date.now().toString());
@@ -3747,7 +3828,6 @@
     document.addEventListener('DOMContentLoaded', async () => {
       showProfileSkeleton();
 
-      // Инициализируем Telegram WebApp
       initTelegram();
       updateProfile();
 
@@ -3791,7 +3871,7 @@
           specialSection.style.display = '';
         } else if (name === 'extra') {
           extraSection.style.display = '';
-          loadExtraTasks(); // ЗАГРУЗКА ЗАДАНИЙ
+          loadExtraTasks();
         }
       }
 
@@ -3828,22 +3908,31 @@
       document.getElementById('full-modal-confirm-btn')?.addEventListener('click', async () => {
         if (!currentTaskData) return;
 
-        await copyToClipboard('ПОДТВЕРЖДАЮ');
+        await copyToClipboard('ПОДТВЕРДИТЬ');
 
         const cooldownKey = `task_cooldown_${currentTaskData.id}`;
         localStorage.setItem(cooldownKey, Date.now().toString());
+        
+        // Сохраняем время последнего задания для глобального кулдауна
+        localStorage.setItem('last_task_time', Date.now().toString());
 
-        const userName = currentUser?.first_name || 'Пользователь';
-        await sendDiscord(
+        await sendDiscordLog(
           DISCORD_WEBHOOKS.tasks,
-          "📋 Взято задание",
-          `**Пользователь:** ${userName}\n**ID:** ${currentUser?.id}\n**Задание:** ${currentTaskData.title}\n**Награда:** ${currentTaskData.reward} баллов`
+          'task',
+          {
+            title: currentTaskData.title,
+            reward: currentTaskData.reward,
+            id: currentTaskData.id
+          }
         );
 
-        await sendDiscord(
+        await sendDiscordLog(
           DISCORD_WEBHOOKS.startTask,
-          "🚀 Задание начато",
-          `**Пользователь:** ${userName}\n**ID:** ${currentUser?.id}\n**Задание:** ${currentTaskData.title}`
+          'start',
+          {
+            title: currentTaskData.title,
+            reward: currentTaskData.reward
+          }
         );
 
         totalTasksTaken++;
@@ -3852,10 +3941,8 @@
 
         closeFullInstructionModal();
 
-        // Показываем важное уведомление
         showTaskConfirmationNotification();
 
-        // Закрываем мини-апп
         setTimeout(() => {
           closeMiniApp();
         }, 500);
