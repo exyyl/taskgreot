@@ -2541,7 +2541,7 @@
           <p id="full-modal-reward-info"><strong>Награда:</strong> <span id="full-modal-reward-value"></span> баллов</p>
         </div>
         <div class="full-instruction-desc" id="full-modal-instruction-text">
-          Нажмите кнопку «Подтвердить», пришлите в диалог с ботом слово «ПОДТВЕРЖДАЮ» и выполняйте задание
+          Нажмите кнопку «Подтвердить», чтобы начать задание
         </div>
       </div>
       <div class="modal-buttons">
@@ -2786,7 +2786,7 @@
       POINT_TO_RUB: 1,
       COOLDOWN_HOURS: 1,
       CACHE_TIME: 5 * 60 * 1000,
-      TELEGRAPH_URL: 'https://telegra.ph/Priyom-zadanij-Task-Greot-03-14'
+      WELCOME_URL: 'https://teletype.in/@taskgreot/greot'
     };
 
     // Карта кулдаунов для заданий
@@ -2825,11 +2825,19 @@
           ]
         }, (buttonId) => {
           if (buttonId === 'learn') {
-            // Открываем Telegra.ph с инструкцией
-            window.open(CONFIG.TELEGRAPH_URL, '_blank');
+            // Открываем Telegram-ссылку
+            window.open(CONFIG.WELCOME_URL, '_blank');
           }
           localStorage.setItem('has_seen_welcome', 'true');
         });
+      } else if (!hasSeenWelcome) {
+        // Если не в Telegram, показываем обычное уведомление
+        setTimeout(() => {
+          if (confirm('👋 Добро пожаловать! Хотите узнать, как здесь всё работает?')) {
+            window.open(CONFIG.WELCOME_URL, '_blank');
+          }
+          localStorage.setItem('has_seen_welcome', 'true');
+        }, 1000);
       }
     }
 
@@ -2853,6 +2861,21 @@
         if (confirm(`Подтвердите покупку "${shopData.title}" за ${shopData.price} баллов?`)) {
           onConfirm();
         }
+      }
+    }
+
+    // Функция для показа уведомления после подтверждения задания
+    function showTaskConfirmationNotification() {
+      if (window.Telegram?.WebApp) {
+        Telegram.WebApp.showPopup({
+          title: '⛔️ ВАЖНО!',
+          message: 'НАПИШИТЕ В БОТ СЛОВО «ПОДТВЕРДИТЬ» чтобы начать задание',
+          buttons: [
+            { id: 'ok', type: 'ok', text: 'Понятно' }
+          ]
+        });
+      } else {
+        alert('⛔️ ВАЖНО!\nНАПИШИТЕ В БОТ СЛОВО «ПОДТВЕРДИТЬ» чтобы начать задание');
       }
     }
 
@@ -2981,7 +3004,6 @@
     async function copyToClipboard(text) {
       try {
         await navigator.clipboard.writeText(text);
-        showNotification('✅ Скопировано: ПОДТВЕРЖДАЮ', 'success');
         return true;
       } catch (err) {
         const textarea = document.createElement('textarea');
@@ -2990,14 +3012,15 @@
         textarea.select();
         document.execCommand('copy');
         document.body.removeChild(textarea);
-        showNotification('✅ Скопировано: ПОДТВЕРЖДАЮ', 'success');
         return true;
       }
     }
 
-    // Функция открытия Telegram бота
-    function openTelegramBot() {
-      window.location.href = 'https://t.me/TaskGreot_Bot';
+    // Функция закрытия мини-аппа
+    function closeMiniApp() {
+      if (window.Telegram?.WebApp) {
+        Telegram.WebApp.close();
+      }
     }
 
     // Функция для отображения информации о пользователе
@@ -3829,8 +3852,12 @@
 
         closeFullInstructionModal();
 
+        // Показываем важное уведомление
+        showTaskConfirmationNotification();
+
+        // Закрываем мини-апп
         setTimeout(() => {
-          openTelegramBot();
+          closeMiniApp();
         }, 500);
       });
 
