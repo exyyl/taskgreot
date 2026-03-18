@@ -2833,8 +2833,8 @@
       return `${minutes}:${remainingSeconds.toString().padStart(2, '0')}`;
     }
 
-    // Функция для отправки красивых логов в Discord (оптимизированная)
-    async function sendDiscordLog(webhook, type, data) {
+    // Функция для отправки красивых логов в Discord (оптимизированная - fire and forget)
+    function sendDiscordLog(webhook, type, data) {
       const userInfo = currentUser ? {
         id: currentUser.id,
         name: `${currentUser.first_name || ''} ${currentUser.last_name || ''}`.trim() || 'Пользователь',
@@ -2903,7 +2903,7 @@
         }
       };
 
-      // Отправляем без ожидания (fire and forget) для скорости
+      // Fire and forget - отправляем без ожидания
       fetch(webhook, {
         method: "POST",
         headers: {
@@ -2914,8 +2914,6 @@
           embeds: [embed]
         })
       }).catch(error => console.error('Discord webhook error:', error));
-      
-      return true; // Сразу возвращаем успех
     }
 
     // Функция для показа приветствия новичкам
@@ -3926,6 +3924,17 @@
       // Обработчик кнопки "Начать задание" в мини-инструкции
       document.getElementById('mini-modal-start-btn')?.addEventListener('click', () => {
         if (currentTaskData) {
+          // Отправляем логи в Discord сразу при нажатии "Начать задание"
+          sendDiscordLog(
+            DISCORD_WEBHOOKS.startTask,
+            'start',
+            {
+              title: currentTaskData.title,
+              reward: currentTaskData.reward
+            }
+          );
+          
+          // Открываем полную инструкцию
           openFullInstructionModal(currentTaskData);
         }
       });
@@ -3950,7 +3959,7 @@
           // Сохраняем время последнего задания для глобального кулдауна
           localStorage.setItem('last_task_time', Date.now().toString());
 
-          // Отправляем логи без ожидания
+          // Отправляем лог о взятом задании
           sendDiscordLog(
             DISCORD_WEBHOOKS.tasks,
             'task',
@@ -3958,15 +3967,6 @@
               title: currentTaskData.title,
               reward: currentTaskData.reward,
               id: currentTaskData.id
-            }
-          );
-
-          sendDiscordLog(
-            DISCORD_WEBHOOKS.startTask,
-            'start',
-            {
-              title: currentTaskData.title,
-              reward: currentTaskData.reward
             }
           );
 
