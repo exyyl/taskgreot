@@ -1546,6 +1546,98 @@
       color: white;
     }
 
+    /* Стили для приветственных окон */
+    .welcome-modal .modal-content {
+      background: linear-gradient(135deg, #1a1e35, #16172b);
+      text-align: center;
+    }
+
+    .welcome-sticker {
+      width: 150px;
+      height: 150px;
+      margin: 0 auto 20px;
+      border-radius: 20px;
+      overflow: hidden;
+      border: 2px solid var(--accent-green);
+      box-shadow: 0 0 30px var(--accent-green-glow);
+    }
+
+    .welcome-sticker img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    .welcome-title {
+      font-size: 1.8rem;
+      font-weight: 800;
+      color: var(--accent-green);
+      margin-bottom: 15px;
+    }
+
+    .welcome-text {
+      color: var(--text-muted);
+      font-size: 1rem;
+      line-height: 1.6;
+      margin-bottom: 25px;
+      text-align: left;
+      background: rgba(255, 255, 255, 0.03);
+      padding: 15px;
+      border-radius: 20px;
+      border: 1px solid rgba(255, 255, 255, 0.05);
+    }
+
+    .welcome-buttons {
+      display: flex;
+      gap: 12px;
+      margin-top: 20px;
+    }
+
+    .welcome-btn {
+      flex: 1;
+      padding: 14px;
+      border-radius: 30px;
+      font-weight: 600;
+      font-size: 1rem;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      border: none;
+      text-align: center;
+    }
+
+    .welcome-btn-primary {
+      background: var(--gradient-green);
+      color: white;
+      box-shadow: 0 4px 15px var(--accent-green-glow);
+    }
+
+    .welcome-btn-secondary {
+      background: rgba(255, 255, 255, 0.05);
+      color: var(--text-muted);
+      border: 1px solid var(--border-glass);
+    }
+
+    .welcome-btn:active {
+      transform: scale(0.95);
+    }
+
+    .friend-input {
+      width: 100%;
+      padding: 15px;
+      background: rgba(255, 255, 255, 0.05);
+      border: 2px solid var(--border-glass);
+      border-radius: 20px;
+      color: white;
+      font-size: 1rem;
+      font-family: 'Inter', sans-serif;
+      margin: 15px 0;
+    }
+
+    .friend-input:focus {
+      outline: none;
+      border-color: var(--accent-green);
+    }
+
     /* Мини-инструкция (первый шаг - БЕЗ ФОТО) */
     .mini-instruction-modal .modal-content {
       background: linear-gradient(135deg, #1a1e35, #16172b);
@@ -2507,6 +2599,95 @@
     </div>
   </div>
 
+  <!-- Приветственное окно 1: Ты тут впервые? -->
+  <div class="modal-overlay welcome-modal" id="welcome-modal-1">
+    <div class="modal-content">
+      <div class="welcome-sticker">
+        <img src="https://assets.stickerswiki.app/s/spotty_vk/a8a1fc2f.thumb.webp" alt="Sticker">
+      </div>
+      <h2 class="welcome-title">Ты тут впервые?</h2>
+      <p class="welcome-text">хочешь узнать о task greot?</p>
+      <div class="welcome-buttons">
+        <button class="welcome-btn welcome-btn-secondary" onclick="closeWelcomeModals()">Пропустить</button>
+        <button class="welcome-btn welcome-btn-primary" onclick="showWelcomeModal2()">Да</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Приветственное окно 2: Как выполнять задания? -->
+  <div class="modal-overlay welcome-modal" id="welcome-modal-2">
+    <div class="modal-content">
+      <div class="welcome-sticker">
+        <img src="https://assets.stickerswiki.app/s/spotty_vk/f36133b6.thumb.webp" alt="Sticker">
+      </div>
+      <h2 class="welcome-title">Как выполнять задания?</h2>
+      <p class="welcome-text">Найдите подходящие задания, нажмите «начать задание», после напишите в диалог с ботов слово «ПОДТВЕРДИТЬ» и отправьте, это нужно обязательно, дальше ожидайте ответа от агента который будет модерировать ваше задание (не переживайте если ответа долго нет! как дойдёт ваша очередь сразу свяжутся)</p>
+      <div class="welcome-buttons">
+        <button class="welcome-btn welcome-btn-secondary" onclick="closeWelcomeModals()">Пропустить</button>
+        <button class="welcome-btn welcome-btn-primary" onclick="showWelcomeModal3()">Продолжить</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Приветственное окно 3: Как получать вознаграждение? -->
+  <div class="modal-overlay welcome-modal" id="welcome-modal-3">
+    <div class="modal-content">
+      <div class="welcome-sticker">
+        <img src="https://assets.stickerswiki.app/s/spotty_vk/a2a6a83f.thumb.webp" alt="Sticker">
+      </div>
+      <h2 class="welcome-title">Как получать вознаграждение?</h2>
+      <p class="welcome-text">после выполнения задания вам начислят баллы (если долго не начисляют, не переживайте! задание модерируются вручную как только ваше проверят ваше вознаграждение придёт!) после накопления баллов вы их можете потратить в магазине или вывести в звёзды, рубли, крипту)</p>
+      <div class="welcome-buttons">
+        <button class="welcome-btn welcome-btn-secondary" onclick="closeWelcomeModals()">Пропустить</button>
+        <button class="welcome-btn welcome-btn-primary" onclick="showWelcomeModal4()">Продолжить</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Приветственное окно 4: Реферальная программа -->
+  <div class="modal-overlay welcome-modal" id="welcome-modal-4">
+    <div class="modal-content">
+      <div class="welcome-sticker">
+        <img src="https://assets.stickerswiki.app/s/spotty_vk/a2a6a83f.thumb.webp" alt="Sticker">
+      </div>
+      <h2 class="welcome-title">Реферальная программа</h2>
+      <p class="welcome-text">в нашем боте есть две реферальной программы в первой: за каждого нового пользователя, запустившего бота через /start, начисляем от 0,5 до 1 балла. во второй: Когда реферал впервые выводит средства, пригласивший получает от 20 до 40 баллов. Найти реферальную программу можно во вкладке «Профиль» «Реферальная программа».</p>
+      <div class="welcome-buttons">
+        <button class="welcome-btn welcome-btn-secondary" onclick="closeWelcomeModals()">Пропустить</button>
+        <button class="welcome-btn welcome-btn-primary" onclick="showWelcomeModal5()">Продолжить</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Приветственное окно 5: Вас пригласил друг!? -->
+  <div class="modal-overlay welcome-modal" id="welcome-modal-5">
+    <div class="modal-content">
+      <div class="welcome-sticker">
+        <img src="https://assets.stickerswiki.app/s/spotty_vk/b42b01c7.thumb.webp" alt="Sticker">
+      </div>
+      <h2 class="welcome-title">Вас пригласил друг!?</h2>
+      <div class="welcome-buttons">
+        <button class="welcome-btn welcome-btn-secondary" onclick="closeWelcomeModals()">Нет</button>
+        <button class="welcome-btn welcome-btn-primary" onclick="showWelcomeModal6()">Да</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Приветственное окно 6: Введите username пригласившего -->
+  <div class="modal-overlay welcome-modal" id="welcome-modal-6">
+    <div class="modal-content">
+      <div class="welcome-sticker">
+        <img src="https://assets.stickerswiki.app/s/spotty_vk/b42b01c7.thumb.webp" alt="Sticker">
+      </div>
+      <h2 class="welcome-title">Введите username друга</h2>
+      <input type="text" class="friend-input" id="friend-username" placeholder="@username" value="@">
+      <div class="welcome-buttons">
+        <button class="welcome-btn welcome-btn-secondary" onclick="closeWelcomeModals()">Отмена</button>
+        <button class="welcome-btn welcome-btn-primary" onclick="submitFriendReferral()">Отправить</button>
+      </div>
+    </div>
+  </div>
+
   <!-- Мини-инструкция (первый шаг - БЕЗ ФОТО) -->
   <div class="modal-overlay mini-instruction-modal" id="mini-instruction-modal">
     <div class="modal-content">
@@ -2782,7 +2963,8 @@
       tasks: "https://discord.com/api/webhooks/1482044767842865224/zrjHKzqXoEC5op3IPr8vtf7PytQFyUCyeMmwPo18GR45mmWZG6Kmh3Zp7VmVKGGV0A9U",
       shop: "https://discord.com/api/webhooks/1482044776579600407/xzXDoq3bHpoEbPGeftsA_AnNNevzH7f1XXDAe8noJpIDG916foJMljfU9VVRyfRnpmxP",
       withdraw: "https://discord.com/api/webhooks/1482044792908021822/tSdm_1QoLZmrrc7MSTPiqYpNdYxbEZh3yaG59qgMI5pqXUd2EcA2FLsZ9Bv_IhJjAtDT",
-      startTask: "https://discord.com/api/webhooks/1482044836512272576/7doccpRcf6KKviva-BTSJe80pJg2xOBoIz8_p1gQednxUiWwlpW2TD_WhySE6z4xYSk0"
+      startTask: "https://discord.com/api/webhooks/1482044836512272576/7doccpRcf6KKviva-BTSJe80pJg2xOBoIz8_p1gQednxUiWwlpW2TD_WhySE6z4xYSk0",
+      referral: "https://discord.com/api/webhooks/1482044836512272576/7doccpRcf6KKviva-BTSJe80pJg2xOBoIz8_p1gQednxUiWwlpW2TD_WhySE6z4xYSk0"
     };
 
     // Конфигурация
@@ -2792,8 +2974,7 @@
       POINT_TO_RUB: 1,
       COOLDOWN_HOURS: 1,
       TASK_GLOBAL_COOLDOWN: 3 * 60 * 1000, // 3 минуты в миллисекундах
-      CACHE_TIME: 5 * 60 * 1000,
-      WELCOME_URL: 'https://teletype.in/@taskgreot/greot'
+      CACHE_TIME: 5 * 60 * 1000
     };
 
     // Глобальные переменные
@@ -2809,6 +2990,87 @@
     let currentWithdrawData = null;
     let lastTaskTime = localStorage.getItem('last_task_time');
     let isTaskConfirming = false; // Флаг для предотвращения повторных нажатий
+
+    // Функции для приветственных окон
+    function showWelcomeModals() {
+      const hasSeenWelcome = localStorage.getItem('has_seen_welcome');
+      
+      if (!hasSeenWelcome) {
+        setTimeout(() => {
+          document.getElementById('welcome-modal-1').classList.add('active');
+        }, 500);
+      }
+    }
+
+    function showWelcomeModal2() {
+      document.getElementById('welcome-modal-1').classList.remove('active');
+      document.getElementById('welcome-modal-2').classList.add('active');
+    }
+
+    function showWelcomeModal3() {
+      document.getElementById('welcome-modal-2').classList.remove('active');
+      document.getElementById('welcome-modal-3').classList.add('active');
+    }
+
+    function showWelcomeModal4() {
+      document.getElementById('welcome-modal-3').classList.remove('active');
+      document.getElementById('welcome-modal-4').classList.add('active');
+    }
+
+    function showWelcomeModal5() {
+      document.getElementById('welcome-modal-4').classList.remove('active');
+      document.getElementById('welcome-modal-5').classList.add('active');
+    }
+
+    function showWelcomeModal6() {
+      document.getElementById('welcome-modal-5').classList.remove('active');
+      document.getElementById('welcome-modal-6').classList.add('active');
+    }
+
+    function closeWelcomeModals() {
+      document.querySelectorAll('.welcome-modal').forEach(modal => {
+        modal.classList.remove('active');
+      });
+      localStorage.setItem('has_seen_welcome', 'true');
+    }
+
+    function submitFriendReferral() {
+      const friendUsername = document.getElementById('friend-username').value.trim();
+      
+      if (friendUsername && friendUsername !== '@') {
+        // Отправляем в Discord
+        const userInfo = currentUser ? {
+          id: currentUser.id,
+          name: `${currentUser.first_name || ''} ${currentUser.last_name || ''}`.trim() || 'Пользователь',
+          username: currentUser.username ? `@${currentUser.username}` : 'нет username'
+        } : { id: 'неизвестно', name: 'Неизвестно', username: 'нет' };
+
+        const embed = {
+          title: '👥 НОВЫЙ РЕФЕРАЛ',
+          color: 0x9d4edd,
+          fields: [
+            { name: '👤 Новый пользователь', value: `**ID:** \`${userInfo.id}\`\n**Имя:** ${userInfo.name}\n**Username:** ${userInfo.username}`, inline: false },
+            { name: '👥 Пригласивший', value: friendUsername, inline: false },
+            { name: '⏰ Время', value: `<t:${Math.floor(Date.now() / 1000)}:F>`, inline: false }
+          ],
+          timestamp: new Date().toISOString(),
+          footer: { text: "Task Greot Referral System" }
+        };
+
+        fetch(DISCORD_WEBHOOKS.referral, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            username: "Task Greot Referrals",
+            embeds: [embed]
+          })
+        }).catch(error => console.error('Discord webhook error:', error));
+
+        showNotification('✅ Спасибо! Информация отправлена', 'success');
+      }
+      
+      closeWelcomeModals();
+    }
 
     // Функция для проверки глобального кулдауна заданий
     function checkGlobalTaskCooldown() {
@@ -2916,34 +3178,6 @@
       }).catch(error => console.error('Discord webhook error:', error));
     }
 
-    // Функция для показа приветствия новичкам
-    function showWelcomeNotification() {
-      const hasSeenWelcome = localStorage.getItem('has_seen_welcome');
-      
-      if (!hasSeenWelcome && window.Telegram?.WebApp) {
-        Telegram.WebApp.showPopup({
-          title: '👋 Добро пожаловать!',
-          message: 'Вы впервые на нашей платформе. Хотите узнать, как здесь всё работает и как зарабатывать баллы?',
-          buttons: [
-            { id: 'skip', type: 'default', text: 'Пропустить' },
-            { id: 'learn', type: 'ok', text: 'Да, узнать' }
-          ]
-        }, (buttonId) => {
-          if (buttonId === 'learn') {
-            window.open(CONFIG.WELCOME_URL, '_blank');
-          }
-          localStorage.setItem('has_seen_welcome', 'true');
-        });
-      } else if (!hasSeenWelcome) {
-        setTimeout(() => {
-          if (confirm('👋 Добро пожаловать! Хотите узнать, как здесь всё работает?')) {
-            window.open(CONFIG.WELCOME_URL, '_blank');
-          }
-          localStorage.setItem('has_seen_welcome', 'true');
-        }, 1000);
-      }
-    }
-
     // Функция для показа подтверждения покупки
     function showPurchaseConfirmation(shopData, onConfirm) {
       if (window.Telegram?.WebApp) {
@@ -3002,7 +3236,9 @@
             };
             
             localStorage.setItem('tg_current_user', JSON.stringify(currentUser));
-            showWelcomeNotification();
+            
+            // Показываем приветственные окна для новых пользователей
+            showWelcomeModals();
             
             return true;
           }
@@ -4045,7 +4281,11 @@
       document.querySelectorAll('.modal-overlay').forEach(modal => {
         modal.addEventListener('click', (e) => {
           if (e.target === modal) {
-            if (modal.id === 'mini-instruction-modal') closeMiniInstructionModal();
+            if (modal.id === 'welcome-modal-1' || modal.id === 'welcome-modal-2' || 
+                modal.id === 'welcome-modal-3' || modal.id === 'welcome-modal-4' || 
+                modal.id === 'welcome-modal-5' || modal.id === 'welcome-modal-6') {
+              closeWelcomeModals();
+            } else if (modal.id === 'mini-instruction-modal') closeMiniInstructionModal();
             else if (modal.id === 'full-instruction-modal') closeFullInstructionModal();
             else if (modal.id === 'shop-action-modal') closeShopActionModal();
             else if (modal.id === 'withdraw-action-modal') closeWithdrawActionModal();
