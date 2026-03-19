@@ -1546,20 +1546,20 @@
       color: white;
     }
 
-    /* Стили для приветственных окон */
+    /* Улучшенные стили для приветственных окон */
     .welcome-modal .modal-content {
-      background: linear-gradient(135deg, #1a1e35, #16172b);
+      background: linear-gradient(145deg, #1e2238, #16172b);
       text-align: center;
+      padding: 30px 25px;
     }
 
     .welcome-sticker {
-      width: 150px;
-      height: 150px;
+      width: 140px;
+      height: 140px;
       margin: 0 auto 20px;
-      border-radius: 20px;
+      border-radius: 30px;
       overflow: hidden;
-      border: 2px solid var(--accent-green);
-      box-shadow: 0 0 30px var(--accent-green-glow);
+      box-shadow: 0 15px 35px rgba(0, 0, 0, 0.5);
     }
 
     .welcome-sticker img {
@@ -1569,22 +1569,40 @@
     }
 
     .welcome-title {
-      font-size: 1.8rem;
+      font-size: 1.9rem;
       font-weight: 800;
-      color: var(--accent-green);
+      background: linear-gradient(135deg, var(--accent-green), #4ade80);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
       margin-bottom: 15px;
+      letter-spacing: -0.5px;
     }
 
     .welcome-text {
       color: var(--text-muted);
-      font-size: 1rem;
-      line-height: 1.6;
+      font-size: 0.95rem;
+      line-height: 1.7;
       margin-bottom: 25px;
-      text-align: left;
       background: rgba(255, 255, 255, 0.03);
-      padding: 15px;
-      border-radius: 20px;
+      padding: 18px;
+      border-radius: 24px;
       border: 1px solid rgba(255, 255, 255, 0.05);
+      text-align: left;
+    }
+
+    .welcome-text p {
+      margin-bottom: 10px;
+      position: relative;
+      padding-left: 20px;
+    }
+
+    .welcome-text p::before {
+      content: "•";
+      color: var(--accent-green);
+      position: absolute;
+      left: 5px;
+      font-size: 1.2rem;
     }
 
     .welcome-buttons {
@@ -1596,7 +1614,7 @@
     .welcome-btn {
       flex: 1;
       padding: 14px;
-      border-radius: 30px;
+      border-radius: 40px;
       font-weight: 600;
       font-size: 1rem;
       cursor: pointer;
@@ -1606,36 +1624,99 @@
     }
 
     .welcome-btn-primary {
-      background: var(--gradient-green);
+      background: linear-gradient(135deg, var(--accent-green), #4ade80);
       color: white;
-      box-shadow: 0 4px 15px var(--accent-green-glow);
+      box-shadow: 0 8px 20px rgba(50, 173, 93, 0.4);
     }
 
     .welcome-btn-secondary {
       background: rgba(255, 255, 255, 0.05);
       color: var(--text-muted);
-      border: 1px solid var(--border-glass);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      backdrop-filter: blur(5px);
     }
 
     .welcome-btn:active {
-      transform: scale(0.95);
+      transform: scale(0.96);
     }
 
     .friend-input {
       width: 100%;
-      padding: 15px;
+      padding: 16px 20px;
       background: rgba(255, 255, 255, 0.05);
-      border: 2px solid var(--border-glass);
-      border-radius: 20px;
+      border: 2px solid rgba(255, 255, 255, 0.1);
+      border-radius: 30px;
       color: white;
       font-size: 1rem;
       font-family: 'Inter', sans-serif;
-      margin: 15px 0;
+      margin: 15px 0 10px;
+      transition: all 0.2s ease;
     }
 
     .friend-input:focus {
       outline: none;
       border-color: var(--accent-green);
+      background: rgba(255, 255, 255, 0.08);
+    }
+
+    /* Стили для окна подписки */
+    .subscribe-modal .modal-content {
+      background: linear-gradient(145deg, #1e2238, #16172b);
+      text-align: center;
+    }
+
+    .subscribe-icon {
+      font-size: 4rem;
+      color: var(--accent-green);
+      margin-bottom: 15px;
+      animation: pulse 2s infinite;
+    }
+
+    .subscribe-btn {
+      background: linear-gradient(135deg, #0088cc, #00a3ff);
+      color: white;
+      padding: 16px;
+      border-radius: 40px;
+      font-weight: 600;
+      font-size: 1.1rem;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      border: none;
+      width: 100%;
+      margin: 15px 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      box-shadow: 0 8px 20px rgba(0, 136, 204, 0.4);
+    }
+
+    .subscribe-btn:active {
+      transform: scale(0.96);
+    }
+
+    .check-btn {
+      background: linear-gradient(135deg, var(--accent-green), #4ade80);
+      color: white;
+      padding: 16px;
+      border-radius: 40px;
+      font-weight: 600;
+      font-size: 1.1rem;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      border: none;
+      width: 100%;
+      box-shadow: 0 8px 20px var(--accent-green-glow);
+    }
+
+    .check-btn:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+      pointer-events: none;
+    }
+
+    .check-btn:active:not(:disabled) {
+      transform: scale(0.96);
     }
 
     /* Мини-инструкция (первый шаг - БЕЗ ФОТО) */
@@ -2599,6 +2680,23 @@
     </div>
   </div>
 
+  <!-- Окно проверки подписки -->
+  <div class="modal-overlay subscribe-modal" id="subscribe-modal">
+    <div class="modal-content">
+      <div class="subscribe-icon">
+        <i class="fab fa-telegram"></i>
+      </div>
+      <h2 class="welcome-title">Подпишитесь на канал</h2>
+      <p class="welcome-text" style="text-align: center;">Чтобы продолжить, подпишитесь на наш Telegram канал</p>
+      <a href="https://t.me/TaskGreot" target="_blank" class="subscribe-btn" onclick="handleSubscribeClick()">
+        <i class="fab fa-telegram"></i> Перейти в канал
+      </a>
+      <button class="check-btn" id="check-subscription-btn" disabled onclick="checkSubscription()">
+        <i class="fas fa-check-circle"></i> Проверить доступ
+      </button>
+    </div>
+  </div>
+
   <!-- Приветственное окно 1: Ты тут впервые? -->
   <div class="modal-overlay welcome-modal" id="welcome-modal-1">
     <div class="modal-content">
@@ -2606,7 +2704,10 @@
         <img src="https://assets.stickerswiki.app/s/spotty_vk/a8a1fc2f.thumb.webp" alt="Sticker">
       </div>
       <h2 class="welcome-title">Ты тут впервые?</h2>
-      <p class="welcome-text">хочешь узнать о task greot?</p>
+      <div class="welcome-text">
+        <p>🎯 Хочешь узнать о Task Greot?</p>
+        <p>✨ Мы расскажем как это работает</p>
+      </div>
       <div class="welcome-buttons">
         <button class="welcome-btn welcome-btn-secondary" onclick="closeWelcomeModals()">Пропустить</button>
         <button class="welcome-btn welcome-btn-primary" onclick="showWelcomeModal2()">Да</button>
@@ -2621,7 +2722,11 @@
         <img src="https://assets.stickerswiki.app/s/spotty_vk/f36133b6.thumb.webp" alt="Sticker">
       </div>
       <h2 class="welcome-title">Как выполнять задания?</h2>
-      <p class="welcome-text">Найдите подходящие задания, нажмите «начать задание», после напишите в диалог с ботов слово «ПОДТВЕРДИТЬ» и отправьте, это нужно обязательно, дальше ожидайте ответа от агента который будет модерировать ваше задание (не переживайте если ответа долго нет! как дойдёт ваша очередь сразу свяжутся)</p>
+      <div class="welcome-text">
+        <p>📌 Выберите задание и нажмите «Начать»</p>
+        <p>📝 Напишите в бот слово «ПОДТВЕРДИТЬ»</p>
+        <p>⏳ Ожидайте проверки модератором</p>
+      </div>
       <div class="welcome-buttons">
         <button class="welcome-btn welcome-btn-secondary" onclick="closeWelcomeModals()">Пропустить</button>
         <button class="welcome-btn welcome-btn-primary" onclick="showWelcomeModal3()">Продолжить</button>
@@ -2636,7 +2741,11 @@
         <img src="https://assets.stickerswiki.app/s/spotty_vk/a2a6a83f.thumb.webp" alt="Sticker">
       </div>
       <h2 class="welcome-title">Как получать вознаграждение?</h2>
-      <p class="welcome-text">после выполнения задания вам начислят баллы (если долго не начисляют, не переживайте! задание модерируются вручную как только ваше проверят ваше вознаграждение придёт!) после накопления баллов вы их можете потратить в магазине или вывести в звёзды, рубли, крипту)</p>
+      <div class="welcome-text">
+        <p>💎 После проверки начисляются баллы</p>
+        <p>🛍 Баллы можно тратить в магазине</p>
+        <p>💸 Или выводить в звёзды/рубли/крипту</p>
+      </div>
       <div class="welcome-buttons">
         <button class="welcome-btn welcome-btn-secondary" onclick="closeWelcomeModals()">Пропустить</button>
         <button class="welcome-btn welcome-btn-primary" onclick="showWelcomeModal4()">Продолжить</button>
@@ -2651,7 +2760,11 @@
         <img src="https://assets.stickerswiki.app/s/spotty_vk/a2a6a83f.thumb.webp" alt="Sticker">
       </div>
       <h2 class="welcome-title">Реферальная программа</h2>
-      <p class="welcome-text">в нашем боте есть две реферальной программы в первой: за каждого нового пользователя, запустившего бота через /start, начисляем от 0,5 до 1 балла. во второй: Когда реферал впервые выводит средства, пригласивший получает от 20 до 40 баллов. Найти реферальную программу можно во вкладке «Профиль» «Реферальная программа».</p>
+      <div class="welcome-text">
+        <p>👥 За новых пользователей: 0.5-1 балл</p>
+        <p>💰 За первый вывод реферала: 20-40 баллов</p>
+        <p>📍 Найти можно в профиле</p>
+      </div>
       <div class="welcome-buttons">
         <button class="welcome-btn welcome-btn-secondary" onclick="closeWelcomeModals()">Пропустить</button>
         <button class="welcome-btn welcome-btn-primary" onclick="showWelcomeModal5()">Продолжить</button>
@@ -2990,6 +3103,29 @@
     let currentWithdrawData = null;
     let lastTaskTime = localStorage.getItem('last_task_time');
     let isTaskConfirming = false; // Флаг для предотвращения повторных нажатий
+    let hasSubscribed = localStorage.getItem('has_subscribed') === 'true';
+
+    // Функции для проверки подписки
+    function handleSubscribeClick() {
+      // Активируем кнопку проверки через 3 секунды (предполагаем, что пользователь подписался)
+      setTimeout(() => {
+        document.getElementById('check-subscription-btn').disabled = false;
+      }, 3000);
+    }
+
+    function checkSubscription() {
+      // Здесь можно добавить реальную проверку через API Telegram
+      // Пока просто считаем, что пользователь подписался
+      hasSubscribed = true;
+      localStorage.setItem('has_subscribed', 'true');
+      document.getElementById('subscribe-modal').classList.remove('active');
+      
+      // Продолжаем выполнение задания
+      if (pendingTaskAfterSubscribe) {
+        openMiniInstructionModal(pendingTaskAfterSubscribe);
+        pendingTaskAfterSubscribe = null;
+      }
+    }
 
     // Функции для приветственных окон
     function showWelcomeModals() {
@@ -3354,7 +3490,16 @@
     }
 
     // Функции для мини-инструкции (первый шаг - БЕЗ ФОТО)
+    let pendingTaskAfterSubscribe = null;
+
     function openMiniInstructionModal(taskData) {
+      // Проверяем подписку
+      if (!hasSubscribed) {
+        pendingTaskAfterSubscribe = taskData;
+        document.getElementById('subscribe-modal').classList.add('active');
+        return;
+      }
+
       // Проверяем глобальный кулдаун
       const globalCooldown = checkGlobalTaskCooldown();
       if (!globalCooldown.canStart) {
@@ -4281,7 +4426,9 @@
       document.querySelectorAll('.modal-overlay').forEach(modal => {
         modal.addEventListener('click', (e) => {
           if (e.target === modal) {
-            if (modal.id === 'welcome-modal-1' || modal.id === 'welcome-modal-2' || 
+            if (modal.id === 'subscribe-modal') {
+              modal.classList.remove('active');
+            } else if (modal.id === 'welcome-modal-1' || modal.id === 'welcome-modal-2' || 
                 modal.id === 'welcome-modal-3' || modal.id === 'welcome-modal-4' || 
                 modal.id === 'welcome-modal-5' || modal.id === 'welcome-modal-6') {
               closeWelcomeModals();
