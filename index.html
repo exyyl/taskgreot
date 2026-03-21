@@ -536,7 +536,7 @@
 
     let currentUser = null, selectedWithdrawMethod = null, withdrawData = {};
     let totalTasksTaken = parseInt(localStorage.getItem('total_tasks_taken')) || 0;
-    let lastWithdrawTime = localStorage.getItem('last_withdraw_time');
+    let lastWithdrawTimeCache = localStorage.getItem('last_withdraw_time');
     let currentTaskData = null, pendingTaskAfterSubscribe = null, isTaskConfirming = false;
     let hasSubscribed = localStorage.getItem('has_subscribed') === 'true';
 
@@ -907,7 +907,20 @@
     function closeWelcomeModals() { document.querySelectorAll('.welcome-modal').forEach(m=>m.classList.remove('active')); localStorage.setItem('has_seen_welcome','true'); }
     function submitFriendReferral() { const fr = document.getElementById('friend-username').value.trim(); if(fr && fr!=='@') showNotification('✅ Спасибо!','success'); closeWelcomeModals(); }
 
-    // Вывод средств
+    // Вывод средств – исправленная функция
+    function openWithdrawModal() {
+      const lastWithdrawTime = localStorage.getItem('last_withdraw_time');
+      if (lastWithdrawTime) {
+        const diffHours = (Date.now() - parseInt(lastWithdrawTime)) / (1000 * 60 * 60);
+        if (diffHours < 24) {
+          showNotification(`Вывод можно делать раз в 24ч. Следующий вывод через ${Math.ceil(24 - diffHours)}ч`, 'warning');
+          return;
+        }
+      }
+      document.getElementById('withdraw-modal').classList.add('active');
+      resetWithdrawModal();
+    }
+
     function selectWithdrawMethod(method, min) {
       selectedWithdrawMethod = method; withdrawData.method = method;
       document.querySelectorAll('.method-option').forEach(o=>o.classList.toggle('active', o.dataset.method===method));
@@ -965,10 +978,6 @@
       sendDiscordLog(DISCORD_WEBHOOKS.withdraw,'withdraw',{ amount:bal, method:selectedWithdrawMethod==='sbp'?'СБП':selectedWithdrawMethod==='stars'?'Stars':'USDT', details:JSON.stringify(withdrawData) });
       localStorage.setItem('last_withdraw_time', Date.now().toString());
       closeWithdrawModal();
-    }
-    function openWithdrawModal() {
-      if(lastWithdrawTime && (Date.now()-parseInt(lastWithdrawTime)) < 24*3600000) { showNotification('Вывод можно делать раз в 24ч','warning'); return; }
-      document.getElementById('withdraw-modal').classList.add('active'); resetWithdrawModal();
     }
     function closeWithdrawModal() { document.getElementById('withdraw-modal').classList.remove('active'); resetWithdrawModal(); }
     function resetWithdrawModal() { selectedWithdrawMethod=null; withdrawData={}; document.querySelectorAll('.method-option').forEach(o=>o.classList.remove('active')); document.getElementById('next-to-details').disabled=true; goToStep('method'); }
