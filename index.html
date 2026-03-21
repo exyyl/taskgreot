@@ -63,9 +63,9 @@
     }
     @keyframes slowDrift { 0% { transform: translate(0,0) rotate(0deg); } 100% { transform: translate(2%,2%) rotate(2deg); } }
 
-    /* ПЛАВАЮЩИЕ ИКОНКИ */
+    /* ПЛАВАЮЩИЕ ИКОНКИ – СДЕЛАЛИ ЯРЧЕ И ВИДНЕЕ */
     .floating-icons { position: fixed; top: 0; left: 0; right: 0; bottom: 0; pointer-events: none; z-index: -1; overflow: hidden; }
-    .float-icon { position: absolute; font-size: 1.7rem; color: rgba(50,173,93,0.1); animation: floatIcon 28s infinite linear; }
+    .float-icon { position: absolute; font-size: 2rem; color: rgba(50,173,93,0.25); animation: floatIcon 28s infinite linear; opacity: 0.6; }
     .float-icon-1 { top: 5%; left: 3%; animation-duration: 24s; }
     .float-icon-2 { top: 12%; right: 8%; animation-duration: 30s; animation-delay: 2s; }
     .float-icon-3 { top: 25%; left: 15%; animation-duration: 26s; animation-delay: 4s; }
@@ -88,9 +88,9 @@
     .float-icon-20 { top: 15%; left: 45%; animation-duration: 33s; animation-delay: 23s; }
     @keyframes floatIcon {
       0% { transform: translateY(0) rotate(0deg); opacity: 0; }
-      15% { opacity: 0.2; }
-      50% { transform: translateY(-35px) rotate(180deg); opacity: 0.25; }
-      85% { opacity: 0.2; }
+      15% { opacity: 0.5; }
+      50% { transform: translateY(-35px) rotate(180deg); opacity: 0.7; }
+      85% { opacity: 0.5; }
       100% { transform: translateY(-70px) rotate(360deg); opacity: 0; }
     }
 
@@ -103,22 +103,22 @@
       bottom: 0;
       pointer-events: none;
       z-index: -1;
-      background: radial-gradient(circle at 20% 40%, rgba(50,173,93,0.05) 0%, transparent 30%),
-                  radial-gradient(circle at 80% 70%, rgba(157,78,221,0.05) 0%, transparent 30%),
-                  repeating-linear-gradient(45deg, rgba(255,255,255,0.02) 0px, rgba(255,255,255,0.02) 2px, transparent 2px, transparent 8px);
+      background: radial-gradient(circle at 20% 40%, rgba(50,173,93,0.08) 0%, transparent 30%),
+                  radial-gradient(circle at 80% 70%, rgba(157,78,221,0.08) 0%, transparent 30%),
+                  repeating-linear-gradient(45deg, rgba(255,255,255,0.03) 0px, rgba(255,255,255,0.03) 2px, transparent 2px, transparent 8px);
       animation: twinkle 6s infinite alternate;
     }
-    @keyframes twinkle { 0% { opacity: 0.4; } 100% { opacity: 0.9; } }
+    @keyframes twinkle { 0% { opacity: 0.5; } 100% { opacity: 1; } }
 
     .floating-dots { position: fixed; top: 0; left: 0; right: 0; bottom: 0; pointer-events: none; z-index: -1; overflow: hidden; }
-    .dot { position: absolute; background: rgba(255,255,255,0.02); border-radius: 50%; }
-    .dot-1 { width: 280px; height: 280px; top: 5%; left: -5%; background: radial-gradient(circle, rgba(50,173,93,0.1) 0%, transparent 70%); animation: float1 28s infinite alternate; }
-    .dot-2 { width: 380px; height: 380px; bottom: 0; right: -8%; background: radial-gradient(circle, rgba(157,78,221,0.08) 0%, transparent 70%); animation: float2 32s infinite alternate; }
-    .dot-3 { width: 220px; height: 220px; top: 40%; left: 40%; background: radial-gradient(circle, rgba(50,173,93,0.07) 0%, transparent 70%); animation: float3 35s infinite alternate; }
-    .dot-4 { width: 200px; height: 200px; bottom: 20%; left: 15%; background: radial-gradient(circle, rgba(157,78,221,0.07) 0%, transparent 70%); animation: float4 25s infinite alternate; }
-    .dot-5 { width: 300px; height: 300px; top: 70%; right: 10%; background: radial-gradient(circle, rgba(50,173,93,0.07) 0%, transparent 70%); animation: float5 30s infinite alternate; }
-    .dot-6 { width: 180px; height: 180px; top: 25%; right: 35%; background: radial-gradient(circle, rgba(50,173,93,0.06) 0%, transparent 70%); animation: float1 22s infinite alternate; }
-    .dot-7 { width: 240px; height: 240px; bottom: 40%; left: 55%; background: radial-gradient(circle, rgba(157,78,221,0.06) 0%, transparent 70%); animation: float2 27s infinite alternate; }
+    .dot { position: absolute; background: rgba(255,255,255,0.03); border-radius: 50%; }
+    .dot-1 { width: 280px; height: 280px; top: 5%; left: -5%; background: radial-gradient(circle, rgba(50,173,93,0.15) 0%, transparent 70%); animation: float1 28s infinite alternate; }
+    .dot-2 { width: 380px; height: 380px; bottom: 0; right: -8%; background: radial-gradient(circle, rgba(157,78,221,0.12) 0%, transparent 70%); animation: float2 32s infinite alternate; }
+    .dot-3 { width: 220px; height: 220px; top: 40%; left: 40%; background: radial-gradient(circle, rgba(50,173,93,0.1) 0%, transparent 70%); animation: float3 35s infinite alternate; }
+    .dot-4 { width: 200px; height: 200px; bottom: 20%; left: 15%; background: radial-gradient(circle, rgba(157,78,221,0.1) 0%, transparent 70%); animation: float4 25s infinite alternate; }
+    .dot-5 { width: 300px; height: 300px; top: 70%; right: 10%; background: radial-gradient(circle, rgba(50,173,93,0.1) 0%, transparent 70%); animation: float5 30s infinite alternate; }
+    .dot-6 { width: 180px; height: 180px; top: 25%; right: 35%; background: radial-gradient(circle, rgba(50,173,93,0.08) 0%, transparent 70%); animation: float1 22s infinite alternate; }
+    .dot-7 { width: 240px; height: 240px; bottom: 40%; left: 55%; background: radial-gradient(circle, rgba(157,78,221,0.08) 0%, transparent 70%); animation: float2 27s infinite alternate; }
     @keyframes float1 { 0% { transform: translate(0,0) scale(1); } 100% { transform: translate(6%,4%) scale(1.15); } }
     @keyframes float2 { 0% { transform: translate(0,0) scale(1); } 100% { transform: translate(-8%,-6%) scale(1.2); } }
     @keyframes float3 { 0% { transform: translate(-50%,-50%) scale(1); } 100% { transform: translate(-45%,-45%) scale(1.25); } }
@@ -138,7 +138,8 @@
     @keyframes borderPulse { 0% { opacity: 0.3; } 50% { opacity: 0.9; } 100% { opacity: 0.3; } }
 
     .top-bar-content { flex: 1; display: flex; align-items: center; justify-content: space-between; width: 100%; }
-    .logo-small { font-size: 1.45rem; font-weight: 800; background: linear-gradient(135deg, var(--accent-green), var(--accent-purple)); -webkit-background-clip: text; background-clip: text; color: transparent; flex: 1; min-width: 0; text-align: center; letter-spacing: 1px; }
+    /* УБРАЛИ НАДПИСЬ TASK GREOT */
+    .logo-small { display: none; }
     .topbar-user { display: flex; align-items: center; gap: 12px; }
     .topbar-avatar { width: 42px; height: 42px; border-radius: 50%; background: linear-gradient(135deg, var(--accent-green), var(--accent-purple)); display: flex; align-items: center; justify-content: center; flex-shrink: 0; overflow: hidden; position: relative; animation: avatarGlowRotate 3s infinite; }
     @keyframes avatarGlowRotate {
@@ -269,28 +270,84 @@
     .profile-link-btn i { font-size: 1.1rem; color: var(--accent-purple); }
     .add-task-btn { display: block; background: var(--gradient-purple); color: white; text-decoration: none; padding: 12px; border-radius: 40px; text-align: center; font-weight: 600; margin: 18px 0; }
 
+    /* МОДАЛЬНЫЕ ОКНА */
     .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.9); backdrop-filter: blur(15px); display: flex; justify-content: center; align-items: center; z-index: 2000; opacity: 0; visibility: hidden; transition: all 0.2s; }
     .modal-overlay.active { opacity: 1; visibility: visible; }
-    .modal-content { background: rgba(20,22,45,0.96); backdrop-filter: blur(25px); border-radius: 44px; border: 1px solid var(--border-glass); padding: 26px; width: 90%; max-width: 460px; max-height: 85vh; overflow-y: auto; transform: translateY(20px) scale(0.98); transition: transform 0.2s; }
+    .modal-content { background: rgba(20,22,45,0.96); backdrop-filter: blur(25px); border-radius: 44px; border: 1px solid var(--border-glass); padding: 26px; width: 90%; max-width: 460px; max-height: 85vh; overflow-y: auto; transform: translateY(20px) scale(0.98); transition: transform 0.2s; position: relative; }
     .modal-overlay.active .modal-content { transform: translateY(0) scale(1); }
-    .close-modal { position: absolute; top: 14px; right: 14px; background: none; border: none; color: var(--text-muted); font-size: 1.2rem; cursor: pointer; width: 36px; height: 36px; border-radius: 50%; }
+    /* УБРАЛИ КРЕСТИК ВО ВСЕХ МОДАЛЬНЫХ ОКНАХ (кроме подписки и вывода) */
+    .full-instruction-modal .close-modal, .shop-action-modal .close-modal, .withdraw-action-modal .close-modal { display: none; }
 
+    /* УВЕЛИЧЕННОЕ ИЗОБРАЖЕНИЕ БЕЗ ЗЕЛЁНОЙ ОБВОДКИ */
+    .full-instruction-image {
+      width: 100%;
+      max-height: 220px;
+      object-fit: contain;
+      border-radius: 28px;
+      margin-bottom: 20px;
+      background: transparent;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+    }
+    .full-instruction-info {
+      background: rgba(50,173,93,0.1);
+      border-radius: 24px;
+      padding: 16px;
+      margin-bottom: 16px;
+    }
+    .full-instruction-title {
+      font-size: 1.3rem;
+      font-weight: 800;
+      color: var(--accent-green);
+      text-align: center;
+      margin-bottom: 12px;
+    }
+    .user-info-badge {
+      background: rgba(255,255,255,0.03);
+      border-radius: 14px;
+      padding: 8px;
+      margin: 8px 0;
+      font-size: 0.75rem;
+      text-align: center;
+    }
+    .full-instruction-highlight {
+      background: rgba(255,255,255,0.05);
+      padding: 12px;
+      border-radius: 18px;
+      margin: 10px 0;
+    }
+    .modal-buttons {
+      display: flex;
+      gap: 12px;
+      margin-top: 20px;
+    }
+    .modal-btn {
+      flex: 1;
+      padding: 12px;
+      border-radius: 40px;
+      font-weight: 600;
+      font-size: 0.9rem;
+      cursor: pointer;
+      border: none;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+    }
+    .modal-btn-primary { background: var(--gradient-green); color: white; }
+    .modal-btn-secondary { background: var(--gradient-purple); color: white; }
+
+    /* ПОДПИСКА */
     .subscribe-modal .modal-content { background: linear-gradient(145deg, #1a1c32, #12142a); text-align: center; }
     .subscribe-icon { font-size: 3.8rem; color: var(--accent-green); margin-bottom: 16px; animation: pulse 2s infinite; }
     .subscribe-btn, .check-btn { padding: 12px; border-radius: 50px; font-weight: 600; font-size: 0.95rem; cursor: pointer; border: none; width: 100%; margin: 10px 0; display: flex; align-items: center; justify-content: center; gap: 10px; }
     .subscribe-btn { background: linear-gradient(135deg, #0088cc, #00a3ff); color: white; }
     .check-btn { background: var(--gradient-green); color: white; }
 
-    .full-instruction-modal .modal-content { background: linear-gradient(135deg, #1a1c32, #12142a); }
-    .full-instruction-image { width: 100%; max-height: 140px; object-fit: contain; border-radius: 24px; margin-bottom: 16px; border: 2px solid var(--accent-green); }
-    .full-instruction-info { background: rgba(50,173,93,0.1); border-radius: 24px; padding: 16px; margin-bottom: 16px; }
-    .full-instruction-title { font-size: 1.2rem; font-weight: 800; color: var(--accent-green); text-align: center; margin-bottom: 10px; }
-    .user-info-badge { background: rgba(255,255,255,0.03); border-radius: 14px; padding: 8px; margin: 8px 0; font-size: 0.75rem; text-align: center; }
-    .full-instruction-highlight { background: rgba(255,255,255,0.05); padding: 12px; border-radius: 18px; margin: 10px 0; }
-    .modal-buttons { display: flex; gap: 10px; margin-top: 16px; }
-    .modal-btn { flex: 1; padding: 10px; border-radius: 40px; font-weight: 600; font-size: 0.8rem; cursor: pointer; border: none; display: inline-flex; align-items: center; justify-content: center; gap: 6px; }
-    .modal-btn-primary { background: var(--gradient-green); color: white; }
-    .modal-btn-secondary { background: var(--gradient-purple); color: white; }
+    /* УВЕЛИЧЕННОЕ ИЗОБРАЖЕНИЕ В МОДАЛКАХ ПОКУПКИ/ВЫВОДА (те же классы) */
+    .shop-action-modal .full-instruction-image, .withdraw-action-modal .full-instruction-image {
+      max-height: 220px;
+      border: none;
+    }
 
     .notification { position: fixed; top: calc(86px + env(safe-area-inset-top)); left: 50%; transform: translateX(-50%) translateX(150%); padding: 10px 22px; background: rgba(22,23,43,0.96); border: 1px solid var(--border-glass); border-radius: 50px; z-index: 2000; transition: transform 0.3s; width: 85%; max-width: 340px; text-align: center; font-size: 0.8rem; backdrop-filter: blur(20px); }
     .notification.show { transform: translateX(-50%) translateX(0); }
@@ -354,7 +411,7 @@
   <div class="floating-dots"><div class="dot dot-1"></div><div class="dot dot-2"></div><div class="dot dot-3"></div><div class="dot dot-4"></div><div class="dot dot-5"></div><div class="dot dot-6"></div><div class="dot dot-7"></div></div>
   <div class="shimmer-line"></div><div class="shimmer-line shimmer-line-bottom"></div>
 
-  <div class="top-bar"><div class="top-bar-content"><div class="topbar-user"><div class="topbar-avatar"><img id="topbar-avatar-img" src="" style="display:none;"><i id="topbar-avatar-icon" class="fas fa-user"></i></div><div class="topbar-name" id="topbar-name">Пользователь</div></div><div class="logo-small">TASK GREOT</div><div class="balance-mini"><i class="fas fa-gem"></i><span class="balance-mini-value" id="mini-balance">0</span></div></div></div>
+  <div class="top-bar"><div class="top-bar-content"><div class="topbar-user"><div class="topbar-avatar"><img id="topbar-avatar-img" src="" style="display:none;"><i id="topbar-avatar-icon" class="fas fa-user"></i></div><div class="topbar-name" id="topbar-name">Пользователь</div></div><div class="balance-mini"><i class="fas fa-gem"></i><span class="balance-mini-value" id="mini-balance">0</span></div></div></div>
 
   <div class="container" id="main-container">
     <header><h1 class="logo"><img src="https://raw.githubusercontent.com/exyyl/-taskgreot/main/taskgreot.png" alt="Task Greot"></h1><p class="tagline">Выполняйте задания. Получайте баллы. Меняйте на награды.</p></header>
@@ -378,36 +435,90 @@
   <div class="modal-overlay welcome-modal" id="welcome-modal-5"><div class="modal-content"><div class="welcome-sticker"><img src="https://assets.stickerswiki.app/s/spotty_vk/b42b01c7.thumb.webp"></div><h2 class="welcome-title">Вас пригласил друг?</h2><div class="welcome-buttons"><button class="welcome-btn welcome-btn-secondary" onclick="closeWelcomeModals()">Нет</button><button class="welcome-btn welcome-btn-primary" onclick="showWelcomeModal6()">Да</button></div></div></div>
   <div class="modal-overlay welcome-modal" id="welcome-modal-6"><div class="modal-content"><div class="welcome-sticker"><img src="https://assets.stickerswiki.app/s/spotty_vk/b42b01c7.thumb.webp"></div><h2 class="welcome-title">Введите username друга</h2><input type="text" class="friend-input" id="friend-username" placeholder="@username" value="@"><div class="welcome-buttons"><button class="welcome-btn welcome-btn-secondary" onclick="closeWelcomeModals()">Отмена</button><button class="welcome-btn welcome-btn-primary" onclick="submitFriendReferral()">Отправить</button></div></div></div>
 
-  <!-- ОКНО ПОДТВЕРЖДЕНИЯ ЗАДАНИЯ (запасное, для не-WebApp) -->
-  <div class="modal-overlay full-instruction-modal" id="confirm-task-modal" style="display:none;">
+  <!-- ОКНО ПОДТВЕРЖДЕНИЯ ЗАДАНИЯ (запасное, не используется теперь, но оставим) -->
+  <div class="modal-overlay full-instruction-modal" id="confirm-task-modal" style="display:none;"><div class="modal-content"><button class="close-modal" onclick="closeConfirmTaskModal()"><i class="fas fa-times"></i></button><img class="full-instruction-image" src="https://raw.githubusercontent.com/exyyl/taskgreot/refs/heads/main/taskyes.PNG"><div class="full-instruction-info"><div class="full-instruction-title">Подтверждение задания</div><div class="full-instruction-highlight" id="confirm-modal-content"><p>Вы уверены, что хотите взять это задание?</p></div></div><div class="modal-buttons"><button id="confirm-task-cancel" class="modal-btn modal-btn-secondary">Отмена</button><button id="confirm-task-ok" class="modal-btn modal-btn-primary">Да, взять</button></div></div></div>
+
+  <!-- ПОЛНАЯ ИНСТРУКЦИЯ (без крестика) -->
+  <div class="modal-overlay full-instruction-modal" id="full-instruction-modal">
     <div class="modal-content">
-      <button class="close-modal" onclick="closeConfirmTaskModal()"><i class="fas fa-times"></i></button>
-      <img class="full-instruction-image" src="https://raw.githubusercontent.com/exyyl/taskgreot/refs/heads/main/taskyes.PNG" alt="">
+      <img class="full-instruction-image" src="https://raw.githubusercontent.com/exyyl/taskgreot/refs/heads/main/taskyes.PNG">
       <div class="full-instruction-info">
-        <div class="full-instruction-title">Подтверждение задания</div>
-        <div class="full-instruction-highlight" id="confirm-modal-content">
-          <p>Вы уверены, что хотите взять это задание?</p>
+        <div class="full-instruction-title" id="full-modal-title">Задание</div>
+        <div class="user-info-badge" id="user-info-display"></div>
+        <div class="full-instruction-highlight">
+          <p><strong>Задание:</strong> <span id="full-modal-task-name"></span></p>
+          <p><strong>Награда:</strong> <span id="full-modal-reward-value"></span> баллов</p>
         </div>
       </div>
       <div class="modal-buttons">
-        <button id="confirm-task-cancel" class="modal-btn modal-btn-secondary">Отмена</button>
-        <button id="confirm-task-ok" class="modal-btn modal-btn-primary">Да, взять</button>
+        <a href="#" id="full-modal-instruction-btn" target="_blank" class="modal-btn modal-btn-secondary"><i class="fas fa-book"></i> Инструкция</a>
+        <button id="full-modal-confirm-btn" class="modal-btn modal-btn-primary"><i class="fas fa-check"></i> Подтвердить</button>
       </div>
     </div>
   </div>
 
-  <div class="modal-overlay full-instruction-modal" id="full-instruction-modal"><div class="modal-content"><button class="close-modal" onclick="closeFullInstructionModal()"><i class="fas fa-times"></i></button><img class="full-instruction-image" src="https://raw.githubusercontent.com/exyyl/taskgreot/refs/heads/main/taskyes.PNG"><div class="full-instruction-info"><div class="full-instruction-title" id="full-modal-title">Задание</div><div class="user-info-badge" id="user-info-display"></div><div class="full-instruction-highlight"><p><strong>Задание:</strong> <span id="full-modal-task-name"></span></p><p><strong>Награда:</strong> <span id="full-modal-reward-value"></span> баллов</p></div></div><div class="modal-buttons"><a href="#" id="full-modal-instruction-btn" target="_blank" class="modal-btn modal-btn-secondary"><i class="fas fa-book"></i> Инструкция</a><button id="full-modal-confirm-btn" class="modal-btn modal-btn-primary"><i class="fas fa-check"></i> Подтвердить</button></div></div></div>
+  <!-- ПОКУПКА (без крестика) -->
+  <div class="modal-overlay full-instruction-modal" id="shop-action-modal">
+    <div class="modal-content">
+      <img class="full-instruction-image" src="https://raw.githubusercontent.com/exyyl/taskgreot/refs/heads/main/buy.PNG">
+      <div class="full-instruction-info">
+        <div class="full-instruction-title">Покупка оформлена!</div>
+        <div id="shop-modal-info" class="full-instruction-desc"></div>
+      </div>
+      <div class="modal-buttons">
+        <a href="https://t.me/taskgreotsupport" target="_blank" class="modal-btn modal-btn-secondary"><i class="fas fa-headset"></i> Поддержка</a>
+        <button id="shop-modal-confirm-btn" class="modal-btn modal-btn-primary"><i class="fas fa-check"></i> OK</button>
+      </div>
+    </div>
+  </div>
 
-  <div class="modal-overlay full-instruction-modal" id="shop-action-modal"><div class="modal-content"><button class="close-modal" onclick="closeShopActionModal()"><i class="fas fa-times"></i></button><img class="full-instruction-image" src="https://raw.githubusercontent.com/exyyl/taskgreot/refs/heads/main/buy.PNG"><div class="full-instruction-info"><div class="full-instruction-title">Покупка оформлена!</div><div id="shop-modal-info" class="full-instruction-desc"></div></div><div class="modal-buttons"><a href="https://t.me/taskgreotsupport" target="_blank" class="modal-btn modal-btn-secondary"><i class="fas fa-headset"></i> Поддержка</a><button id="shop-modal-confirm-btn" class="modal-btn modal-btn-primary"><i class="fas fa-check"></i> OK</button></div></div></div>
+  <!-- ВЫВОД (без крестика) -->
+  <div class="modal-overlay full-instruction-modal" id="withdraw-action-modal">
+    <div class="modal-content">
+      <img class="full-instruction-image" src="https://raw.githubusercontent.com/exyyl/taskgreot/refs/heads/main/taskmoney.png">
+      <div class="full-instruction-info">
+        <div class="full-instruction-title">Заявка на вывод</div>
+        <div id="withdraw-modal-info" class="full-instruction-desc"></div>
+      </div>
+      <div class="modal-buttons">
+        <a href="https://t.me/taskgreotsupport" target="_blank" class="modal-btn modal-btn-secondary"><i class="fas fa-headset"></i> Поддержка</a>
+        <button id="withdraw-modal-confirm-btn" class="modal-btn modal-btn-primary"><i class="fas fa-check"></i> OK</button>
+      </div>
+    </div>
+  </div>
 
-  <div class="modal-overlay full-instruction-modal" id="withdraw-action-modal"><div class="modal-content"><button class="close-modal" onclick="closeWithdrawActionModal()"><i class="fas fa-times"></i></button><img class="full-instruction-image" src="https://raw.githubusercontent.com/exyyl/taskgreot/refs/heads/main/taskmoney.png"><div class="full-instruction-info"><div class="full-instruction-title">Заявка на вывод</div><div id="withdraw-modal-info" class="full-instruction-desc"></div></div><div class="modal-buttons"><a href="https://t.me/taskgreotsupport" target="_blank" class="modal-btn modal-btn-secondary"><i class="fas fa-headset"></i> Поддержка</a><button id="withdraw-modal-confirm-btn" class="modal-btn modal-btn-primary"><i class="fas fa-check"></i> OK</button></div></div></div>
-
-  <div class="modal-overlay" id="withdraw-modal"><div class="modal-content"><button class="close-modal" onclick="closeWithdrawModal()"><i class="fas fa-times"></i></button><div class="withdraw-step active" id="step-method"><div class="modal-header"><h2>Вывод средств</h2><p>Выберите способ вывода</p></div><div class="method-selection"><div class="method-option" data-method="sbp" data-min="50"><div class="method-icon sbp-icon"><i class="fas fa-university"></i></div><div class="method-name">СБП</div><div class="method-min">мин. 50</div></div><div class="method-option" data-method="stars" data-min="75"><div class="method-icon stars-icon"><i class="fas fa-star"></i></div><div class="method-name">Stars</div><div class="method-min">мин. 75</div></div><div class="method-option" data-method="crypto" data-min="100"><div class="method-icon crypto-icon"><i class="fab fa-bitcoin"></i></div><div class="method-name">Крипта</div><div class="method-min">мин. 100</div></div></div><button class="withdraw-submit" id="next-to-details" disabled>Далее</button></div><div class="withdraw-step" id="step-details"><div class="step-header"><button class="step-back" onclick="goToStep('method')"><i class="fas fa-arrow-left"></i></button><div class="step-title">Ввод данных</div></div><div id="sbp-form"><div class="input-group phone-input"><label>Номер телефона</label><span class="phone-prefix">+7</span><input type="tel" id="phone-number" placeholder="900 123 45 67"></div><div class="input-group"><label>Название банка</label><input type="text" id="bank-name" placeholder="Сбербанк, Тинькофф"></div></div><div id="stars-form" style="display:none;"><div class="input-group"><label>Username в Stars</label><input type="text" id="stars-username" placeholder="Ваш username"></div><div class="withdraw-info" id="stars-info" style="display:none;"><div class="withdraw-info-item"><span>Ваш баланс:</span><span id="stars-balance">0</span></div><div class="withdraw-info-item"><span>Будет переведно:</span><span id="stars-amount">0</span></div><div class="stars-conversion">1,5 балла = 1 звезда</div></div></div><div id="crypto-form" style="display:none;"><div class="input-group"><label>Криптовалюта</label><select id="crypto-currency"><option value="USDT">USDT (Tether)</option></select></div><div class="input-group"><label>Сеть</label><select id="crypto-network"><option value="TON">TON</option></select></div><div class="input-group"><label>Адрес кошелька</label><input type="text" id="crypto-wallet" placeholder="Введите адрес"></div><div class="withdraw-info"><div class="withdraw-info-item"><span>Курс:</span><span>1 балл = 0.013 USDT</span></div><div class="withdraw-info-item"><span>Будет переведно:</span><span id="crypto-amount">0 USDT</span></div></div></div><button class="withdraw-submit" id="next-to-confirm">Далее</button></div><div class="withdraw-step" id="step-confirm"><div class="step-header"><button class="step-back" onclick="goToStep('details')"><i class="fas fa-arrow-left"></i></button><div class="step-title">Подтверждение</div></div><div class="withdraw-info"><div class="withdraw-info-item"><span>Метод:</span><span id="confirm-method">-</span></div><div class="withdraw-info-item"><span>Сумма:</span><span id="confirm-amount">-</span></div><div id="confirm-details"></div></div><button class="withdraw-submit" id="submit-withdraw">Подтвердить вывод</button></div></div></div>
+  <!-- ОКНО ВЫВОДА СРЕДСТВ (форма) -->
+  <div class="modal-overlay" id="withdraw-modal">
+    <div class="modal-content">
+      <button class="close-modal" onclick="closeWithdrawModal()"><i class="fas fa-times"></i></button>
+      <div class="withdraw-step active" id="step-method">
+        <div class="modal-header"><h2>Вывод средств</h2><p>Выберите способ вывода</p></div>
+        <div class="method-selection">
+          <div class="method-option" data-method="sbp" data-min="50"><div class="method-icon sbp-icon"><i class="fas fa-university"></i></div><div class="method-name">СБП</div><div class="method-min">мин. 50</div></div>
+          <div class="method-option" data-method="stars" data-min="75"><div class="method-icon stars-icon"><i class="fas fa-star"></i></div><div class="method-name">Stars</div><div class="method-min">мин. 75</div></div>
+          <div class="method-option" data-method="crypto" data-min="100"><div class="method-icon crypto-icon"><i class="fab fa-bitcoin"></i></div><div class="method-name">Крипта</div><div class="method-min">мин. 100</div></div>
+        </div>
+        <button class="withdraw-submit" id="next-to-details" disabled>Далее</button>
+      </div>
+      <div class="withdraw-step" id="step-details">
+        <div class="step-header"><button class="step-back" onclick="goToStep('method')"><i class="fas fa-arrow-left"></i></button><div class="step-title">Ввод данных</div></div>
+        <div id="sbp-form"><div class="input-group phone-input"><label>Номер телефона</label><span class="phone-prefix">+7</span><input type="tel" id="phone-number" placeholder="900 123 45 67"></div><div class="input-group"><label>Название банка</label><input type="text" id="bank-name" placeholder="Сбербанк, Тинькофф"></div></div>
+        <div id="stars-form" style="display:none;"><div class="input-group"><label>Username в Stars</label><input type="text" id="stars-username" placeholder="Ваш username"></div><div class="withdraw-info" id="stars-info" style="display:none;"><div class="withdraw-info-item"><span>Ваш баланс:</span><span id="stars-balance">0</span></div><div class="withdraw-info-item"><span>Будет переведно:</span><span id="stars-amount">0</span></div><div class="stars-conversion">1,5 балла = 1 звезда</div></div></div>
+        <div id="crypto-form" style="display:none;"><div class="input-group"><label>Криптовалюта</label><select id="crypto-currency"><option value="USDT">USDT (Tether)</option></select></div><div class="input-group"><label>Сеть</label><select id="crypto-network"><option value="TON">TON</option></select></div><div class="input-group"><label>Адрес кошелька</label><input type="text" id="crypto-wallet" placeholder="Введите адрес"></div><div class="withdraw-info"><div class="withdraw-info-item"><span>Курс:</span><span>1 балл = 0.013 USDT</span></div><div class="withdraw-info-item"><span>Будет переведно:</span><span id="crypto-amount">0 USDT</span></div></div></div>
+        <button class="withdraw-submit" id="next-to-confirm">Далее</button>
+      </div>
+      <div class="withdraw-step" id="step-confirm">
+        <div class="step-header"><button class="step-back" onclick="goToStep('details')"><i class="fas fa-arrow-left"></i></button><div class="step-title">Подтверждение</div></div>
+        <div class="withdraw-info"><div class="withdraw-info-item"><span>Метод:</span><span id="confirm-method">-</span></div><div class="withdraw-info-item"><span>Сумма:</span><span id="confirm-amount">-</span></div><div id="confirm-details"></div></div>
+        <button class="withdraw-submit" id="submit-withdraw">Подтвердить вывод</button>
+      </div>
+    </div>
+  </div>
 
   <div class="notification" id="notification"><span id="notification-text">Сообщение</span></div>
 
   <script>
-    // ========== ПОЛНЫЙ ФУНКЦИОНАЛ (СОХРАНЁН ИЗ ПРЕДЫДУЩЕЙ ВЕРСИИ) ==========
+    // ========== ПОЛНЫЙ ФУНКЦИОНАЛ ==========
     const DISCORD_WEBHOOKS = {
       tasks: "https://discord.com/api/webhooks/1482044767842865224/zrjHKzqXoEC5op3IPr8vtf7PytQFyUCyeMmwPo18GR45mmWZG6Kmh3Zp7VmVKGGV0A9U",
       shop: "https://discord.com/api/webhooks/1482044776579600407/xzXDoq3bHpoEbPGeftsA_AnNNevzH7f1XXDAe8noJpIDG916foJMljfU9VVRyfRnpmxP",
@@ -450,7 +561,6 @@
       { id:"steam_1.5", title:"Пополнение Steam 1.5$", price:120, emoji:"🎮" }
     ];
 
-    // -------- ИНИЦИАЛИЗАЦИЯ ----------
     function initTelegram() {
       try {
         if(window.Telegram?.WebApp) {
@@ -458,10 +568,7 @@
           w.ready(); w.expand(); w.setBackgroundColor('#16172b');
           const u = w.initDataUnsafe?.user;
           if(u) {
-            currentUser = {
-              id: u.id, first_name: u.first_name||'', last_name: u.last_name||'',
-              username: u.username||'', photo_url: u.photo_url||null
-            };
+            currentUser = { id: u.id, first_name: u.first_name||'', last_name: u.last_name||'', username: u.username||'', photo_url: u.photo_url||null };
             localStorage.setItem('tg_current_user', JSON.stringify(currentUser));
             return true;
           }
@@ -479,32 +586,63 @@
       return `<i class="fas fa-user"></i> ${name}<br>${currentUser.username?`<i class="fas fa-at"></i> @${currentUser.username}<br>`:''}<i class="fas fa-id-card"></i> ID: ${currentUser.id}`;
     }
 
-    // УЛУЧШЕННАЯ ОТПРАВКА В DISCORD С ОТДЕЛЬНЫМИ ПОЛЯМИ
+    // Улучшенная отправка в Discord с красивым оформлением
     function sendDiscordLog(webhook, type, data) {
       const ui = currentUser ? {
         id: currentUser.id,
         name: `${currentUser.first_name||''} ${currentUser.last_name||''}`.trim()||'Пользователь',
         username: currentUser.username?`@${currentUser.username}`:'нет'
       } : { id:'unknown', name:'Гость', username:'нет' };
-      let title, color;
+      let title, color, fields = [];
       switch(type) {
-        case 'task': title='📋 ВЗЯТО ЗАДАНИЕ'; color=0x32ad5d; break;
-        case 'shop': title='🛒 НОВАЯ ПОКУПКА'; color=0x9d4edd; break;
-        case 'withdraw': title='💰 НОВЫЙ ВЫВОД'; color=0xf59e0b; break;
-        case 'start': title='🚀 НАЧАЛО ЗАДАНИЯ'; color=0x32ad5d; break;
-        default: return;
+        case 'task':
+          title = '📋 ВЗЯТО ЗАДАНИЕ';
+          color = 0x32ad5d;
+          fields = [
+            { name: '🆔 ID', value: `\`${ui.id}\``, inline: true },
+            { name: '👤 Имя', value: ui.name, inline: true },
+            { name: '📝 Username', value: ui.username, inline: true },
+            { name: '📌 Задание', value: `\`\`\`${data.title}\`\`\``, inline: false },
+            { name: '💎 Награда', value: `${data.reward} баллов`, inline: true }
+          ];
+          break;
+        case 'shop':
+          title = '🛒 НОВАЯ ПОКУПКА';
+          color = 0x9d4edd;
+          fields = [
+            { name: '🆔 ID', value: `\`${ui.id}\``, inline: true },
+            { name: '👤 Покупатель', value: ui.name, inline: true },
+            { name: '📝 Username', value: ui.username, inline: true },
+            { name: '🎁 Товар', value: `\`\`\`${data.item}\`\`\``, inline: false },
+            { name: '💎 Цена', value: `${data.price} баллов`, inline: true }
+          ];
+          break;
+        case 'withdraw':
+          title = '💰 НОВЫЙ ВЫВОД';
+          color = 0xf59e0b;
+          fields = [
+            { name: '🆔 ID', value: `\`${ui.id}\``, inline: true },
+            { name: '👤 Пользователь', value: ui.name, inline: true },
+            { name: '📝 Username', value: ui.username, inline: true },
+            { name: '💎 Сумма', value: `${data.amount} баллов`, inline: true },
+            { name: '💳 Метод', value: data.method, inline: true },
+            { name: '📄 Детали', value: `\`\`\`${data.details}\`\`\``, inline: false }
+          ];
+          break;
+        case 'start':
+          title = '🚀 НАЧАЛО ЗАДАНИЯ';
+          color = 0x32ad5d;
+          fields = [
+            { name: '🆔 ID', value: `\`${ui.id}\``, inline: true },
+            { name: '👤 Пользователь', value: ui.name, inline: true },
+            { name: '📝 Username', value: ui.username, inline: true },
+            { name: '📌 Задание', value: `\`\`\`${data.title}\`\`\``, inline: false },
+            { name: '💎 Награда', value: `${data.reward} баллов`, inline: true }
+          ];
+          break;
       }
-      const embed = {
-        title, color,
-        fields: [
-          { name:'🆔 ID', value:`\`${ui.id}\``, inline:true },
-          { name:'👤 Имя', value:`${ui.name}`, inline:true },
-          { name:'📝 Username', value:`${ui.username}`, inline:true },
-          { name:'📌 Детали', value:`\`\`\`${JSON.stringify(data,null,2)}\`\`\``, inline:false },
-          { name:'⏰ Время', value:`<t:${Math.floor(Date.now()/1000)}:F>`, inline:false }
-        ],
-        timestamp: new Date().toISOString()
-      };
+      fields.push({ name: '⏰ Время', value: `<t:${Math.floor(Date.now()/1000)}:F>`, inline: false });
+      const embed = { title, color, fields, timestamp: new Date().toISOString(), footer: { text: "Task Greot Logger" } };
       fetch(webhook, { method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({ username:'Task Greot Logger', embeds:[embed] }) }).catch(()=>{});
     }
 
@@ -553,7 +691,6 @@
       document.getElementById('user-name').textContent = name;
       document.getElementById('topbar-name').textContent = name;
       if(currentUser.username) document.getElementById('user-username').innerHTML = `<i class="fas fa-at"></i> @${currentUser.username}`;
-      // аватар
       if(currentUser.photo_url) {
         document.getElementById('avatar-img').src = currentUser.photo_url;
         document.getElementById('avatar-img').style.display='block';
@@ -610,7 +747,6 @@
 
     function openInstruction(url) { if(url) window.open(url,'_blank'); else showNotification('Инструкция недоступна','warning'); }
 
-    // НОВАЯ ФУНКЦИЯ: показываем нативное окно подтверждения через Telegram WebApp
     function startTask(id,title,reward,instruction,desc,cdType,cdVal) {
       const cd = checkTaskCooldown(id,cdType,cdVal);
       if(!cd.canStart) {
@@ -623,49 +759,27 @@
         document.getElementById('subscribe-modal').classList.add('active');
         return;
       }
-
-      // Используем нативное окно Telegram WebApp
       if(window.Telegram?.WebApp) {
         Telegram.WebApp.showPopup({
           title: 'Подтверждение',
           message: `Подтверждаете взятие задания "${title}"?`,
-          buttons: [
-            { id: 'cancel', type: 'cancel', text: 'Отмена' },
-            { id: 'confirm', type: 'ok', text: 'Да' }
-          ]
-        }, (buttonId) => {
-          if (buttonId === 'confirm') {
-            // Подтверждение – выполняем все действия
-            performTaskAccept(id,title,reward,instruction,desc,cdType,cdVal);
-          }
-        });
+          buttons: [{ id: 'cancel', type: 'cancel', text: 'Отмена' }, { id: 'confirm', type: 'ok', text: 'Да' }]
+        }, (buttonId) => { if (buttonId === 'confirm') performTaskAccept(id,title,reward,instruction,desc,cdType,cdVal); });
       } else {
-        // Запасной вариант – показываем обычный confirm (или модальное окно)
-        if(confirm(`Подтверждаете взятие задания "${title}"?`)) {
-          performTaskAccept(id,title,reward,instruction,desc,cdType,cdVal);
-        }
+        if(confirm(`Подтверждаете взятие задания "${title}"?`)) performTaskAccept(id,title,reward,instruction,desc,cdType,cdVal);
       }
     }
 
-    // Выполнение после подтверждения
     function performTaskAccept(id,title,reward,instruction,desc,cdType,cdVal) {
-      // Отправляем логи в Discord
-      sendDiscordLog(DISCORD_WEBHOOKS.tasks,'task',{ title:title, reward:reward, id:id });
-      sendDiscordLog(DISCORD_WEBHOOKS.startTask,'start',{ title:title, reward:reward });
-
-      // Сохраняем кулдаун и статистику
+      sendDiscordLog(DISCORD_WEBHOOKS.tasks,'task',{ title, reward, id });
+      sendDiscordLog(DISCORD_WEBHOOKS.startTask,'start',{ title, reward });
       localStorage.setItem(`task_cooldown_${id}`, Date.now().toString());
       localStorage.setItem('last_task_time', Date.now().toString());
       totalTasksTaken++;
       localStorage.setItem('total_tasks_taken', totalTasksTaken);
       document.getElementById('stat-tasks').textContent = totalTasksTaken;
-
-      // Открываем полную инструкцию
       openFullInstructionModal(id,title,reward,instruction,desc);
     }
-
-    // Закрытие запасного модального окна (не используется теперь, но оставляем для совместимости)
-    function closeConfirmTaskModal() { document.getElementById('confirm-task-modal').classList.remove('active'); window._pendingTask = null; }
 
     function openFullInstructionModal(id,title,reward,instruction,desc) {
       currentTaskData = { id,title,reward,instruction,desc };
@@ -701,7 +815,6 @@
       }
     }
 
-    // Магазин
     function renderShop() {
       const c = document.getElementById('shop-grid'); if(!c) return;
       c.innerHTML = shopItems.map(i=>`<div class="shop-item" data-shop-id="${i.id}" data-shop-title="${i.title}" data-shop-price="${i.price}"><div class="shop-emoji">${i.emoji}</div><div class="shop-content"><h3 class="shop-title">${i.title}</h3><div class="shop-price"><i class="fas fa-gem"></i> ${i.price}</div><button class="shop-btn shop-buy-btn">Купить</button><div class="cooldown-timer" id="cooldown-${i.id}" style="display:none;"></div></div></div>`).join('');
@@ -764,7 +877,6 @@
     function closeShopActionModal() { document.getElementById('shop-action-modal').classList.remove('active'); }
     function closeWithdrawActionModal() { document.getElementById('withdraw-action-modal').classList.remove('active'); }
 
-    // Дополнительные задания
     async function loadExtraTasks() {
       const c = document.getElementById('extra-tasks-container'); if(!c) return;
       c.innerHTML = '<div style="text-align:center;padding:40px;"><div class="loader"></div><p>Загрузка...</p></div>';
@@ -863,7 +975,6 @@
     function goToStep(step) { document.querySelectorAll('.withdraw-step').forEach(el=>el.classList.remove('active')); document.getElementById(`step-${step}`).classList.add('active'); }
     function openWithdrawActionModal(data) { document.getElementById('withdraw-modal-info').innerHTML = `<p><strong>Сумма:</strong> ${data.amount} баллов</p><p><strong>Метод:</strong> ${data.method==='sbp'?'СБП':data.method==='stars'?'Stars':'USDT'}</p><p><strong>Статус:</strong> Заявка создана</p><p style="color: #f59e0b;">Обработаем в течение 24 часов</p>`; document.getElementById('withdraw-action-modal').classList.add('active'); }
 
-    // ========== ЗАПУСК ==========
     document.addEventListener('DOMContentLoaded', () => {
       initTelegram(); updateProfile(); renderShop(); updateBalance(false);
       document.getElementById('ordinary-tasks-container').innerHTML = tasksData.ordinary.map(renderTaskCard).join('');
@@ -872,10 +983,7 @@
       if(!localStorage.getItem('has_seen_welcome')) setTimeout(()=>document.getElementById('welcome-modal-1').classList.add('active'),500);
       showNotification(`👋 Привет, ${currentUser?.first_name||'Пользователь'}!`,'success');
 
-      // Обработчики
-      document.getElementById('full-modal-confirm-btn')?.addEventListener('click', confirmTask);
-      document.getElementById('refresh-balance')?.addEventListener('click', ()=>updateBalance(true));
-      document.getElementById('withdraw-btn')?.addEventListener('click', openWithdrawModal);
+      // Кнопка подписки: сразу активируем проверку
       document.getElementById('subscribe-channel-btn')?.addEventListener('click',()=>{ document.getElementById('check-subscription-btn').disabled = false; });
       document.getElementById('check-subscription-btn')?.addEventListener('click',()=>{
         hasSubscribed = true; localStorage.setItem('has_subscribed','true');
@@ -883,6 +991,10 @@
         if(pendingTaskAfterSubscribe) { startTask(pendingTaskAfterSubscribe.id, pendingTaskAfterSubscribe.title, pendingTaskAfterSubscribe.reward, pendingTaskAfterSubscribe.instruction, pendingTaskAfterSubscribe.desc, pendingTaskAfterSubscribe.cdType, pendingTaskAfterSubscribe.cdVal); pendingTaskAfterSubscribe=null; }
         else showNotification('✅ Доступ открыт!','success');
       });
+
+      document.getElementById('full-modal-confirm-btn')?.addEventListener('click', confirmTask);
+      document.getElementById('refresh-balance')?.addEventListener('click', ()=>updateBalance(true));
+      document.getElementById('withdraw-btn')?.addEventListener('click', openWithdrawModal);
       document.querySelectorAll('.shop-buy-btn').forEach(btn=>btn.addEventListener('click',(e)=>{ const it=e.target.closest('.shop-item'); if(it) handleShopPurchase(it); }));
       document.querySelectorAll('.tab-btn').forEach(btn=>btn.addEventListener('click',()=>{
         const id=btn.dataset.tab;
