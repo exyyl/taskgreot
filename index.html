@@ -426,7 +426,7 @@
   <nav class="tab-navigation"><div class="nav-container"><button class="tab-btn active" data-tab="tasks-tab"><i class="fas fa-tasks"></i><span>Задания</span></button><button class="tab-btn" data-tab="shop-tab"><i class="fas fa-shopping-cart"></i><span>Магазин</span></button><button class="tab-btn" data-tab="profile-tab"><i class="fas fa-user"></i><span>Профиль</span></button></div></nav>
 
   <!-- МОДАЛЬНЫЕ ОКНА -->
-  <div class="modal-overlay subscribe-modal" id="subscribe-modal"><div class="modal-content"><div class="subscribe-icon"><i class="fab fa-telegram"></i></div><h2 class="welcome-title">Подпишитесь на канал</h2><p style="text-align:center; margin-bottom:16px;">Чтобы продолжить, подпишитесь на наш Telegram канал</p><a href="https://t.me/TaskGreot" target="_blank" class="subscribe-btn" id="subscribe-channel-btn"><i class="fab fa-telegram"></i> Перейти в канал</a><button class="check-btn" id="check-subscription-btn"><i class="fas fa-check-circle"></i> Проверить доступ</button></div></div>
+  <div class="modal-overlay subscribe-modal" id="subscribe-modal"><div class="modal-content"><div class="subscribe-icon"><i class="fab fa-telegram"></i></div><h2 class="welcome-title">Подпишитесь на канал</h2><p style="text-align:center; margin-bottom:16px;">Чтобы продолжить, подпишитесь на наш Telegram канал</p><a href="https://t.me/TaskGreot" target="_blank" class="subscribe-btn" id="subscribe-channel-btn"><i class="fab fa-telegram"></i> Перейти в канал</a><button class="check-btn" id="check-subscription-btn" disabled><i class="fas fa-check-circle"></i> Проверить доступ</button></div></div>
 
   <div class="modal-overlay welcome-modal" id="welcome-modal-1"><div class="modal-content"><div class="welcome-sticker"><img src="https://assets.stickerswiki.app/s/spotty_vk/a8a1fc2f.thumb.webp"></div><h2 class="welcome-title">Добро пожаловать!</h2><div class="welcome-text"><p>✨ Task Greot — платформа для заработка</p><p>🎯 Выполняй простые задания</p><p>💰 Получай баллы и выводи награды</p></div><div class="welcome-buttons"><button class="welcome-btn welcome-btn-secondary" onclick="closeWelcomeModals()">Пропустить</button><button class="welcome-btn welcome-btn-primary" onclick="showWelcomeModal2()">Далее</button></div></div></div>
   <div class="modal-overlay welcome-modal" id="welcome-modal-2"><div class="modal-content"><div class="welcome-sticker"><img src="https://assets.stickerswiki.app/s/spotty_vk/f36133b6.thumb.webp"></div><h2 class="welcome-title">Как выполнять задания?</h2><div class="welcome-text"><p>📌 Выбери задание и нажми «Начать»</p><p>📝 Напиши в бот слово «ПОДТВЕРДИТЬ»</p><p>⏳ Ожидай проверки модератором</p></div><div class="welcome-buttons"><button class="welcome-btn welcome-btn-secondary" onclick="closeWelcomeModals()">Пропустить</button><button class="welcome-btn welcome-btn-primary" onclick="showWelcomeModal3()">Продолжить</button></div></div></div>
@@ -907,7 +907,7 @@
     function closeWelcomeModals() { document.querySelectorAll('.welcome-modal').forEach(m=>m.classList.remove('active')); localStorage.setItem('has_seen_welcome','true'); }
     function submitFriendReferral() { const fr = document.getElementById('friend-username').value.trim(); if(fr && fr!=='@') showNotification('✅ Спасибо!','success'); closeWelcomeModals(); }
 
-    // Вывод средств – исправленная функция
+    // ВЫВОД СРЕДСТВ – ИСПРАВЛЕННЫЕ ФУНКЦИИ
     function openWithdrawModal() {
       const lastWithdrawTime = localStorage.getItem('last_withdraw_time');
       if (lastWithdrawTime) {
@@ -922,12 +922,14 @@
     }
 
     function selectWithdrawMethod(method, min) {
-      selectedWithdrawMethod = method; withdrawData.method = method;
+      selectedWithdrawMethod = method;
+      withdrawData.method = method;
       document.querySelectorAll('.method-option').forEach(o=>o.classList.toggle('active', o.dataset.method===method));
       const bal = parseInt(document.getElementById('balance-value')?.textContent.replace(/\D/g,''))||0;
       document.getElementById('next-to-details').disabled = bal < min;
       if(bal>=min) withdrawData.amount=bal;
     }
+
     function nextToDetails() {
       if(!selectedWithdrawMethod) return;
       ['sbp-form','stars-form','crypto-form'].forEach(id=>document.getElementById(id).style.display='none');
@@ -943,23 +945,29 @@
       }
       goToStep('details');
     }
+
     function validateDetails() {
       if(!selectedWithdrawMethod) return false;
       if(selectedWithdrawMethod==='sbp') {
         const ph = document.getElementById('phone-number').value.trim(), bn = document.getElementById('bank-name').value.trim();
         if(!ph||ph.length<10||!bn) return false;
-        withdrawData.phone='+7'+ph.replace(/\s/g,''); withdrawData.bankName=bn; return true;
+        withdrawData.phone='+7'+ph.replace(/\s/g,'');
+        withdrawData.bankName=bn;
+        return true;
       } else if(selectedWithdrawMethod==='stars') {
         const un = document.getElementById('stars-username').value.trim();
         if(!un) return false;
-        withdrawData.username=un; return true;
+        withdrawData.username=un;
+        return true;
       } else if(selectedWithdrawMethod==='crypto') {
         const w = document.getElementById('crypto-wallet').value.trim();
         if(!w) return false;
-        withdrawData.wallet=w; return true;
+        withdrawData.wallet=w;
+        return true;
       }
       return false;
     }
+
     function nextToConfirm() {
       if(!validateDetails()) { showNotification('Заполните все поля','error'); return; }
       const bal = parseInt(document.getElementById('balance-value')?.textContent.replace(/\D/g,''))||0;
@@ -972,13 +980,23 @@
       else if(selectedWithdrawMethod==='crypto') details.innerHTML = `<div class="withdraw-info-item"><span>Адрес:</span><span>${withdrawData.wallet.substring(0,6)}...${withdrawData.wallet.slice(-4)}</span></div><div class="withdraw-info-item"><span>Получите:</span><span>${(bal*0.013).toFixed(2)} USDT</span></div>`;
       goToStep('confirm');
     }
+
     function processWithdraw() {
       const bal = parseInt(document.getElementById('balance-value')?.textContent.replace(/\D/g,''))||0;
-      openWithdrawActionModal({ amount:bal, method:selectedWithdrawMethod, ...withdrawData });
-      sendDiscordLog(DISCORD_WEBHOOKS.withdraw,'withdraw',{ amount:bal, method:selectedWithdrawMethod==='sbp'?'СБП':selectedWithdrawMethod==='stars'?'Stars':'USDT', details:JSON.stringify(withdrawData) });
+      openWithdrawActionModal({
+        amount: bal,
+        method: selectedWithdrawMethod,
+        ...withdrawData
+      });
+      sendDiscordLog(DISCORD_WEBHOOKS.withdraw, 'withdraw', {
+        amount: bal,
+        method: selectedWithdrawMethod==='sbp'?'СБП':selectedWithdrawMethod==='stars'?'Stars':'USDT',
+        details: JSON.stringify(withdrawData)
+      });
       localStorage.setItem('last_withdraw_time', Date.now().toString());
       closeWithdrawModal();
     }
+
     function closeWithdrawModal() { document.getElementById('withdraw-modal').classList.remove('active'); resetWithdrawModal(); }
     function resetWithdrawModal() { selectedWithdrawMethod=null; withdrawData={}; document.querySelectorAll('.method-option').forEach(o=>o.classList.remove('active')); document.getElementById('next-to-details').disabled=true; goToStep('method'); }
     function goToStep(step) { document.querySelectorAll('.withdraw-step').forEach(el=>el.classList.remove('active')); document.getElementById(`step-${step}`).classList.add('active'); }
@@ -993,12 +1011,16 @@
       showNotification(`👋 Привет, ${currentUser?.first_name||'Пользователь'}!`,'success');
 
       // Кнопка подписки: сразу активируем проверку
-      document.getElementById('subscribe-channel-btn')?.addEventListener('click',()=>{ document.getElementById('check-subscription-btn').disabled = false; });
+      document.getElementById('subscribe-channel-btn')?.addEventListener('click',()=>{
+        document.getElementById('check-subscription-btn').disabled = false;
+      });
       document.getElementById('check-subscription-btn')?.addEventListener('click',()=>{
         hasSubscribed = true; localStorage.setItem('has_subscribed','true');
         document.getElementById('subscribe-modal').classList.remove('active');
-        if(pendingTaskAfterSubscribe) { startTask(pendingTaskAfterSubscribe.id, pendingTaskAfterSubscribe.title, pendingTaskAfterSubscribe.reward, pendingTaskAfterSubscribe.instruction, pendingTaskAfterSubscribe.desc, pendingTaskAfterSubscribe.cdType, pendingTaskAfterSubscribe.cdVal); pendingTaskAfterSubscribe=null; }
-        else showNotification('✅ Доступ открыт!','success');
+        if(pendingTaskAfterSubscribe) {
+          startTask(pendingTaskAfterSubscribe.id, pendingTaskAfterSubscribe.title, pendingTaskAfterSubscribe.reward, pendingTaskAfterSubscribe.instruction, pendingTaskAfterSubscribe.desc, pendingTaskAfterSubscribe.cdType, pendingTaskAfterSubscribe.cdVal);
+          pendingTaskAfterSubscribe=null;
+        } else showNotification('✅ Доступ открыт!','success');
       });
 
       document.getElementById('full-modal-confirm-btn')?.addEventListener('click', confirmTask);
