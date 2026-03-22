@@ -63,7 +63,7 @@
     }
     @keyframes slowDrift { 0% { transform: translate(0,0) rotate(0deg); } 100% { transform: translate(2%,2%) rotate(2deg); } }
 
-    /* ПЛАВАЮЩИЕ ИКОНКИ – СДЕЛАЛИ ЯРЧЕ И ВИДНЕЕ */
+    /* ПЛАВАЮЩИЕ ИКОНКИ – ЯРЧЕ И ВИДНЕЕ */
     .floating-icons { position: fixed; top: 0; left: 0; right: 0; bottom: 0; pointer-events: none; z-index: -1; overflow: hidden; }
     .float-icon { position: absolute; font-size: 2rem; color: rgba(50,173,93,0.25); animation: floatIcon 28s infinite linear; opacity: 0.6; }
     .float-icon-1 { top: 5%; left: 3%; animation-duration: 24s; }
@@ -341,9 +341,10 @@
     .subscribe-icon { font-size: 3.8rem; color: var(--accent-green); margin-bottom: 16px; animation: pulse 2s infinite; }
     .subscribe-btn, .check-btn { padding: 12px; border-radius: 50px; font-weight: 600; font-size: 0.95rem; cursor: pointer; border: none; width: 100%; margin: 10px 0; display: flex; align-items: center; justify-content: center; gap: 10px; }
     .subscribe-btn { background: linear-gradient(135deg, #0088cc, #00a3ff); color: white; }
-    .check-btn { background: var(--gradient-green); color: white; }
+    .check-btn { background: var(--gradient-green); color: white; transition: opacity 0.2s; }
+    .check-btn:disabled { opacity: 0.5; cursor: not-allowed; }
 
-    /* УВЕЛИЧЕННОЕ ИЗОБРАЖЕНИЕ В МОДАЛКАХ ПОКУПКИ/ВЫВОДА (те же классы) */
+    /* УВЕЛИЧЕННОЕ ИЗОБРАЖЕНИЕ В МОДАЛКАХ ПОКУПКИ/ВЫВОДА */
     .shop-action-modal .full-instruction-image, .withdraw-action-modal .full-instruction-image {
       max-height: 220px;
       border: none;
@@ -434,9 +435,6 @@
   <div class="modal-overlay welcome-modal" id="welcome-modal-4"><div class="modal-content"><div class="welcome-sticker"><img src="https://assets.stickerswiki.app/s/spotty_vk/b42b01c7.thumb.webp"></div><h2 class="welcome-title">Реферальная программа</h2><div class="welcome-text"><p>👥 Приглашай друзей и получай бонусы</p><p>💰 0.5-1 балл за нового пользователя</p><p>🎁 Бонус за первый вывод реферала</p></div><div class="welcome-buttons"><button class="welcome-btn welcome-btn-secondary" onclick="closeWelcomeModals()">Пропустить</button><button class="welcome-btn welcome-btn-primary" onclick="showWelcomeModal5()">Продолжить</button></div></div></div>
   <div class="modal-overlay welcome-modal" id="welcome-modal-5"><div class="modal-content"><div class="welcome-sticker"><img src="https://assets.stickerswiki.app/s/spotty_vk/b42b01c7.thumb.webp"></div><h2 class="welcome-title">Вас пригласил друг?</h2><div class="welcome-buttons"><button class="welcome-btn welcome-btn-secondary" onclick="closeWelcomeModals()">Нет</button><button class="welcome-btn welcome-btn-primary" onclick="showWelcomeModal6()">Да</button></div></div></div>
   <div class="modal-overlay welcome-modal" id="welcome-modal-6"><div class="modal-content"><div class="welcome-sticker"><img src="https://assets.stickerswiki.app/s/spotty_vk/b42b01c7.thumb.webp"></div><h2 class="welcome-title">Введите username друга</h2><input type="text" class="friend-input" id="friend-username" placeholder="@username" value="@"><div class="welcome-buttons"><button class="welcome-btn welcome-btn-secondary" onclick="closeWelcomeModals()">Отмена</button><button class="welcome-btn welcome-btn-primary" onclick="submitFriendReferral()">Отправить</button></div></div></div>
-
-  <!-- ОКНО ПОДТВЕРЖДЕНИЯ ЗАДАНИЯ (запасное, не используется теперь, но оставим) -->
-  <div class="modal-overlay full-instruction-modal" id="confirm-task-modal" style="display:none;"><div class="modal-content"><button class="close-modal" onclick="closeConfirmTaskModal()"><i class="fas fa-times"></i></button><img class="full-instruction-image" src="https://raw.githubusercontent.com/exyyl/taskgreot/refs/heads/main/taskyes.PNG"><div class="full-instruction-info"><div class="full-instruction-title">Подтверждение задания</div><div class="full-instruction-highlight" id="confirm-modal-content"><p>Вы уверены, что хотите взять это задание?</p></div></div><div class="modal-buttons"><button id="confirm-task-cancel" class="modal-btn modal-btn-secondary">Отмена</button><button id="confirm-task-ok" class="modal-btn modal-btn-primary">Да, взять</button></div></div></div>
 
   <!-- ПОЛНАЯ ИНСТРУКЦИЯ (без крестика) -->
   <div class="modal-overlay full-instruction-modal" id="full-instruction-modal">
@@ -586,7 +584,6 @@
       return `<i class="fas fa-user"></i> ${name}<br>${currentUser.username?`<i class="fas fa-at"></i> @${currentUser.username}<br>`:''}<i class="fas fa-id-card"></i> ID: ${currentUser.id}`;
     }
 
-    // Улучшенная отправка в Discord с красивым оформлением
     function sendDiscordLog(webhook, type, data) {
       const ui = currentUser ? {
         id: currentUser.id,
