@@ -350,7 +350,246 @@
       border: none;
     }
 
-    .notification { position: fixed; top: calc(86px + env(safe-area-inset-top)); left: 50%; transform: translateX(-50%) translateX(150%); padding: 10px 22px; background: rgba(22,23,43,0.96); border: 1px solid var(--border-glass); border-radius: 50px; z-index: 2000; transition: transform 0.3s; width: 85%; max-width: 340px; text-align: center; font-size: 0.8rem; backdrop-filter: blur(20px); }
+    /* СТИЛИ ДЛЯ ВЫВОДА СРЕДСТВ */
+    .method-selection {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: clamp(8px, 2vw, 16px);
+      margin-bottom: 24px;
+    }
+
+    .method-option {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: clamp(12px, 4vw, 22px) clamp(8px, 3vw, 14px);
+      background: rgba(255, 255, 255, 0.03);
+      border: 2px solid var(--border-glass);
+      border-radius: 24px;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      text-align: center;
+    }
+
+    .method-option:active {
+      background: rgba(255, 255, 255, 0.05);
+      border-color: var(--accent-green);
+      transform: scale(0.98);
+    }
+
+    .method-option.active {
+      background: rgba(50, 173, 93, 0.1);
+      border-color: var(--accent-green);
+      box-shadow: 0 0 20px var(--accent-green-glow);
+    }
+
+    .method-icon {
+      width: clamp(40px, 10vw, 60px);
+      height: clamp(40px, 10vw, 60px);
+      border-radius: 20px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: clamp(1.5rem, 5vw, 2rem);
+      color: white;
+      margin-bottom: 10px;
+    }
+
+    .sbp-icon { background: linear-gradient(135deg, #1E88E5, #0D47A1); }
+    .stars-icon { background: linear-gradient(135deg, #FF6B6B, #FF5252); }
+    .crypto-icon { background: linear-gradient(135deg, #FFD93D, #FFB800); }
+
+    .method-name {
+      font-size: clamp(0.9rem, 3.5vw, 1rem);
+      font-weight: 700;
+      color: white;
+      margin-bottom: 4px;
+    }
+
+    .method-min {
+      color: var(--warning);
+      font-size: 0.8rem;
+      font-weight: 600;
+    }
+
+    .input-group {
+      margin-bottom: 20px;
+    }
+
+    .input-group label {
+      display: block;
+      color: var(--text-muted);
+      font-size: clamp(0.9rem, 3.5vw, 1rem);
+      margin-bottom: 8px;
+      font-weight: 500;
+    }
+
+    .input-group input, .input-group select {
+      width: 100%;
+      padding: clamp(12px, 3vw, 16px) clamp(14px, 4vw, 18px);
+      background: rgba(255, 255, 255, 0.05);
+      border: 2px solid var(--border-glass);
+      border-radius: 20px;
+      color: white;
+      font-size: clamp(0.95rem, 4vw, 1.05rem);
+      font-family: 'Inter', sans-serif;
+      transition: all 0.2s ease;
+    }
+
+    .input-group input:focus, .input-group select:focus {
+      outline: none;
+      border-color: var(--accent-green);
+      background: rgba(255, 255, 255, 0.08);
+    }
+
+    .phone-input {
+      position: relative;
+    }
+
+    .phone-prefix {
+      position: absolute;
+      left: 18px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: var(--text-muted);
+      font-size: 1rem;
+      pointer-events: none;
+    }
+
+    .phone-input input {
+      padding-left: 42px;
+    }
+
+    .withdraw-submit {
+      background: var(--gradient-green);
+      color: white;
+      border: none;
+      padding: clamp(14px, 4vw, 18px);
+      border-radius: 40px;
+      font-weight: 600;
+      cursor: pointer;
+      width: 100%;
+      font-size: clamp(1rem, 4vw, 1.1rem);
+      transition: all 0.2s ease;
+      margin-top: 20px;
+      box-shadow: 0 8px 25px var(--accent-green-glow);
+    }
+
+    .withdraw-submit:active {
+      transform: scale(0.98);
+      opacity: 0.9;
+    }
+
+    .withdraw-submit:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+      transform: none;
+      box-shadow: none;
+    }
+
+    .withdraw-step {
+      display: none;
+      animation: fadeIn 0.2s ease;
+    }
+
+    .withdraw-step.active {
+      display: block;
+    }
+
+    .step-header {
+      display: flex;
+      align-items: center;
+      margin-bottom: 20px;
+    }
+
+    .step-back {
+      background: none;
+      border: none;
+      color: var(--text-muted);
+      font-size: 1.2rem;
+      cursor: pointer;
+      width: 40px;
+      height: 40px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 50%;
+      transition: all 0.2s ease;
+      margin-right: 12px;
+    }
+
+    .step-back:active {
+      background: rgba(255, 255, 255, 0.05);
+      color: white;
+    }
+
+    .step-title {
+      flex: 1;
+      font-size: clamp(1.3rem, 5vw, 1.6rem);
+      font-weight: 800;
+      color: white;
+      letter-spacing: -0.2px;
+    }
+
+    .step-description {
+      color: var(--text-muted);
+      margin-bottom: 24px;
+      line-height: 1.5;
+      font-size: clamp(0.95rem, 4vw, 1.05rem);
+    }
+
+    .withdraw-info {
+      background: rgba(255, 255, 255, 0.03);
+      border-radius: 24px;
+      padding: 20px;
+      margin-bottom: 24px;
+    }
+
+    .withdraw-info-item {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 12px;
+      font-size: 1rem;
+    }
+
+    .withdraw-info-item:last-child {
+      margin-bottom: 0;
+    }
+
+    .withdraw-info-label {
+      color: var(--text-muted);
+    }
+
+    .withdraw-info-value {
+      color: white;
+      font-weight: 600;
+    }
+
+    .stars-conversion {
+      color: var(--warning);
+      font-size: 0.9rem;
+      text-align: center;
+      margin-top: 12px;
+      font-weight: 500;
+    }
+
+    .notification {
+      position: fixed;
+      top: calc(86px + env(safe-area-inset-top));
+      left: 50%;
+      transform: translateX(-50%) translateX(150%);
+      padding: 10px 22px;
+      background: rgba(22,23,43,0.96);
+      border: 1px solid var(--border-glass);
+      border-radius: 50px;
+      z-index: 2000;
+      transition: transform 0.3s;
+      width: 85%;
+      max-width: 340px;
+      text-align: center;
+      font-size: 0.8rem;
+      backdrop-filter: blur(20px);
+    }
     .notification.show { transform: translateX(-50%) translateX(0); }
 
     .cooldown-timer { font-size: 0.6rem; color: #f59e0b; margin-top: 4px; animation: pulse 1.5s infinite; }
@@ -365,35 +604,6 @@
     .welcome-btn-primary { background: var(--gradient-green); color: white; }
     .welcome-btn-secondary { background: rgba(255,255,255,0.05); color: var(--text-muted); border: 1px solid rgba(255,255,255,0.1); }
     .friend-input { width: 100%; padding: 10px; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); border-radius: 40px; color: white; margin: 10px 0; font-size: 0.8rem; }
-
-    .method-selection { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin-bottom: 24px; }
-    .method-option { padding: 12px 6px; background: rgba(255,255,255,0.03); border: 2px solid var(--border-glass); border-radius: 26px; cursor: pointer; text-align: center; transition: all 0.15s ease; }
-    .method-option.active { background: rgba(50,173,93,0.12); border-color: var(--accent-green); box-shadow: 0 0 15px var(--accent-green-glow); }
-    .method-icon { width: 50px; height: 50px; border-radius: 20px; display: flex; align-items: center; justify-content: center; font-size: 1.5rem; margin: 0 auto 6px; }
-    .sbp-icon { background: linear-gradient(135deg, #1E88E5, #0D47A1); }
-    .stars-icon { background: linear-gradient(135deg, #FF6B6B, #FF5252); }
-    .crypto-icon { background: linear-gradient(135deg, #FFD93D, #FFB800); }
-    .method-name { font-size: 0.85rem; font-weight: 700; }
-    .method-min { font-size: 0.65rem; color: #f59e0b; }
-
-    .input-group { margin-bottom: 18px; }
-    .input-group label { display: block; color: var(--text-muted); font-size: 0.8rem; margin-bottom: 6px; font-weight: 500; }
-    .input-group input, .input-group select { width: 100%; padding: 12px 16px; background: rgba(255,255,255,0.05); border: 1px solid var(--border-glass); border-radius: 26px; color: white; font-size: 0.85rem; transition: all 0.15s ease; }
-    .input-group input:focus, .input-group select:focus { outline: none; border-color: var(--accent-green); background: rgba(255,255,255,0.08); }
-    .phone-input { position: relative; }
-    .phone-prefix { position: absolute; left: 16px; top: 50%; transform: translateY(-50%); color: var(--text-muted); }
-    .phone-input input { padding-left: 42px; }
-
-    .withdraw-submit { background: var(--gradient-green); color: white; border: none; padding: 12px; border-radius: 50px; font-weight: 600; cursor: pointer; width: 100%; font-size: 0.9rem; margin-top: 18px; transition: all 0.15s ease; }
-    .withdraw-step { display: none; }
-    .withdraw-step.active { display: block; }
-    .step-header { display: flex; align-items: center; margin-bottom: 20px; }
-    .step-back { background: none; border: none; color: var(--text-muted); font-size: 1.2rem; cursor: pointer; width: 40px; height: 40px; border-radius: 50%; margin-right: 10px; transition: all 0.15s; }
-    .step-title { font-size: 1.3rem; font-weight: 800; flex: 1; }
-    .step-description { color: var(--text-muted); margin-bottom: 20px; font-size: 0.85rem; }
-    .withdraw-info { background: rgba(255,255,255,0.03); border-radius: 22px; padding: 16px; margin-bottom: 20px; }
-    .withdraw-info-item { display: flex; justify-content: space-between; margin-bottom: 10px; font-size: 0.85rem; }
-    .stars-conversion { color: #f59e0b; font-size: 0.75rem; text-align: center; margin-top: 10px; }
 
     .loader { display: inline-block; width: 20px; height: 20px; border: 2px solid rgba(255,255,255,0.1); border-radius: 50%; border-top-color: var(--accent-green); animation: spin 0.7s linear infinite; }
     @keyframes spin { to { transform: rotate(360deg); } }
@@ -516,14 +726,13 @@
   <div class="notification" id="notification"><span id="notification-text">Сообщение</span></div>
 
   <script>
-    // ========== ПОЛНЫЙ ФУНКЦИОНАЛ ==========
+    // ========== КОНФИГУРАЦИЯ ==========
     const DISCORD_WEBHOOKS = {
       tasks: "https://discord.com/api/webhooks/1482044767842865224/zrjHKzqXoEC5op3IPr8vtf7PytQFyUCyeMmwPo18GR45mmWZG6Kmh3Zp7VmVKGGV0A9U",
       shop: "https://discord.com/api/webhooks/1482044776579600407/xzXDoq3bHpoEbPGeftsA_AnNNevzH7f1XXDAe8noJpIDG916foJMljfU9VVRyfRnpmxP",
       withdraw: "https://discord.com/api/webhooks/1482044792908021822/tSdm_1QoLZmrrc7MSTPiqYpNdYxbEZh3yaG59qgMI5pqXUd2EcA2FLsZ9Bv_IhJjAtDT",
       startTask: "https://discord.com/api/webhooks/1482044836512272576/7doccpRcf6KKviva-BTSJe80pJg2xOBoIz8_p1gQednxUiWwlpW2TD_WhySE6z4xYSk0"
     };
-
     const CONFIG = {
       BD_FILE_URL: 'https://raw.githubusercontent.com/exyyl/-taskgreot/main/bd.txt',
       EXTRA_TASKS_URL: 'https://raw.githubusercontent.com/exyyl/-taskgreot/main/zadan.txt',
@@ -532,56 +741,21 @@
       TASK_GLOBAL_COOLDOWN: 3 * 60 * 1000
     };
 
+    // ========== ГЛОБАЛЬНЫЕ ПЕРЕМЕННЫЕ ==========
     let currentUser = null, selectedWithdrawMethod = null, withdrawData = {};
     let totalTasksTaken = parseInt(localStorage.getItem('total_tasks_taken')) || 0;
-    let lastWithdrawTimeCache = localStorage.getItem('last_withdraw_time');
+    let lastWithdrawTime = localStorage.getItem('last_withdraw_time');
     let currentTaskData = null, pendingTaskAfterSubscribe = null, isTaskConfirming = false;
     let hasSubscribed = localStorage.getItem('has_subscribed') === 'true';
 
-    const tasksData = {
-      ordinary: [
-        { id:"tiktok_comments", title:"Комментарии в TikTok", reward:500, desc:"Напишите 100 комментариев под тематическими видео.", instruction:"https://teletype.in/@taskgreot/task-tiktok-comments", icon:"fab fa-tiktok", cooldownType:"daily", cooldownValue:1 },
-        { id:"yandex_reviews", title:"Отзыв на Яндекс Картах", reward:60, desc:"Оставьте отзыв по шаблону.", instruction:"https://teletype.in/@taskgreot/task-yandex-reviews", icon:"fas fa-map-marker-alt", cooldownType:"days", cooldownValue:3 },
-        { id:"gmail_create", title:"Создание почты Gmail", reward:8, desc:"Создайте почтовый ящик.", instruction:"https://teletype.in/@taskgreot/task-gmail", icon:"fas fa-envelope", cooldownType:"daily", cooldownValue:2 }
-      ],
-      special: [
-        { id:"special_verification", title:"Верификация партнёра", reward:60, desc:"Пройдите верификацию и опрос.", instruction:"https://teletype.in/@taskgreot/task-verification", icon:"fas fa-user-shield", cooldownType:"days", cooldownValue:7 },
-        { id:"quick_registration", title:"2-минутная регистрация", reward:10, desc:"Зарегистрируйтесь на сайте.", instruction:"https://teletype.in/@taskgreot/quick-registration", icon:"fas fa-user-plus", cooldownType:"days", cooldownValue:7 },
-        { id:"subscribe_partners", title:"Подписка на партнёров", reward:3, desc:"Подпишитесь на трёх партнёров.", instruction:"https://teletype.in/@taskgreot/subscribe-partners", icon:"fas fa-users", cooldownType:"once", cooldownValue:1 }
-      ]
-    };
-    const shopItems = [
-      { id:"teddy_bear", title:"Мишка в Telegram", price:23, emoji:"🧸" },
-      { id:"rose", title:"Роза в Telegram", price:38, emoji:"🌹" },
-      { id:"rocket", title:"Ракета в Telegram", price:75, emoji:"🚀" },
-      { id:"diamond", title:"Бриллиант в Telegram", price:150, emoji:"💎" },
-      { id:"premium_3m", title:"Telegram Premium 3 мес", price:1500, emoji:"⭐" },
-      { id:"steam_1.5", title:"Пополнение Steam 1.5$", price:120, emoji:"🎮" }
-    ];
-
-    function initTelegram() {
-      try {
-        if(window.Telegram?.WebApp) {
-          const w = Telegram.WebApp;
-          w.ready(); w.expand(); w.setBackgroundColor('#16172b');
-          const u = w.initDataUnsafe?.user;
-          if(u) {
-            currentUser = { id: u.id, first_name: u.first_name||'', last_name: u.last_name||'', username: u.username||'', photo_url: u.photo_url||null };
-            localStorage.setItem('tg_current_user', JSON.stringify(currentUser));
-            return true;
-          }
-        }
-      } catch(e) {}
-      const saved = localStorage.getItem('tg_current_user');
-      if(saved) { currentUser = JSON.parse(saved); return true; }
-      currentUser = { id: Math.floor(Math.random()*1e9), first_name:'Гость', last_name:'', username:'guest', photo_url:null };
-      return false;
-    }
-
-    function getUserDisplayInfo() {
-      if(!currentUser) return '';
-      const name = `${currentUser.first_name||''} ${currentUser.last_name||''}`.trim() || 'Пользователь';
-      return `<i class="fas fa-user"></i> ${name}<br>${currentUser.username?`<i class="fas fa-at"></i> @${currentUser.username}<br>`:''}<i class="fas fa-id-card"></i> ID: ${currentUser.id}`;
+    // ========== ЗАГЛУШКИ ДЛЯ ДЕМОНСТРАЦИИ (можно заменить на свои) ==========
+    function showNotification(text, type = 'success') {
+      const n = document.getElementById('notification');
+      if (!n) return;
+      document.getElementById('notification-text').textContent = text;
+      n.className = 'notification ' + type;
+      n.classList.add('show');
+      setTimeout(() => n.classList.remove('show'), 2800);
     }
 
     function sendDiscordLog(webhook, type, data) {
@@ -643,11 +817,30 @@
       fetch(webhook, { method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({ username:'Task Greot Logger', embeds:[embed] }) }).catch(()=>{});
     }
 
-    function showNotification(txt, type='success') {
-      const n = document.getElementById('notification'); if(!n) return;
-      document.getElementById('notification-text').textContent = txt;
-      n.className = 'notification '+type; n.classList.add('show');
-      setTimeout(()=>n.classList.remove('show'),2800);
+    // ========== БАЗОВЫЕ ФУНКЦИИ ==========
+    function initTelegram() {
+      try {
+        if(window.Telegram?.WebApp) {
+          const w = Telegram.WebApp;
+          w.ready(); w.expand(); w.setBackgroundColor('#16172b');
+          const u = w.initDataUnsafe?.user;
+          if(u) {
+            currentUser = { id: u.id, first_name: u.first_name||'', last_name: u.last_name||'', username: u.username||'', photo_url: u.photo_url||null };
+            localStorage.setItem('tg_current_user', JSON.stringify(currentUser));
+            return true;
+          }
+        }
+      } catch(e) {}
+      const saved = localStorage.getItem('tg_current_user');
+      if(saved) { currentUser = JSON.parse(saved); return true; }
+      currentUser = { id: Math.floor(Math.random()*1e9), first_name:'Гость', last_name:'', username:'guest', photo_url:null };
+      return false;
+    }
+
+    function getUserDisplayInfo() {
+      if(!currentUser) return '';
+      const name = `${currentUser.first_name||''} ${currentUser.last_name||''}`.trim() || 'Пользователь';
+      return `<i class="fas fa-user"></i> ${name}<br>${currentUser.username?`<i class="fas fa-at"></i> @${currentUser.username}<br>`:''}<i class="fas fa-id-card"></i> ID: ${currentUser.id}`;
     }
 
     async function loadBalanceFromFile() {
@@ -723,6 +916,7 @@
       document.getElementById('join-date-text').textContent = date.toLocaleDateString('ru-RU', { year:'numeric', month:'long', day:'numeric' });
     }
 
+    // ========== ЗАДАНИЯ И ПОДПИСКА ==========
     function checkTaskCooldown(id,type,val) {
       const last = localStorage.getItem(`task_cooldown_${id}`);
       if(!last) return { canStart:true };
@@ -756,6 +950,7 @@
         document.getElementById('subscribe-modal').classList.add('active');
         return;
       }
+      // Показываем подтверждение через Telegram WebApp
       if(window.Telegram?.WebApp) {
         Telegram.WebApp.showPopup({
           title: 'Подтверждение',
@@ -811,6 +1006,16 @@
         isTaskConfirming = false;
       }
     }
+
+    // ========== МАГАЗИН ==========
+    const shopItems = [
+      { id:"teddy_bear", title:"Мишка в Telegram", price:23, emoji:"🧸" },
+      { id:"rose", title:"Роза в Telegram", price:38, emoji:"🌹" },
+      { id:"rocket", title:"Ракета в Telegram", price:75, emoji:"🚀" },
+      { id:"diamond", title:"Бриллиант в Telegram", price:150, emoji:"💎" },
+      { id:"premium_3m", title:"Telegram Premium 3 мес", price:1500, emoji:"⭐" },
+      { id:"steam_1.5", title:"Пополнение Steam 1.5$", price:120, emoji:"🎮" }
+    ];
 
     function renderShop() {
       const c = document.getElementById('shop-grid'); if(!c) return;
@@ -874,6 +1079,7 @@
     function closeShopActionModal() { document.getElementById('shop-action-modal').classList.remove('active'); }
     function closeWithdrawActionModal() { document.getElementById('withdraw-action-modal').classList.remove('active'); }
 
+    // ========== ДОПОЛНИТЕЛЬНЫЕ ЗАДАНИЯ ==========
     async function loadExtraTasks() {
       const c = document.getElementById('extra-tasks-container'); if(!c) return;
       c.innerHTML = '<div style="text-align:center;padding:40px;"><div class="loader"></div><p>Загрузка...</p></div>';
@@ -895,7 +1101,7 @@
       } catch(e) { c.innerHTML = '<div style="padding:24px;text-align:center;"><p>Ошибка загрузки</p></div>'; }
     }
 
-    // Приветственные окна
+    // ========== ПРИВЕТСТВИЕ ==========
     function showWelcomeModal2() { document.getElementById('welcome-modal-1').classList.remove('active'); document.getElementById('welcome-modal-2').classList.add('active'); }
     function showWelcomeModal3() { document.getElementById('welcome-modal-2').classList.remove('active'); document.getElementById('welcome-modal-3').classList.add('active'); }
     function showWelcomeModal4() { document.getElementById('welcome-modal-3').classList.remove('active'); document.getElementById('welcome-modal-4').classList.add('active'); }
@@ -904,9 +1110,8 @@
     function closeWelcomeModals() { document.querySelectorAll('.welcome-modal').forEach(m=>m.classList.remove('active')); localStorage.setItem('has_seen_welcome','true'); }
     function submitFriendReferral() { const fr = document.getElementById('friend-username').value.trim(); if(fr && fr!=='@') showNotification('✅ Спасибо!','success'); closeWelcomeModals(); }
 
-    // ВЫВОД СРЕДСТВ – ИСПРАВЛЕННЫЕ ФУНКЦИИ
+    // ========== ВЫВОД СРЕДСТВ ==========
     function openWithdrawModal() {
-      const lastWithdrawTime = localStorage.getItem('last_withdraw_time');
       if (lastWithdrawTime) {
         const diffHours = (Date.now() - parseInt(lastWithdrawTime)) / (1000 * 60 * 60);
         if (diffHours < 24) {
@@ -917,6 +1122,18 @@
       document.getElementById('withdraw-modal').classList.add('active');
       resetWithdrawModal();
     }
+
+    function closeWithdrawModal() { document.getElementById('withdraw-modal').classList.remove('active'); resetWithdrawModal(); }
+
+    function resetWithdrawModal() {
+      selectedWithdrawMethod = null;
+      withdrawData = {};
+      document.querySelectorAll('.method-option').forEach(o=>o.classList.remove('active'));
+      document.getElementById('next-to-details').disabled = true;
+      goToStep('method');
+    }
+
+    function goToStep(step) { document.querySelectorAll('.withdraw-step').forEach(el=>el.classList.remove('active')); document.getElementById(`step-${step}`).classList.add('active'); }
 
     function selectWithdrawMethod(method, min) {
       selectedWithdrawMethod = method;
@@ -994,10 +1211,24 @@
       closeWithdrawModal();
     }
 
-    function closeWithdrawModal() { document.getElementById('withdraw-modal').classList.remove('active'); resetWithdrawModal(); }
-    function resetWithdrawModal() { selectedWithdrawMethod=null; withdrawData={}; document.querySelectorAll('.method-option').forEach(o=>o.classList.remove('active')); document.getElementById('next-to-details').disabled=true; goToStep('method'); }
-    function goToStep(step) { document.querySelectorAll('.withdraw-step').forEach(el=>el.classList.remove('active')); document.getElementById(`step-${step}`).classList.add('active'); }
-    function openWithdrawActionModal(data) { document.getElementById('withdraw-modal-info').innerHTML = `<p><strong>Сумма:</strong> ${data.amount} баллов</p><p><strong>Метод:</strong> ${data.method==='sbp'?'СБП':data.method==='stars'?'Stars':'USDT'}</p><p><strong>Статус:</strong> Заявка создана</p><p style="color: #f59e0b;">Обработаем в течение 24 часов</p>`; document.getElementById('withdraw-action-modal').classList.add('active'); }
+    function openWithdrawActionModal(data) {
+      document.getElementById('withdraw-modal-info').innerHTML = `<p><strong>Сумма:</strong> ${data.amount} баллов</p><p><strong>Метод:</strong> ${data.method==='sbp'?'СБП':data.method==='stars'?'Stars':'USDT'}</p><p><strong>Статус:</strong> Заявка создана</p><p style="color: #f59e0b;">Обработаем в течение 24 часов</p>`;
+      document.getElementById('withdraw-action-modal').classList.add('active');
+    }
+
+    // ========== ИНИЦИАЛИЗАЦИЯ ==========
+    const tasksData = {
+      ordinary: [
+        { id:"tiktok_comments", title:"Комментарии в TikTok", reward:500, desc:"Напишите 100 комментариев под тематическими видео.", instruction:"https://teletype.in/@taskgreot/task-tiktok-comments", icon:"fab fa-tiktok", cooldownType:"daily", cooldownValue:1 },
+        { id:"yandex_reviews", title:"Отзыв на Яндекс Картах", reward:60, desc:"Оставьте отзыв по шаблону.", instruction:"https://teletype.in/@taskgreot/task-yandex-reviews", icon:"fas fa-map-marker-alt", cooldownType:"days", cooldownValue:3 },
+        { id:"gmail_create", title:"Создание почты Gmail", reward:8, desc:"Создайте почтовый ящик.", instruction:"https://teletype.in/@taskgreot/task-gmail", icon:"fas fa-envelope", cooldownType:"daily", cooldownValue:2 }
+      ],
+      special: [
+        { id:"special_verification", title:"Верификация партнёра", reward:60, desc:"Пройдите верификацию и опрос.", instruction:"https://teletype.in/@taskgreot/task-verification", icon:"fas fa-user-shield", cooldownType:"days", cooldownValue:7 },
+        { id:"quick_registration", title:"2-минутная регистрация", reward:10, desc:"Зарегистрируйтесь на сайте.", instruction:"https://teletype.in/@taskgreot/quick-registration", icon:"fas fa-user-plus", cooldownType:"days", cooldownValue:7 },
+        { id:"subscribe_partners", title:"Подписка на партнёров", reward:3, desc:"Подпишитесь на трёх партнёров.", instruction:"https://teletype.in/@taskgreot/subscribe-partners", icon:"fas fa-users", cooldownType:"once", cooldownValue:1 }
+      ]
+    };
 
     document.addEventListener('DOMContentLoaded', () => {
       initTelegram(); updateProfile(); renderShop(); updateBalance(false);
@@ -1007,23 +1238,27 @@
       if(!localStorage.getItem('has_seen_welcome')) setTimeout(()=>document.getElementById('welcome-modal-1').classList.add('active'),500);
       showNotification(`👋 Привет, ${currentUser?.first_name||'Пользователь'}!`,'success');
 
-      // Кнопка подписки: сразу активируем проверку
-      document.getElementById('subscribe-channel-btn')?.addEventListener('click',()=>{
+      // Обработчики подписки
+      document.getElementById('subscribe-channel-btn')?.addEventListener('click', () => {
         document.getElementById('check-subscription-btn').disabled = false;
       });
-      document.getElementById('check-subscription-btn')?.addEventListener('click',()=>{
-        hasSubscribed = true; localStorage.setItem('has_subscribed','true');
+      document.getElementById('check-subscription-btn')?.addEventListener('click', () => {
+        hasSubscribed = true;
+        localStorage.setItem('has_subscribed','true');
         document.getElementById('subscribe-modal').classList.remove('active');
         if(pendingTaskAfterSubscribe) {
           startTask(pendingTaskAfterSubscribe.id, pendingTaskAfterSubscribe.title, pendingTaskAfterSubscribe.reward, pendingTaskAfterSubscribe.instruction, pendingTaskAfterSubscribe.desc, pendingTaskAfterSubscribe.cdType, pendingTaskAfterSubscribe.cdVal);
-          pendingTaskAfterSubscribe=null;
-        } else showNotification('✅ Доступ открыт!','success');
+          pendingTaskAfterSubscribe = null;
+        } else {
+          showNotification('✅ Доступ открыт!','success');
+        }
       });
 
       document.getElementById('full-modal-confirm-btn')?.addEventListener('click', confirmTask);
       document.getElementById('refresh-balance')?.addEventListener('click', ()=>updateBalance(true));
       document.getElementById('withdraw-btn')?.addEventListener('click', openWithdrawModal);
       document.querySelectorAll('.shop-buy-btn').forEach(btn=>btn.addEventListener('click',(e)=>{ const it=e.target.closest('.shop-item'); if(it) handleShopPurchase(it); }));
+
       document.querySelectorAll('.tab-btn').forEach(btn=>btn.addEventListener('click',()=>{
         const id=btn.dataset.tab;
         document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));
@@ -1033,6 +1268,7 @@
         else if(id==='shop-tab') updateShopCooldowns();
         else if(id==='tasks-tab' && document.querySelector('.sub-tab.active')?.dataset.sub==='extra') loadExtraTasks();
       }));
+
       document.querySelectorAll('.sub-tab').forEach(tab=>tab.addEventListener('click',()=>{
         const sub=tab.dataset.sub;
         document.querySelectorAll('.sub-tab').forEach(t=>t.classList.remove('active'));
@@ -1042,12 +1278,19 @@
         document.getElementById('extra-tasks').style.display=sub==='extra'?'':'none';
         if(sub==='extra') loadExtraTasks();
       }));
+
       document.querySelectorAll('.method-option').forEach(opt=>opt.addEventListener('click',()=>selectWithdrawMethod(opt.dataset.method, parseInt(opt.dataset.min))));
       document.getElementById('next-to-details')?.addEventListener('click', nextToDetails);
       document.getElementById('next-to-confirm')?.addEventListener('click', nextToConfirm);
       document.getElementById('submit-withdraw')?.addEventListener('click', processWithdraw);
       document.getElementById('shop-modal-confirm-btn')?.addEventListener('click', closeShopActionModal);
       document.getElementById('withdraw-modal-confirm-btn')?.addEventListener('click', closeWithdrawActionModal);
+
+      document.getElementById('phone-number')?.addEventListener('input', function(e) {
+        let v = this.value.replace(/\D/g, '').slice(0,10);
+        this.value = v.replace(/(\d{3})(\d{3})(\d{2})(\d{2})/, '$1 $2 $3 $4').trim();
+      });
+
       setInterval(updateShopCooldowns, 1000);
     });
   </script>
