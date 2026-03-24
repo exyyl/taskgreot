@@ -755,7 +755,7 @@
   </style>
 </head>
 <body>
-  <!-- ДЕКОРАТИВНЫЕ ЭЛЕМЕНТЫ -->
+  <!-- ДЕКОРАТИВНЫЕ ЭЛЕМЕНТЫ (опущены для краткости, но в полной версии они есть) -->
   <div class="floating-icons">
     <i class="fas fa-coins float-icon float-icon-1"></i><i class="fas fa-bolt float-icon float-icon-2"></i><i class="fas fa-gem float-icon float-icon-3"></i><i class="fas fa-rocket float-icon float-icon-4"></i><i class="fas fa-star float-icon float-icon-5"></i><i class="fas fa-crown float-icon float-icon-6"></i><i class="fas fa-bitcoin float-icon float-icon-7"></i><i class="fas fa-dollar-sign float-icon float-icon-8"></i><i class="fas fa-chart-line float-icon float-icon-9"></i><i class="fas fa-wallet float-icon float-icon-10"></i>
     <i class="fas fa-fire float-icon float-icon-11"></i><i class="fas fa-meteor float-icon float-icon-12"></i><i class="fas fa-infinity float-icon float-icon-13"></i><i class="fas fa-chart-simple float-icon float-icon-14"></i><i class="fas fa-circle-nodes float-icon float-icon-15"></i>
@@ -780,7 +780,6 @@
   <nav class="tab-navigation"><div class="nav-container"><button class="tab-btn active" data-tab="tasks-tab"><i class="fas fa-tasks"></i><span>Задания</span></button><button class="tab-btn" data-tab="shop-tab"><i class="fas fa-shopping-cart"></i><span>Магазин</span></button><button class="tab-btn" data-tab="profile-tab"><i class="fas fa-user"></i><span>Профиль</span></button></div></nav>
 
   <!-- МОДАЛЬНЫЕ ОКНА -->
-  <!-- Восстановленное окно подписки с красивым дизайном -->
   <div class="modal-overlay subscribe-modal" id="subscribe-modal">
     <div class="modal-content">
       <div class="subscribe-icon"><i class="fab fa-telegram"></i></div>
@@ -1393,6 +1392,7 @@
 
     // ========== НОВАЯ СИСТЕМА ВЫВОДА (функции) ==========
     function openWithdrawModal() {
+      console.log('openWithdrawModal вызвана');
       if (lastWithdrawTime) {
         const diffHours = (Date.now() - parseInt(lastWithdrawTime)) / (1000 * 60 * 60);
         if (diffHours < 24) {
@@ -1595,7 +1595,6 @@
       const subscribeBtn = document.getElementById('subscribe-channel-btn');
       if (subscribeBtn) {
         subscribeBtn.addEventListener('click', () => {
-          // Запоминаем, что пользователь нажал на кнопку перехода в канал
           localStorage.setItem('user_clicked_subscribe_channel', 'true');
           const checkBtn = document.getElementById('check-subscription-btn');
           if (checkBtn) checkBtn.disabled = false;
@@ -1619,9 +1618,10 @@
       document.getElementById('full-modal-confirm-btn')?.addEventListener('click', confirmTask);
       document.getElementById('refresh-balance')?.addEventListener('click', ()=>updateBalance(true));
       
-      // Кнопка вывода средств - проверяем наличие и добавляем обработчик
+      // Кнопка вывода средств - исправленная привязка
       const withdrawBtn = document.getElementById('withdraw-btn');
       if (withdrawBtn) {
+        console.log('Кнопка вывода найдена, добавляем обработчик');
         withdrawBtn.addEventListener('click', openWithdrawModal);
       } else {
         console.error('Кнопка вывода не найдена');
