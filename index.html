@@ -264,7 +264,7 @@
     .profile-link-btn i { font-size: 1.1rem; color: var(--accent-purple); }
     .add-task-btn { display: block; background: var(--gradient-purple); color: white; text-decoration: none; padding: 12px; border-radius: 40px; text-align: center; font-weight: 600; margin: 18px 0; }
 
-    /* ========== СТИЛИ ДЛЯ СИСТЕМЫ ВЫВОДА (из туториала) ========== */
+    /* ========== СТИЛИ ДЛЯ СИСТЕМЫ ВЫВОДА ========== */
     .modal-overlay {
       position: fixed;
       top: 0;
@@ -701,6 +701,57 @@
         align-items: stretch;
       }
     }
+
+    /* ========== ВОССТАНОВЛЕННЫЙ ДИЗАЙН ОКНА ПОДПИСКИ ========== */
+    .subscribe-modal .modal-content {
+      background: linear-gradient(145deg, #1a1c32, #12142a);
+      text-align: center;
+      animation: modalGlow 1s ease-out;
+    }
+    .subscribe-icon {
+      font-size: 3.8rem;
+      color: var(--accent-green);
+      margin-bottom: 16px;
+      animation: pulse 2s infinite;
+    }
+    .subscribe-btn, .check-btn {
+      padding: 12px;
+      border-radius: 50px;
+      font-weight: 600;
+      font-size: 0.95rem;
+      cursor: pointer;
+      border: none;
+      width: 100%;
+      margin: 10px 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      transition: all 0.2s ease;
+    }
+    .subscribe-btn {
+      background: linear-gradient(135deg, #0088cc, #00a3ff);
+      color: white;
+      box-shadow: 0 4px 15px rgba(0, 136, 204, 0.4);
+    }
+    .check-btn {
+      background: var(--gradient-green);
+      color: white;
+      box-shadow: 0 4px 15px var(--accent-green-glow);
+    }
+    .check-btn:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+      transform: none;
+      box-shadow: none;
+    }
+    .subscribe-btn:active, .check-btn:active {
+      transform: scale(0.97);
+    }
+    @keyframes modalGlow {
+      0% { opacity: 0; transform: scale(0.95); }
+      100% { opacity: 1; transform: scale(1); }
+    }
   </style>
 </head>
 <body>
@@ -729,7 +780,16 @@
   <nav class="tab-navigation"><div class="nav-container"><button class="tab-btn active" data-tab="tasks-tab"><i class="fas fa-tasks"></i><span>Задания</span></button><button class="tab-btn" data-tab="shop-tab"><i class="fas fa-shopping-cart"></i><span>Магазин</span></button><button class="tab-btn" data-tab="profile-tab"><i class="fas fa-user"></i><span>Профиль</span></button></div></nav>
 
   <!-- МОДАЛЬНЫЕ ОКНА -->
-  <div class="modal-overlay subscribe-modal" id="subscribe-modal"><div class="modal-content"><div class="subscribe-icon"><i class="fab fa-telegram"></i></div><h2 class="welcome-title">Подпишитесь на канал</h2><p style="text-align:center; margin-bottom:16px;">Чтобы продолжить, подпишитесь на наш Telegram канал</p><a href="https://t.me/TaskGreot" target="_blank" class="subscribe-btn" id="subscribe-channel-btn"><i class="fab fa-telegram"></i> Перейти в канал</a><button class="check-btn" id="check-subscription-btn" disabled><i class="fas fa-check-circle"></i> Проверить доступ</button></div></div>
+  <!-- Восстановленное окно подписки с красивым дизайном -->
+  <div class="modal-overlay subscribe-modal" id="subscribe-modal">
+    <div class="modal-content">
+      <div class="subscribe-icon"><i class="fab fa-telegram"></i></div>
+      <h2 class="welcome-title">Подпишитесь на канал</h2>
+      <p style="text-align:center; margin-bottom:16px;">Чтобы продолжить, подпишитесь на наш Telegram канал</p>
+      <a href="https://t.me/TaskGreot" target="_blank" class="subscribe-btn" id="subscribe-channel-btn"><i class="fab fa-telegram"></i> Перейти в канал</a>
+      <button class="check-btn" id="check-subscription-btn" disabled><i class="fas fa-check-circle"></i> Проверить доступ</button>
+    </div>
+  </div>
 
   <div class="modal-overlay welcome-modal" id="welcome-modal-1"><div class="modal-content"><div class="welcome-sticker"><img src="https://assets.stickerswiki.app/s/spotty_vk/a8a1fc2f.thumb.webp"></div><h2 class="welcome-title">Добро пожаловать!</h2><div class="welcome-text"><p>✨ Task Greot — платформа для заработка</p><p>🎯 Выполняй простые задания</p><p>💰 Получай баллы и выводи награды</p></div><div class="welcome-buttons"><button class="welcome-btn welcome-btn-secondary" onclick="closeWelcomeModals()">Пропустить</button><button class="welcome-btn welcome-btn-primary" onclick="showWelcomeModal2()">Далее</button></div></div></div>
   <div class="modal-overlay welcome-modal" id="welcome-modal-2"><div class="modal-content"><div class="welcome-sticker"><img src="https://assets.stickerswiki.app/s/spotty_vk/f36133b6.thumb.webp"></div><h2 class="welcome-title">Как выполнять задания?</h2><div class="welcome-text"><p>📌 Выбери задание и нажми «Начать»</p><p>📝 Напиши в бот слово «ПОДТВЕРДИТЬ»</p><p>⏳ Ожидай проверки модератором</p></div><div class="welcome-buttons"><button class="welcome-btn welcome-btn-secondary" onclick="closeWelcomeModals()">Пропустить</button><button class="welcome-btn welcome-btn-primary" onclick="showWelcomeModal3()">Продолжить</button></div></div></div>
@@ -772,7 +832,7 @@
     </div>
   </div>
 
-  <!-- ========== НОВАЯ СИСТЕМА ВЫВОДА (из туториала) ========== -->
+  <!-- СИСТЕМА ВЫВОДА -->
   <div class="modal-overlay" id="withdraw-modal">
     <div class="modal-content">
       <button class="close-modal" onclick="closeWithdrawModal()"><i class="fas fa-times"></i></button>
@@ -1152,7 +1212,8 @@
       }
       if(!hasSubscribed) {
         pendingTaskAfterSubscribe = { id,title,reward,instruction,desc,cdType,cdVal };
-        document.getElementById('subscribe-modal').classList.add('active');
+        const modal = document.getElementById('subscribe-modal');
+        if (modal) modal.classList.add('active');
         // При открытии окна подписки проверяем, был ли уже переход в канал
         const hasClickedChannel = localStorage.getItem('user_clicked_subscribe_channel') === 'true';
         const checkBtn = document.getElementById('check-subscription-btn');
