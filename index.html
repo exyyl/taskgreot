@@ -1524,8 +1524,8 @@
         return;
       }
       const balance = parseInt(document.getElementById('balance-value')?.textContent.replace(/\D/g, '')) || 0;
-      document.getElementById('confirm-method').textContent = 
-        selectedWithdrawMethod === 'sbp' ? 'СБП' : 
+      document.getElementById('confirm-method').textContent = 
+        selectedWithdrawMethod === 'sbp' ? 'СБП' : 
         selectedWithdrawMethod === 'stars' ? 'Stars' : 'USDT (TON)';
       document.getElementById('confirm-amount').textContent = balance + ' баллов';
       const details = document.getElementById('confirm-details');
@@ -1634,7 +1634,7 @@
 
       document.getElementById('full-modal-confirm-btn')?.addEventListener('click', confirmTask);
       document.getElementById('refresh-balance')?.addEventListener('click', ()=>updateBalance(true));
-      
+      
       // ========== ГАРАНТИРОВАННЫЙ ОБРАБОТЧИК КНОПКИ ВЫВОДА ==========
       const withdrawBtn = document.getElementById('withdraw-btn');
       if (withdrawBtn) {
@@ -1653,7 +1653,7 @@
       } else {
         console.error('Кнопка вывода не найдена');
       }
-      
+      
       document.querySelectorAll('.shop-buy-btn').forEach(btn=>btn.addEventListener('click',(e)=>{ const it=e.target.closest('.shop-item'); if(it) handleShopPurchase(it); }));
 
       // Переключение вкладок
@@ -1700,4 +1700,4 @@
     });
   </script>
 </body>
-</html>
+  </html>
