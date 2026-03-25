@@ -249,8 +249,29 @@
     .refresh-btn:active { transform: rotate(30deg); }
     .balance-amount { font-size: 3rem; font-weight: 800; color: var(--accent-green); margin: 10px 0; letter-spacing: -1px; text-shadow: 0 0 25px var(--accent-green-glow); }
     .balance-subtext { color: var(--text-muted); font-size: 0.75rem; margin-bottom: 16px; }
-    .withdraw-btn { background: var(--gradient-green); color: white; border: none; padding: 10px 24px; border-radius: 50px; font-weight: 600; cursor: pointer; width: 100%; max-width: 250px; font-size: 0.85rem; margin: 0 auto; transition: all 0.15s ease; box-shadow: 0 6px 20px var(--accent-green-glow); }
-    .withdraw-btn:active { transform: scale(0.97); }
+    /* Кнопка вывода - усилена для гарантированной кликабельности */
+    .withdraw-btn {
+      background: var(--gradient-green);
+      color: white;
+      border: none;
+      padding: 10px 24px;
+      border-radius: 50px;
+      font-weight: 600;
+      cursor: pointer;
+      width: 100%;
+      max-width: 250px;
+      font-size: 0.85rem;
+      margin: 0 auto;
+      transition: all 0.15s ease;
+      box-shadow: 0 6px 20px var(--accent-green-glow);
+      position: relative;
+      z-index: 100;
+      pointer-events: auto;
+      display: inline-block;
+    }
+    .withdraw-btn:active {
+      transform: scale(0.97);
+    }
     .balance-info { margin-top: 12px; font-size: 0.65rem; color: var(--text-muted); display: flex; align-items: center; justify-content: center; gap: 8px; }
 
     .stats-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 14px; margin-bottom: 32px; }
@@ -755,7 +776,7 @@
   </style>
 </head>
 <body>
-  <!-- ДЕКОРАТИВНЫЕ ЭЛЕМЕНТЫ (опущены для краткости, но в полной версии они есть) -->
+  <!-- ДЕКОРАТИВНЫЕ ЭЛЕМЕНТЫ (сохранены) -->
   <div class="floating-icons">
     <i class="fas fa-coins float-icon float-icon-1"></i><i class="fas fa-bolt float-icon float-icon-2"></i><i class="fas fa-gem float-icon float-icon-3"></i><i class="fas fa-rocket float-icon float-icon-4"></i><i class="fas fa-star float-icon float-icon-5"></i><i class="fas fa-crown float-icon float-icon-6"></i><i class="fas fa-bitcoin float-icon float-icon-7"></i><i class="fas fa-dollar-sign float-icon float-icon-8"></i><i class="fas fa-chart-line float-icon float-icon-9"></i><i class="fas fa-wallet float-icon float-icon-10"></i>
     <i class="fas fa-fire float-icon float-icon-11"></i><i class="fas fa-meteor float-icon float-icon-12"></i><i class="fas fa-infinity float-icon float-icon-13"></i><i class="fas fa-chart-simple float-icon float-icon-14"></i><i class="fas fa-circle-nodes float-icon float-icon-15"></i>
@@ -1213,7 +1234,6 @@
         pendingTaskAfterSubscribe = { id,title,reward,instruction,desc,cdType,cdVal };
         const modal = document.getElementById('subscribe-modal');
         if (modal) modal.classList.add('active');
-        // При открытии окна подписки проверяем, был ли уже переход в канал
         const hasClickedChannel = localStorage.getItem('user_clicked_subscribe_channel') === 'true';
         const checkBtn = document.getElementById('check-subscription-btn');
         if (checkBtn && hasClickedChannel) {
@@ -1437,7 +1457,6 @@
 
     function nextToDetails() {
       if (!selectedWithdrawMethod) return;
-      // Скрыть все формы
       ['sbp-form', 'stars-form', 'crypto-form'].forEach(id => {
         document.getElementById(id).style.display = 'none';
       });
@@ -1540,13 +1559,11 @@
       const details = selectedWithdrawMethod === 'sbp' ? `📱 ${withdrawData.phone}\n🏦 ${withdrawData.bankName}` :
                       selectedWithdrawMethod === 'stars' ? `👤 ${withdrawData.username}\n⭐ ${withdrawData.starsAmount}` :
                       `🔑 ${withdrawData.wallet}`;
-      // Открыть модалку успеха
       openWithdrawActionModal({
         amount: balance,
         method: selectedWithdrawMethod,
         ...withdrawData
       });
-      // Отправить уведомление в Discord
       sendDiscordLog(DISCORD_WEBHOOKS.withdraw, 'withdraw', {
         amount: balance,
         method: methodText,
@@ -1618,11 +1635,21 @@
       document.getElementById('full-modal-confirm-btn')?.addEventListener('click', confirmTask);
       document.getElementById('refresh-balance')?.addEventListener('click', ()=>updateBalance(true));
       
-      // Кнопка вывода средств - исправленная привязка
+      // ========== ГАРАНТИРОВАННЫЙ ОБРАБОТЧИК КНОПКИ ВЫВОДА ==========
       const withdrawBtn = document.getElementById('withdraw-btn');
       if (withdrawBtn) {
         console.log('Кнопка вывода найдена, добавляем обработчик');
+        // Удаляем старые обработчики, чтобы избежать дублирования
+        withdrawBtn.removeEventListener('click', openWithdrawModal);
         withdrawBtn.addEventListener('click', openWithdrawModal);
+        // Также добавляем обработчик через делегирование на случай, если кнопка будет пересоздана
+        document.body.addEventListener('click', function(e) {
+          const btn = e.target.closest('#withdraw-btn');
+          if (btn) {
+            e.preventDefault();
+            openWithdrawModal();
+          }
+        });
       } else {
         console.error('Кнопка вывода не найдена');
       }
