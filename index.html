@@ -9,7 +9,7 @@
   <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
   <script src="https://telegram.org/js/telegram-web-app.js?1"></script>
   <style>
-    /* ========== ОСНОВНЫЕ СТИЛИ (сохранены) ========== */
+    /* ========== ОСНОВНЫЕ СТИЛИ ========== */
     :root {
       --bg-deep: #16172b;
       --topbar-height: calc(66px + env(safe-area-inset-top));
@@ -78,11 +78,6 @@
     .float-icon-13 { top: 68%; left: 82%; animation-duration: 27s; animation-delay: 9s; }
     .float-icon-14 { top: 82%; right: 15%; animation-duration: 33s; animation-delay: 11s; }
     .float-icon-15 { top: 8%; left: 55%; animation-duration: 25s; animation-delay: 13s; }
-    .float-icon-16 { top: 52%; left: 8%; animation-duration: 35s; animation-delay: 15s; }
-    .float-icon-17 { top: 72%; right: 78%; animation-duration: 29s; animation-delay: 17s; }
-    .float-icon-18 { top: 38%; left: 92%; animation-duration: 31s; animation-delay: 19s; }
-    .float-icon-19 { top: 62%; right: 55%; animation-duration: 27s; animation-delay: 21s; }
-    .float-icon-20 { top: 15%; left: 45%; animation-duration: 33s; animation-delay: 23s; }
     @keyframes floatIcon {
       0% { transform: translateY(0) rotate(0deg); opacity: 0; }
       15% { opacity: 0.5; }
@@ -112,14 +107,10 @@
     .dot-2 { width: 380px; height: 380px; bottom: 0; right: -8%; background: radial-gradient(circle, rgba(157,78,221,0.12) 0%, transparent 70%); animation: float2 32s infinite alternate; }
     .dot-3 { width: 220px; height: 220px; top: 40%; left: 40%; background: radial-gradient(circle, rgba(50,173,93,0.1) 0%, transparent 70%); animation: float3 35s infinite alternate; }
     .dot-4 { width: 200px; height: 200px; bottom: 20%; left: 15%; background: radial-gradient(circle, rgba(157,78,221,0.1) 0%, transparent 70%); animation: float4 25s infinite alternate; }
-    .dot-5 { width: 300px; height: 300px; top: 70%; right: 10%; background: radial-gradient(circle, rgba(50,173,93,0.1) 0%, transparent 70%); animation: float5 30s infinite alternate; }
-    .dot-6 { width: 180px; height: 180px; top: 25%; right: 35%; background: radial-gradient(circle, rgba(50,173,93,0.08) 0%, transparent 70%); animation: float1 22s infinite alternate; }
-    .dot-7 { width: 240px; height: 240px; bottom: 40%; left: 55%; background: radial-gradient(circle, rgba(157,78,221,0.08) 0%, transparent 70%); animation: float2 27s infinite alternate; }
     @keyframes float1 { 0% { transform: translate(0,0) scale(1); } 100% { transform: translate(6%,4%) scale(1.15); } }
     @keyframes float2 { 0% { transform: translate(0,0) scale(1); } 100% { transform: translate(-8%,-6%) scale(1.2); } }
     @keyframes float3 { 0% { transform: translate(-50%,-50%) scale(1); } 100% { transform: translate(-45%,-45%) scale(1.25); } }
     @keyframes float4 { 0% { transform: translate(0,0) scale(1); } 100% { transform: translate(5%,-5%) scale(1.1); } }
-    @keyframes float5 { 0% { transform: translate(0,0) scale(1); } 100% { transform: translate(-7%,4%) scale(1.15); } }
 
     .shimmer-line { position: fixed; top: 0; left: 0; right: 0; height: 1px; background: linear-gradient(90deg, transparent, rgba(50,173,93,0.5), rgba(157,78,221,0.5), rgba(50,173,93,0.5), transparent); z-index: 1; animation: shimmerMove 5s infinite; pointer-events: none; }
     @keyframes shimmerMove { 0% { opacity: 0.3; transform: translateX(-100%); } 50% { opacity: 1; transform: translateX(0%); } 100% { opacity: 0.3; transform: translateX(100%); } }
@@ -203,9 +194,66 @@
     .logo img { max-width: 300px; width: 100%; height: auto; margin: 0 auto; filter: drop-shadow(0 0 20px var(--accent-purple-glow)); }
     .tagline { color: var(--text-muted); font-size: 0.85rem; max-width: 500px; margin: 0 auto; line-height: 1.4; }
 
-    .sub-tab-navigation { display: flex; gap: 12px; margin: 18px 0; justify-content: center; flex-wrap: wrap; }
-    .sub-tab { padding: 7px 18px; border-radius: 40px; background: rgba(255,255,255,0.03); color: var(--text-muted); border: 1px solid transparent; cursor: pointer; font-weight: 600; font-size: 0.85rem; transition: all 0.15s ease; }
-    .sub-tab.active { background: rgba(50,173,93,0.15); color: var(--accent-green); border-color: rgba(50,173,93,0.3); box-shadow: 0 0 15px var(--accent-green-glow); }
+    /* Заголовок с фильтром */
+    .tasks-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 12px;
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+    .tasks-header h2 { font-size: 1.25rem; font-weight: 700; }
+    .filter-icon-btn {
+      background: rgba(255,255,255,0.05);
+      border: 1px solid var(--border-glass);
+      border-radius: 40px;
+      padding: 8px 16px;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      font-weight: 500;
+      font-size: 0.85rem;
+      color: var(--text-muted);
+      transition: all 0.2s ease;
+    }
+    .filter-icon-btn i { font-size: 0.9rem; }
+    .filter-icon-btn:hover, .filter-icon-btn.active { background: rgba(50,173,93,0.15); color: var(--accent-green); border-color: rgba(50,173,93,0.3); }
+    .filter-wrapper { position: relative; display: inline-block; }
+    .filter-dropdown {
+      position: absolute;
+      top: 100%;
+      right: 0;
+      margin-top: 8px;
+      background: rgba(22,23,43,0.95);
+      backdrop-filter: blur(20px);
+      border: 1px solid var(--border-glass);
+      border-radius: 20px;
+      padding: 8px;
+      min-width: 160px;
+      z-index: 100;
+      display: none;
+      flex-direction: column;
+      gap: 4px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+    }
+    .filter-dropdown.show { display: flex; }
+    .filter-option {
+      padding: 10px 16px;
+      border-radius: 14px;
+      cursor: pointer;
+      transition: all 0.15s ease;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      color: var(--text-muted);
+      font-size: 0.85rem;
+    }
+    .filter-option i { width: 20px; }
+    .filter-option:hover { background: rgba(255,255,255,0.05); color: var(--text-light); }
+    .filter-option.active { background: rgba(50,173,93,0.2); color: var(--accent-green); }
+    .active-filter-text { margin-left: 4px; font-weight: 600; color: var(--accent-green); }
 
     .tasks-grid { display: grid; grid-template-columns: 1fr; gap: 16px; margin-top: 18px; margin-bottom: 50px; }
     .task-card { background: rgba(255,255,255,0.03); backdrop-filter: blur(12px); border: 1px solid var(--border-glass); border-radius: 28px; padding: 18px; transition: all 0.15s ease; position: relative; overflow: hidden; }
@@ -213,25 +261,47 @@
     .task-card:active::before { opacity: 0.6; }
     .task-row { display: flex; gap: 16px; align-items: flex-start; }
     .task-icon { width: 56px; height: 56px; background: rgba(50,173,93,0.12); border-radius: 18px; display: flex; align-items: center; justify-content: center; font-size: 1.6rem; color: var(--accent-green); border: 1px solid rgba(50,173,93,0.25); flex-shrink: 0; overflow: hidden; }
-    .task-icon img { width: 100%; height: 100%; object-fit: cover; }
+    .task-icon img { width: 100%; height: 100%; object-fit: cover; border-radius: 18px; }
+    .task-content { flex: 1; }
     .task-title { font-size: 1.05rem; font-weight: 700; margin-bottom: 5px; }
     .task-desc { color: var(--text-muted); font-size: 0.82rem; line-height: 1.45; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
     .task-footer { display: flex; justify-content: space-between; align-items: center; margin-top: 12px; padding-top: 12px; border-top: 1px solid var(--border-glass); gap: 10px; flex-wrap: wrap; }
     .task-actions { display: flex; gap: 10px; flex-wrap: wrap; }
     .task-reward { color: var(--accent-green); font-weight: 700; font-size: 0.85rem; background: rgba(50,173,93,0.1); padding: 5px 12px; border-radius: 40px; display: inline-flex; align-items: center; gap: 6px; }
+    .task-filter-badge { color: var(--accent-purple); font-size: 0.7rem; background: rgba(157,78,221,0.15); padding: 2px 8px; border-radius: 20px; display: inline-flex; align-items: center; gap: 4px; }
     .task-action { background: var(--gradient-green); color: white; border: none; padding: 7px 18px; border-radius: 40px; font-weight: 600; cursor: pointer; font-size: 0.8rem; display: inline-flex; align-items: center; gap: 8px; transition: all 0.15s ease; box-shadow: 0 4px 12px var(--accent-green-glow); }
     .instruction-btn { background: rgba(157,78,221,0.2); border: 1px solid rgba(157,78,221,0.3); color: var(--accent-purple); box-shadow: none; }
     .task-action:active { transform: scale(0.97); }
 
+    /* Магазин и розыгрыши */
+    .shop-tabs {
+      display: flex;
+      gap: 12px;
+      margin-bottom: 20px;
+      border-bottom: 1px solid var(--border-glass);
+      padding-bottom: 12px;
+    }
+    .shop-tab-btn {
+      background: none;
+      border: none;
+      padding: 8px 20px;
+      border-radius: 30px;
+      color: var(--text-muted);
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .shop-tab-btn.active { background: rgba(50,173,93,0.2); color: var(--accent-green); }
+    .shop-section { display: none; }
+    .shop-section.active { display: block; }
     .shop-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 14px; margin-top: 18px; margin-bottom: 50px; }
     @media (max-width: 480px) { .shop-grid { grid-template-columns: 1fr; } }
     .shop-item { background: rgba(255,255,255,0.03); border-radius: 26px; padding: 16px; text-align: center; border: 1px solid var(--border-glass); transition: all 0.15s ease; }
-    .shop-emoji { font-size: 2.3rem; line-height: 1; margin-bottom: 8px; transition: transform 0.2s; }
-    .shop-item:hover .shop-emoji { transform: scale(1.05); }
+    .shop-emoji { font-size: 2.3rem; line-height: 1; margin-bottom: 8px; }
     .shop-title { font-size: 0.9rem; font-weight: 700; margin: 5px 0; }
     .shop-price { font-size: 1rem; font-weight: 800; color: var(--accent-green); background: rgba(50,173,93,0.1); padding: 4px 10px; border-radius: 40px; display: inline-flex; align-items: center; gap: 5px; margin: 5px 0; }
     .shop-btn { background: var(--gradient-green); color: white; border: none; padding: 9px 14px; border-radius: 40px; font-weight: 600; cursor: pointer; width: 100%; font-size: 0.8rem; transition: all 0.15s ease; }
-    @media (max-width: 480px) { .shop-item { display: flex; align-items: center; text-align: left; gap: 12px; } .shop-emoji { font-size: 1.9rem; margin: 0; } .shop-content { flex: 1; } .shop-title { margin: 0 0 4px; } .shop-price { width: fit-content; margin: 0; } .shop-btn { width: auto; margin: 0; padding: 7px 12px; } }
+    .ticket-badge { font-size: 0.7rem; color: var(--accent-purple); background: rgba(157,78,221,0.15); padding: 2px 8px; border-radius: 20px; display: inline-block; margin-top: 5px; }
 
     .profile-header { display: flex; align-items: center; gap: 18px; padding: 22px; background: rgba(255,255,255,0.03); border-radius: 30px; border: 1px solid var(--border-glass); margin-bottom: 22px; flex-wrap: wrap; }
     .avatar { width: 80px; height: 80px; border-radius: 50%; background: linear-gradient(135deg, var(--accent-green), var(--accent-purple)); display: flex; align-items: center; justify-content: center; font-size: 1.8rem; color: white; overflow: hidden; border: 3px solid rgba(255,255,255,0.2); position: relative; animation: avatarGlowRotate 3s infinite; }
@@ -249,29 +319,25 @@
     .refresh-btn:active { transform: rotate(30deg); }
     .balance-amount { font-size: 3rem; font-weight: 800; color: var(--accent-green); margin: 10px 0; letter-spacing: -1px; text-shadow: 0 0 25px var(--accent-green-glow); }
     .balance-subtext { color: var(--text-muted); font-size: 0.75rem; margin-bottom: 16px; }
-    /* Кнопка вывода - усилена для гарантированной кликабельности */
-    .withdraw-btn {
-      background: var(--gradient-green);
-      color: white;
-      border: none;
-      padding: 10px 24px;
-      border-radius: 50px;
-      font-weight: 600;
-      cursor: pointer;
-      width: 100%;
-      max-width: 250px;
-      font-size: 0.85rem;
-      margin: 0 auto;
-      transition: all 0.15s ease;
-      box-shadow: 0 6px 20px var(--accent-green-glow);
+    .withdraw-btn { 
+      background: var(--gradient-green); 
+      color: white; 
+      border: none; 
+      padding: 10px 24px; 
+      border-radius: 50px; 
+      font-weight: 600; 
+      cursor: pointer; 
+      width: 100%; 
+      max-width: 250px; 
+      font-size: 0.85rem; 
+      margin: 0 auto; 
+      transition: all 0.15s ease; 
+      box-shadow: 0 6px 20px var(--accent-green-glow); 
+      display: block;
       position: relative;
       z-index: 100;
-      pointer-events: auto;
-      display: inline-block;
     }
-    .withdraw-btn:active {
-      transform: scale(0.97);
-    }
+    .withdraw-btn:active { transform: scale(0.97); }
     .balance-info { margin-top: 12px; font-size: 0.65rem; color: var(--text-muted); display: flex; align-items: center; justify-content: center; gap: 8px; }
 
     .stats-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 14px; margin-bottom: 32px; }
@@ -285,7 +351,7 @@
     .profile-link-btn i { font-size: 1.1rem; color: var(--accent-purple); }
     .add-task-btn { display: block; background: var(--gradient-purple); color: white; text-decoration: none; padding: 12px; border-radius: 40px; text-align: center; font-weight: 600; margin: 18px 0; }
 
-    /* ========== СТИЛИ ДЛЯ СИСТЕМЫ ВЫВОДА ========== */
+    /* МОДАЛЬНЫЕ ОКНА */
     .modal-overlay {
       position: fixed;
       top: 0;
@@ -304,10 +370,7 @@
       transition: all 0.2s ease;
       padding: env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left);
     }
-    .modal-overlay.active {
-      opacity: 1;
-      visibility: visible;
-    }
+    .modal-overlay.active { opacity: 1; visibility: visible; }
     .modal-content {
       background: rgba(254, 254, 254, 0.07);
       backdrop-filter: blur(30px) saturate(180%);
@@ -325,9 +388,7 @@
       margin: auto;
       position: relative;
     }
-    .modal-overlay.active .modal-content {
-      transform: translateY(0) scale(1);
-    }
+    .modal-overlay.active .modal-content { transform: translateY(0) scale(1); }
     .close-modal {
       position: absolute;
       top: max(16px, env(safe-area-inset-top));
@@ -346,204 +407,8 @@
       transition: all 0.2s ease;
       z-index: 10;
     }
-    .close-modal:active {
-      background: rgba(255, 255, 255, 0.05);
-      color: white;
-    }
-    .method-selection {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: clamp(8px, 2vw, 16px);
-      margin-bottom: 24px;
-    }
-    .method-option {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      padding: clamp(12px, 4vw, 22px) clamp(8px, 3vw, 14px);
-      background: rgba(255, 255, 255, 0.03);
-      border: 2px solid var(--border-glass);
-      border-radius: 24px;
-      cursor: pointer;
-      transition: all 0.2s ease;
-      text-align: center;
-    }
-    .method-option:active {
-      background: rgba(255, 255, 255, 0.05);
-      border-color: var(--accent-green);
-      transform: scale(0.98);
-    }
-    .method-option.active {
-      background: rgba(50, 173, 93, 0.1);
-      border-color: var(--accent-green);
-      box-shadow: 0 0 20px var(--accent-green-glow);
-    }
-    .method-icon {
-      width: clamp(40px, 10vw, 60px);
-      height: clamp(40px, 10vw, 60px);
-      border-radius: 20px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: clamp(1.5rem, 5vw, 2rem);
-      color: white;
-      margin-bottom: 10px;
-    }
-    .sbp-icon { background: linear-gradient(135deg, #1E88E5, #0D47A1); }
-    .stars-icon { background: linear-gradient(135deg, #FF6B6B, #FF5252); }
-    .crypto-icon { background: linear-gradient(135deg, #FFD93D, #FFB800); }
-    .method-name {
-      font-size: clamp(0.9rem, 3.5vw, 1rem);
-      font-weight: 700;
-      color: white;
-      margin-bottom: 4px;
-    }
-    .method-min {
-      color: var(--warning);
-      font-size: 0.8rem;
-      font-weight: 600;
-    }
-    .input-group {
-      margin-bottom: 20px;
-    }
-    .input-group label {
-      display: block;
-      color: var(--text-muted);
-      font-size: clamp(0.9rem, 3.5vw, 1rem);
-      margin-bottom: 8px;
-      font-weight: 500;
-    }
-    .input-group input, .input-group select {
-      width: 100%;
-      padding: clamp(12px, 3vw, 16px) clamp(14px, 4vw, 18px);
-      background: rgba(255, 255, 255, 0.05);
-      border: 2px solid var(--border-glass);
-      border-radius: 20px;
-      color: white;
-      font-size: clamp(0.95rem, 4vw, 1.05rem);
-      font-family: 'Plus Jakarta Sans', sans-serif;
-      transition: all 0.2s ease;
-    }
-    .input-group input:focus, .input-group select:focus {
-      outline: none;
-      border-color: var(--accent-green);
-      background: rgba(255, 255, 255, 0.08);
-    }
-    .phone-input {
-      position: relative;
-    }
-    .phone-prefix {
-      position: absolute;
-      left: 18px;
-      top: 50%;
-      transform: translateY(-50%);
-      color: var(--text-muted);
-      font-size: 1rem;
-      pointer-events: none;
-    }
-    .phone-input input {
-      padding-left: 42px;
-    }
-    .withdraw-submit {
-      background: var(--gradient-green);
-      color: white;
-      border: none;
-      padding: clamp(14px, 4vw, 18px);
-      border-radius: 40px;
-      font-weight: 600;
-      cursor: pointer;
-      width: 100%;
-      font-size: clamp(1rem, 4vw, 1.1rem);
-      transition: all 0.2s ease;
-      margin-top: 20px;
-      box-shadow: 0 8px 25px var(--accent-green-glow);
-    }
-    .withdraw-submit:active {
-      transform: scale(0.98);
-      opacity: 0.9;
-    }
-    .withdraw-submit:disabled {
-      opacity: 0.5;
-      cursor: not-allowed;
-      transform: none;
-      box-shadow: none;
-    }
-    .withdraw-step {
-      display: none;
-      animation: fadeIn 0.2s ease;
-    }
-    .withdraw-step.active {
-      display: block;
-    }
-    .step-header {
-      display: flex;
-      align-items: center;
-      margin-bottom: 20px;
-    }
-    .step-back {
-      background: none;
-      border: none;
-      color: var(--text-muted);
-      font-size: 1.2rem;
-      cursor: pointer;
-      width: 40px;
-      height: 40px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      border-radius: 50%;
-      transition: all 0.2s ease;
-      margin-right: 12px;
-    }
-    .step-back:active {
-      background: rgba(255, 255, 255, 0.05);
-      color: white;
-    }
-    .step-title {
-      flex: 1;
-      font-size: clamp(1.3rem, 5vw, 1.6rem);
-      font-weight: 800;
-      color: white;
-      letter-spacing: -0.2px;
-    }
-    .step-description {
-      color: var(--text-muted);
-      margin-bottom: 24px;
-      line-height: 1.5;
-      font-size: clamp(0.95rem, 4vw, 1.05rem);
-    }
-    .withdraw-info {
-      background: rgba(255, 255, 255, 0.03);
-      border-radius: 24px;
-      padding: 20px;
-      margin-bottom: 24px;
-    }
-    .withdraw-info-item {
-      display: flex;
-      justify-content: space-between;
-      margin-bottom: 12px;
-      font-size: 1rem;
-    }
-    .withdraw-info-item:last-child {
-      margin-bottom: 0;
-    }
-    .withdraw-info-label {
-      color: var(--text-muted);
-    }
-    .withdraw-info-value {
-      color: white;
-      font-weight: 600;
-    }
-    .stars-conversion {
-      color: var(--warning);
-      font-size: 0.9rem;
-      text-align: center;
-      margin-top: 12px;
-      font-weight: 500;
-    }
-    .full-instruction-modal .modal-content {
-      background: linear-gradient(135deg, #1e2235, #16172b);
-    }
+    .close-modal:active { background: rgba(255, 255, 255, 0.05); color: white; }
+
     .full-instruction-image {
       width: 100%;
       max-height: 180px;
@@ -566,6 +431,20 @@
       color: var(--accent-green);
       margin-bottom: 15px;
       text-align: center;
+    }
+    .user-info-badge {
+      background: rgba(255,255,255,0.03);
+      border-radius: 14px;
+      padding: 8px;
+      margin: 8px 0;
+      font-size: 0.75rem;
+      text-align: center;
+    }
+    .full-instruction-highlight {
+      background: rgba(255,255,255,0.05);
+      padding: 12px;
+      border-radius: 18px;
+      margin: 10px 0;
     }
     .modal-buttons {
       display: flex;
@@ -590,151 +469,87 @@
       position: relative;
       overflow: hidden;
     }
-    .modal-btn-primary {
-      background: var(--gradient-green);
-      color: white;
-      box-shadow: 0 4px 15px var(--accent-green-glow);
-    }
-    .modal-btn-secondary {
-      background: var(--gradient-purple);
-      color: white;
-      box-shadow: 0 4px 15px var(--accent-purple-glow);
-    }
+    .modal-btn-primary { background: var(--gradient-green); color: white; box-shadow: 0 4px 15px var(--accent-green-glow); }
+    .modal-btn-secondary { background: var(--gradient-purple); color: white; box-shadow: 0 4px 15px var(--accent-purple-glow); }
+
+    /* Стили для вывода средств */
+    .method-selection { display: grid; grid-template-columns: repeat(3, 1fr); gap: clamp(8px, 2vw, 16px); margin-bottom: 24px; }
+    .method-option { display: flex; flex-direction: column; align-items: center; padding: clamp(12px, 4vw, 22px) clamp(8px, 3vw, 14px); background: rgba(255, 255, 255, 0.03); border: 2px solid var(--border-glass); border-radius: 24px; cursor: pointer; transition: all 0.2s ease; text-align: center; }
+    .method-option.active { background: rgba(50, 173, 93, 0.1); border-color: var(--accent-green); box-shadow: 0 0 20px var(--accent-green-glow); }
+    .method-icon { width: clamp(40px, 10vw, 60px); height: clamp(40px, 10vw, 60px); border-radius: 20px; display: flex; align-items: center; justify-content: center; font-size: clamp(1.5rem, 5vw, 2rem); color: white; margin-bottom: 10px; }
+    .sbp-icon { background: linear-gradient(135deg, #1E88E5, #0D47A1); }
+    .stars-icon { background: linear-gradient(135deg, #FF6B6B, #FF5252); }
+    .crypto-icon { background: linear-gradient(135deg, #FFD93D, #FFB800); }
+    .method-name { font-size: clamp(0.9rem, 3.5vw, 1rem); font-weight: 700; color: white; margin-bottom: 4px; }
+    .method-min { color: #f59e0b; font-size: 0.8rem; font-weight: 600; }
+    .input-group { margin-bottom: 20px; }
+    .input-group label { display: block; color: var(--text-muted); font-size: clamp(0.9rem, 3.5vw, 1rem); margin-bottom: 8px; font-weight: 500; }
+    .input-group input, .input-group select { width: 100%; padding: clamp(12px, 3vw, 16px) clamp(14px, 4vw, 18px); background: rgba(255, 255, 255, 0.05); border: 2px solid var(--border-glass); border-radius: 20px; color: white; font-size: clamp(0.95rem, 4vw, 1.05rem); font-family: 'Plus Jakarta Sans', sans-serif; transition: all 0.2s ease; }
+    .phone-input { position: relative; }
+    .phone-prefix { position: absolute; left: 18px; top: 50%; transform: translateY(-50%); color: var(--text-muted); font-size: 1rem; pointer-events: none; }
+    .phone-input input { padding-left: 42px; }
+    .withdraw-submit { background: var(--gradient-green); color: white; border: none; padding: clamp(14px, 4vw, 18px); border-radius: 40px; font-weight: 600; cursor: pointer; width: 100%; font-size: clamp(1rem, 4vw, 1.1rem); transition: all 0.2s ease; margin-top: 20px; box-shadow: 0 8px 25px var(--accent-green-glow); }
+    .withdraw-submit:disabled { opacity: 0.5; cursor: not-allowed; transform: none; box-shadow: none; }
+    .withdraw-step { display: none; animation: fadeIn 0.2s ease; }
+    .withdraw-step.active { display: block; }
+    .step-header { display: flex; align-items: center; margin-bottom: 20px; }
+    .step-back { background: none; border: none; color: var(--text-muted); font-size: 1.2rem; cursor: pointer; width: 40px; height: 40px; display: flex; align-items: center; justify-content: center; border-radius: 50%; transition: all 0.2s ease; margin-right: 12px; }
+    .step-back:active { background: rgba(255, 255, 255, 0.05); color: white; }
+    .step-title { flex: 1; font-size: clamp(1.3rem, 5vw, 1.6rem); font-weight: 800; color: white; letter-spacing: -0.2px; }
+    .step-description { color: var(--text-muted); margin-bottom: 24px; line-height: 1.5; font-size: clamp(0.95rem, 4vw, 1.05rem); }
+    .withdraw-info { background: rgba(255, 255, 255, 0.03); border-radius: 24px; padding: 20px; margin-bottom: 24px; }
+    .withdraw-info-item { display: flex; justify-content: space-between; margin-bottom: 12px; font-size: 1rem; }
+    .stars-conversion { color: #f59e0b; font-size: 0.9rem; text-align: center; margin-top: 12px; font-weight: 500; }
+
+    /* ИСПРАВЛЕННЫЕ УВЕДОМЛЕНИЯ - без прозрачности, автоматически исчезают */
     .notification {
       position: fixed;
       top: calc(86px + env(safe-area-inset-top));
       left: 50%;
       transform: translateX(-50%) translateX(150%);
-      padding: 10px 22px;
-      background: rgba(22,23,43,0.96);
-      border: 1px solid var(--border-glass);
-      border-radius: 50px;
-      z-index: 2000;
-      transition: transform 0.3s;
-      width: 85%;
-      max-width: 340px;
-      text-align: center;
-      font-size: 0.8rem;
+      padding: 12px 24px;
+      background: rgba(22, 23, 43, 0.98);
       backdrop-filter: blur(20px);
-    }
-    .notification.show {
-      transform: translateX(-50%) translateX(0);
-    }
-    .cooldown-timer {
-      font-size: 0.6rem;
-      color: #f59e0b;
-      margin-top: 4px;
-      animation: pulse 1.5s infinite;
-    }
-    @keyframes pulse {
-      0% { opacity: 0.6; }
-      50% { opacity: 1; }
-      100% { opacity: 0.6; }
-    }
-    .welcome-sticker {
-      width: 100px;
-      height: 100px;
-      margin: 0 auto 16px;
-      overflow: hidden;
-      border-radius: 0;
-    }
-    .welcome-sticker img {
-      width: 100%;
-      height: 100%;
-      object-fit: contain;
-    }
-    .welcome-title {
-      font-size: 1.3rem;
-      font-weight: 800;
-      background: linear-gradient(135deg, var(--accent-green), var(--accent-purple));
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      margin-bottom: 10px;
-    }
-    .welcome-text {
-      font-size: 0.8rem;
-      padding: 12px;
-      background: rgba(255,255,255,0.03);
-      border-radius: 22px;
-      margin: 10px 0;
-      text-align: left;
-    }
-    .welcome-buttons {
-      display: flex;
-      gap: 10px;
-      margin-top: 12px;
-    }
-    .welcome-btn {
-      padding: 8px 16px;
+      border: 1px solid var(--accent-green);
       border-radius: 50px;
-      font-weight: 600;
-      cursor: pointer;
-      border: none;
-      flex: 1;
-      font-size: 0.8rem;
-    }
-    .welcome-btn-primary {
-      background: var(--gradient-green);
+      z-index: 9999;
+      transition: transform 0.3s ease;
+      width: auto;
+      min-width: 200px;
+      max-width: 85%;
+      text-align: center;
+      font-size: 0.9rem;
+      font-weight: 500;
       color: white;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+      pointer-events: none;
     }
-    .welcome-btn-secondary {
-      background: rgba(255,255,255,0.05);
-      color: var(--text-muted);
-      border: 1px solid rgba(255,255,255,0.1);
-    }
-    .friend-input {
-      width: 100%;
-      padding: 10px;
-      background: rgba(255,255,255,0.05);
-      border: 1px solid rgba(255,255,255,0.1);
-      border-radius: 40px;
-      color: white;
-      margin: 10px 0;
-      font-size: 0.8rem;
-    }
-    .loader {
-      display: inline-block;
-      width: 20px;
-      height: 20px;
-      border: 2px solid rgba(255,255,255,0.1);
-      border-radius: 50%;
-      border-top-color: var(--accent-green);
-      animation: spin 0.7s linear infinite;
-    }
-    @keyframes spin {
-      to { transform: rotate(360deg); }
-    }
-    @media (max-width: 480px) {
-      .task-actions {
-        flex-direction: column;
-        width: 100%;
-      }
-      .task-actions .task-action {
-        width: 100%;
-        justify-content: center;
-      }
-      .task-reward {
-        width: 100%;
-        justify-content: center;
-      }
-      .task-footer {
-        flex-direction: column;
-        align-items: stretch;
-      }
-    }
+    .notification.show { transform: translateX(-50%) translateX(0); }
+    .notification.success { border-color: var(--accent-green); background: rgba(50, 173, 93, 0.2); }
+    .notification.error { border-color: #f59e0b; background: rgba(245, 158, 11, 0.2); }
+    .notification.warning { border-color: #f59e0b; background: rgba(245, 158, 11, 0.2); }
 
-    /* ========== ВОССТАНОВЛЕННЫЙ ДИЗАЙН ОКНА ПОДПИСКИ ========== */
+    .cooldown-timer { font-size: 0.6rem; color: #f59e0b; margin-top: 4px; animation: pulse 1.5s infinite; }
+    @keyframes pulse { 0% { opacity: 0.6; } 50% { opacity: 1; } 100% { opacity: 0.6; } }
+
+    .welcome-sticker { width: 100px; height: 100px; margin: 0 auto 16px; overflow: hidden; border-radius: 0; }
+    .welcome-sticker img { width: 100%; height: 100%; object-fit: contain; }
+    .welcome-title { font-size: 1.3rem; font-weight: 800; background: linear-gradient(135deg, var(--accent-green), var(--accent-purple)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; margin-bottom: 10px; }
+    .welcome-text { font-size: 0.8rem; padding: 12px; background: rgba(255,255,255,0.03); border-radius: 22px; margin: 10px 0; text-align: left; }
+    .welcome-buttons { display: flex; gap: 10px; margin-top: 12px; }
+    .welcome-btn { padding: 8px 16px; border-radius: 50px; font-weight: 600; cursor: pointer; border: none; flex: 1; font-size: 0.8rem; }
+    .welcome-btn-primary { background: var(--gradient-green); color: white; }
+    .welcome-btn-secondary { background: rgba(255,255,255,0.05); color: var(--text-muted); border: 1px solid rgba(255,255,255,0.1); }
+    .friend-input { width: 100%; padding: 10px; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); border-radius: 40px; color: white; margin: 10px 0; font-size: 0.8rem; }
+    .loader { display: inline-block; width: 20px; height: 20px; border: 2px solid rgba(255,255,255,0.1); border-radius: 50%; border-top-color: var(--accent-green); animation: spin 0.7s linear infinite; }
+    @keyframes spin { to { transform: rotate(360deg); } }
+
     .subscribe-modal .modal-content {
       background: linear-gradient(145deg, #1a1c32, #12142a);
       text-align: center;
       animation: modalGlow 1s ease-out;
     }
-    .subscribe-icon {
-      font-size: 3.8rem;
-      color: var(--accent-green);
-      margin-bottom: 16px;
-      animation: pulse 2s infinite;
-    }
+    .subscribe-icon { font-size: 3.8rem; color: var(--accent-green); margin-bottom: 16px; animation: pulse 2s infinite; }
     .subscribe-btn, .check-btn {
       padding: 12px;
       border-radius: 50px;
@@ -750,40 +565,28 @@
       gap: 10px;
       transition: all 0.2s ease;
     }
-    .subscribe-btn {
-      background: linear-gradient(135deg, #0088cc, #00a3ff);
-      color: white;
-      box-shadow: 0 4px 15px rgba(0, 136, 204, 0.4);
-    }
-    .check-btn {
-      background: var(--gradient-green);
-      color: white;
-      box-shadow: 0 4px 15px var(--accent-green-glow);
-    }
-    .check-btn:disabled {
-      opacity: 0.5;
-      cursor: not-allowed;
-      transform: none;
-      box-shadow: none;
-    }
-    .subscribe-btn:active, .check-btn:active {
-      transform: scale(0.97);
-    }
-    @keyframes modalGlow {
-      0% { opacity: 0; transform: scale(0.95); }
-      100% { opacity: 1; transform: scale(1); }
+    .subscribe-btn { background: linear-gradient(135deg, #0088cc, #00a3ff); color: white; box-shadow: 0 4px 15px rgba(0, 136, 204, 0.4); }
+    .check-btn { background: var(--gradient-green); color: white; box-shadow: 0 4px 15px var(--accent-green-glow); }
+    .check-btn:disabled { opacity: 0.5; cursor: not-allowed; transform: none; box-shadow: none; }
+    .subscribe-btn:active, .check-btn:active { transform: scale(0.97); }
+    @keyframes modalGlow { 0% { opacity: 0; transform: scale(0.95); } 100% { opacity: 1; transform: scale(1); } }
+
+    @media (max-width: 480px) {
+      .task-actions { flex-direction: column; width: 100%; }
+      .task-actions .task-action { width: 100%; justify-content: center; }
+      .task-reward { width: 100%; justify-content: center; }
+      .task-footer { flex-direction: column; align-items: stretch; }
     }
   </style>
 </head>
 <body>
-  <!-- ДЕКОРАТИВНЫЕ ЭЛЕМЕНТЫ (сохранены) -->
   <div class="floating-icons">
-    <i class="fas fa-coins float-icon float-icon-1"></i><i class="fas fa-bolt float-icon float-icon-2"></i><i class="fas fa-gem float-icon float-icon-3"></i><i class="fas fa-rocket float-icon float-icon-4"></i><i class="fas fa-star float-icon float-icon-5"></i><i class="fas fa-crown float-icon float-icon-6"></i><i class="fas fa-bitcoin float-icon float-icon-7"></i><i class="fas fa-dollar-sign float-icon float-icon-8"></i><i class="fas fa-chart-line float-icon float-icon-9"></i><i class="fas fa-wallet float-icon float-icon-10"></i>
-    <i class="fas fa-fire float-icon float-icon-11"></i><i class="fas fa-meteor float-icon float-icon-12"></i><i class="fas fa-infinity float-icon float-icon-13"></i><i class="fas fa-chart-simple float-icon float-icon-14"></i><i class="fas fa-circle-nodes float-icon float-icon-15"></i>
-    <i class="fas fa-cube float-icon float-icon-16"></i><i class="fas fa-spinner float-icon float-icon-17"></i><i class="fas fa-brain float-icon float-icon-18"></i><i class="fas fa-crown float-icon float-icon-19"></i><i class="fas fa-medal float-icon float-icon-20"></i>
+    <i class="fas fa-coins float-icon float-icon-1"></i><i class="fas fa-bolt float-icon float-icon-2"></i><i class="fas fa-gem float-icon float-icon-3"></i><i class="fas fa-rocket float-icon float-icon-4"></i><i class="fas fa-star float-icon float-icon-5"></i><i class="fas fa-crown float-icon float-icon-6"></i><i class="fas fa-bitcoin float-icon float-icon-7"></i><i class="fas fa-dollar-sign float-icon float-icon-8"></i>
+    <i class="fas fa-fire float-icon float-icon-9"></i><i class="fas fa-meteor float-icon float-icon-10"></i><i class="fas fa-infinity float-icon float-icon-11"></i><i class="fas fa-chart-simple float-icon float-icon-12"></i><i class="fas fa-circle-nodes float-icon float-icon-13"></i>
+    <i class="fas fa-cube float-icon float-icon-14"></i><i class="fas fa-spinner float-icon float-icon-15"></i>
   </div>
   <div class="glitter"></div>
-  <div class="floating-dots"><div class="dot dot-1"></div><div class="dot dot-2"></div><div class="dot dot-3"></div><div class="dot dot-4"></div><div class="dot dot-5"></div><div class="dot dot-6"></div><div class="dot dot-7"></div></div>
+  <div class="floating-dots"><div class="dot dot-1"></div><div class="dot dot-2"></div><div class="dot dot-3"></div><div class="dot dot-4"></div></div>
   <div class="shimmer-line"></div><div class="shimmer-line shimmer-line-bottom"></div>
 
   <div class="top-bar"><div class="top-bar-content"><div class="topbar-user"><div class="topbar-avatar"><img id="topbar-avatar-img" src="" style="display:none;"><i id="topbar-avatar-icon" class="fas fa-user"></i></div><div class="topbar-name" id="topbar-name">Пользователь</div></div><div class="balance-mini"><i class="fas fa-gem"></i><span class="balance-mini-value" id="mini-balance">0</span></div></div></div>
@@ -791,207 +594,55 @@
   <div class="container" id="main-container">
     <header><h1 class="logo"><img src="https://raw.githubusercontent.com/exyyl/-taskgreot/main/taskgreot.png" alt="Task Greot"></h1><p class="tagline">Выполняйте задания. Получайте баллы. Меняйте на награды.</p></header>
 
-    <div id="tasks-tab" class="tab-content active"><h2 style="margin-bottom:12px; font-size:1.25rem; font-weight:700;">Доступные задания</h2><div class="sub-tab-navigation"><button class="sub-tab active" data-sub="ordinary">Обычные</button><button class="sub-tab" data-sub="special">Особые</button><button class="sub-tab" data-sub="extra">Дополнительные</button></div><div id="ordinary-tasks" class="tasks-section"><div class="tasks-grid" id="ordinary-tasks-container"></div></div><div id="special-tasks" class="tasks-section" style="display:none;"><div class="tasks-grid" id="special-tasks-container"></div></div><div id="extra-tasks" class="tasks-section" style="display:none;"><a href="https://t.me/taskgreotsupport" target="_blank" class="add-task-btn"><i class="fas fa-plus-circle"></i> Добавить своё задание</a><div id="extra-tasks-container" class="tasks-grid"></div></div></div>
+    <div id="tasks-tab" class="tab-content active">
+      <div class="tasks-header">
+        <h2>Доступные задания</h2>
+        <div class="filter-wrapper">
+          <div class="filter-icon-btn" id="filter-btn"><i class="fas fa-filter"></i> Фильтр <span id="active-filter-display" class="active-filter-text">Все</span> <i class="fas fa-chevron-down"></i></div>
+          <div class="filter-dropdown" id="filter-dropdown">
+            <div class="filter-option active" data-filter="all"><i class="fas fa-list"></i> Все задания</div>
+            <div class="filter-option" data-filter="быстрое"><i class="fas fa-bolt"></i> Быстрые</div>
+            <div class="filter-option" data-filter="прибыльное"><i class="fas fa-chart-line"></i> Прибыльные</div>
+          </div>
+        </div>
+      </div>
+      <a href="https://t.me/taskgreotsupport" target="_blank" class="add-task-btn"><i class="fas fa-plus-circle"></i> Добавить своё задание</a>
+      <div id="extra-tasks-container" class="tasks-grid"></div>
+    </div>
 
-    <div id="shop-tab" class="tab-content"><h2 style="margin-bottom:16px; font-size:1.25rem; font-weight:700;">Магазин баллов</h2><div class="shop-grid" id="shop-grid"></div></div>
+    <div id="shop-tab" class="tab-content">
+      <div class="shop-tabs">
+        <button class="shop-tab-btn active" data-shop-section="goods">Товары</button>
+        <button class="shop-tab-btn" data-shop-section="raffles">Розыгрыши</button>
+      </div>
+      <div id="shop-goods" class="shop-section active"><div class="shop-grid" id="shop-grid"></div></div>
+      <div id="shop-raffles" class="shop-section"><div class="shop-grid" id="raffles-grid"></div></div>
+    </div>
 
-    <div id="profile-tab" class="tab-content"><div class="profile-header"><div class="avatar"><i id="avatar-icon" class="fas fa-user"></i><img id="avatar-img" style="display:none;"></div><div class="profile-info"><h2 id="user-name">Загрузка...</h2><p id="user-username"><i class="fas fa-at"></i> @username</p><p id="join-date-display"><i class="fas fa-calendar-alt"></i> <span id="join-date-text">Загрузка...</span></p><span class="level-badge"><i class="fas fa-shield-alt"></i><span id="user-level">Обычный</span></span></div></div><div class="profile-buttons"><a href="https://teletype.in/@taskgreot/faq" target="_blank" class="profile-link-btn"><i class="fas fa-question-circle"></i><span>FAQ</span></a><a href="https://teletype.in/@taskgreot/partner" target="_blank" class="profile-link-btn"><i class="fas fa-handshake"></i><span>Партнёрская программа</span></a></div><div class="balance-card"><div class="balance-header"><div class="balance-label"><i class="fas fa-wallet"></i><span>Ваш баланс</span></div><button class="refresh-btn" id="refresh-balance"><i class="fas fa-sync-alt"></i></button></div><div class="balance-amount" id="balance-value">0</div><div class="balance-subtext">≈ <span id="balance-rub">0</span> ₽</div><button class="withdraw-btn" id="withdraw-btn"><i class="fas fa-exchange-alt"></i> Вывести средства</button><div class="balance-info"><i class="fas fa-info-circle"></i> Обновлено: <span id="balance-time">--:--</span></div></div><h2 style="margin-bottom:16px; font-size:1.15rem; font-weight:700;">Статистика</h2><div class="stats-grid"><div class="stat-card"><div class="stat-value" id="stat-tasks">0</div><div class="stat-label">Выполнено заданий</div></div><div class="stat-card"><div class="stat-value" id="stat-streak">0</div><div class="stat-label">Дней активности</div></div></div></div>
+    <div id="profile-tab" class="tab-content"><div class="profile-header"><div class="avatar"><i id="avatar-icon" class="fas fa-user"></i><img id="avatar-img" style="display:none;"></div><div class="profile-info"><h2 id="user-name">Загрузка...</h2><p id="user-username"><i class="fas fa-at"></i> @username</p><p id="join-date-display"><i class="fas fa-calendar-alt"></i> <span id="join-date-text">Загрузка...</span></p><span class="level-badge"><i class="fas fa-shield-alt"></i><span id="user-level">Обычный</span></span></div></div><div class="profile-buttons"><a href="https://teletype.in/@taskgreot/faq" target="_blank" class="profile-link-btn"><i class="fas fa-question-circle"></i><span>FAQ</span></a><a href="https://teletype.in/@taskgreot/partner" target="_blank" class="profile-link-btn"><i class="fas fa-handshake"></i><span>Партнёрская программа</span></a></div><div class="balance-card"><div class="balance-header"><div class="balance-label"><i class="fas fa-wallet"></i><span>Ваш баланс</span></div><button class="refresh-btn" id="refresh-balance"><i class="fas fa-sync-alt"></i></button></div><div class="balance-amount" id="balance-value">0</div><div class="balance-subtext">≈ <span id="balance-rub">0</span> ₽</div>
+      <button class="withdraw-btn" id="withdraw-btn" onclick="forceOpenWithdraw()" ontouchstart="forceOpenWithdraw()"><i class="fas fa-exchange-alt"></i> Вывести средства</button>
+      <div class="balance-info"><i class="fas fa-info-circle"></i> Обновлено: <span id="balance-time">--:--</span></div></div><h2 style="margin-bottom:16px; font-size:1.15rem; font-weight:700;">Статистика</h2><div class="stats-grid"><div class="stat-card"><div class="stat-value" id="stat-tasks">0</div><div class="stat-label">Выполнено заданий</div></div><div class="stat-card"><div class="stat-value" id="stat-streak">0</div><div class="stat-label">Дней активности</div></div></div></div>
   </div>
 
   <nav class="tab-navigation"><div class="nav-container"><button class="tab-btn active" data-tab="tasks-tab"><i class="fas fa-tasks"></i><span>Задания</span></button><button class="tab-btn" data-tab="shop-tab"><i class="fas fa-shopping-cart"></i><span>Магазин</span></button><button class="tab-btn" data-tab="profile-tab"><i class="fas fa-user"></i><span>Профиль</span></button></div></nav>
 
   <!-- МОДАЛЬНЫЕ ОКНА -->
-  <div class="modal-overlay subscribe-modal" id="subscribe-modal">
-    <div class="modal-content">
-      <div class="subscribe-icon"><i class="fab fa-telegram"></i></div>
-      <h2 class="welcome-title">Подпишитесь на канал</h2>
-      <p style="text-align:center; margin-bottom:16px;">Чтобы продолжить, подпишитесь на наш Telegram канал</p>
-      <a href="https://t.me/TaskGreot" target="_blank" class="subscribe-btn" id="subscribe-channel-btn"><i class="fab fa-telegram"></i> Перейти в канал</a>
-      <button class="check-btn" id="check-subscription-btn" disabled><i class="fas fa-check-circle"></i> Проверить доступ</button>
-    </div>
-  </div>
+  <div class="modal-overlay subscribe-modal" id="subscribe-modal"><div class="modal-content"><div class="subscribe-icon"><i class="fab fa-telegram"></i></div><h2 class="welcome-title">Подпишитесь на канал</h2><p style="text-align:center; margin-bottom:16px;">Чтобы продолжить, подпишитесь на наш Telegram канал</p><a href="https://t.me/TaskGreot" target="_blank" class="subscribe-btn" id="subscribe-channel-btn"><i class="fab fa-telegram"></i> Перейти в канал</a><button class="check-btn" id="check-subscription-btn" disabled><i class="fas fa-check-circle"></i> Проверить доступ</button></div></div>
 
   <div class="modal-overlay welcome-modal" id="welcome-modal-1"><div class="modal-content"><div class="welcome-sticker"><img src="https://assets.stickerswiki.app/s/spotty_vk/a8a1fc2f.thumb.webp"></div><h2 class="welcome-title">Добро пожаловать!</h2><div class="welcome-text"><p>✨ Task Greot — платформа для заработка</p><p>🎯 Выполняй простые задания</p><p>💰 Получай баллы и выводи награды</p></div><div class="welcome-buttons"><button class="welcome-btn welcome-btn-secondary" onclick="closeWelcomeModals()">Пропустить</button><button class="welcome-btn welcome-btn-primary" onclick="showWelcomeModal2()">Далее</button></div></div></div>
-  <div class="modal-overlay welcome-modal" id="welcome-modal-2"><div class="modal-content"><div class="welcome-sticker"><img src="https://assets.stickerswiki.app/s/spotty_vk/f36133b6.thumb.webp"></div><h2 class="welcome-title">Как выполнять задания?</h2><div class="welcome-text"><p>📌 Выбери задание и нажми «Начать»</p><p>📝 Напиши в бот слово «ПОДТВЕРДИТЬ»</p><p>⏳ Ожидай проверки модератором</p></div><div class="welcome-buttons"><button class="welcome-btn welcome-btn-secondary" onclick="closeWelcomeModals()">Пропустить</button><button class="welcome-btn welcome-btn-primary" onclick="showWelcomeModal3()">Продолжить</button></div></div></div>
+  <div class="modal-overlay welcome-modal" id="welcome-modal-2"><div class="modal-content"><div class="welcome-sticker"><img src="https://assets.stickerswiki.app/s/spotty_vk/f36133b6.thumb.webp"></div><h2 class="welcome-title">Как выполнять задания?</h2><div class="welcome-text"><p>📌 Выбери задание и нажми «Начать»</p><p>📝 Напиши в бот указанное слово</p><p>⏳ Ожидай проверки модератором</p></div><div class="welcome-buttons"><button class="welcome-btn welcome-btn-secondary" onclick="closeWelcomeModals()">Пропустить</button><button class="welcome-btn welcome-btn-primary" onclick="showWelcomeModal3()">Продолжить</button></div></div></div>
   <div class="modal-overlay welcome-modal" id="welcome-modal-3"><div class="modal-content"><div class="welcome-sticker"><img src="https://assets.stickerswiki.app/s/spotty_vk/a2a6a83f.thumb.webp"></div><h2 class="welcome-title">Как получать вознаграждение?</h2><div class="welcome-text"><p>💎 После проверки начисляются баллы</p><p>🛍 Баллы можно тратить в магазине</p><p>💸 Или выводить на карту/криптовалюту</p></div><div class="welcome-buttons"><button class="welcome-btn welcome-btn-secondary" onclick="closeWelcomeModals()">Пропустить</button><button class="welcome-btn welcome-btn-primary" onclick="showWelcomeModal4()">Продолжить</button></div></div></div>
   <div class="modal-overlay welcome-modal" id="welcome-modal-4"><div class="modal-content"><div class="welcome-sticker"><img src="https://assets.stickerswiki.app/s/spotty_vk/b42b01c7.thumb.webp"></div><h2 class="welcome-title">Реферальная программа</h2><div class="welcome-text"><p>👥 Приглашай друзей и получай бонусы</p><p>💰 0.5-1 балл за нового пользователя</p><p>🎁 Бонус за первый вывод реферала</p></div><div class="welcome-buttons"><button class="welcome-btn welcome-btn-secondary" onclick="closeWelcomeModals()">Пропустить</button><button class="welcome-btn welcome-btn-primary" onclick="showWelcomeModal5()">Продолжить</button></div></div></div>
   <div class="modal-overlay welcome-modal" id="welcome-modal-5"><div class="modal-content"><div class="welcome-sticker"><img src="https://assets.stickerswiki.app/s/spotty_vk/b42b01c7.thumb.webp"></div><h2 class="welcome-title">Вас пригласил друг?</h2><div class="welcome-buttons"><button class="welcome-btn welcome-btn-secondary" onclick="closeWelcomeModals()">Нет</button><button class="welcome-btn welcome-btn-primary" onclick="showWelcomeModal6()">Да</button></div></div></div>
-  <div class="modal-overlay welcome-modal" id="welcome-modal-6"><div class="modal-content"><div class="welcome-sticker"><img src="https://assets.stickerswiki.app/s/spotty_vk/b42b01c7.thumb.webp"></div><h2 class="welcome-title">Введите username друга</h2><input type="text" class="friend-input" id="friend-username" placeholder="@username" value="@"><div class="welcome-buttons"><button class="welcome-btn welcome-btn-secondary" onclick="closeWelcomeModals()">Отмена</button><button class="welcome-btn welcome-btn-primary" onclick="submitFriendReferral()">Отправить</button></div></div></div>
+  <div class="modal-overlay welcome-modal" id="welcome-modal-6"><div class="modal-content"><div class="welcome-sticker"><img src="https://assets.stickerswiki.app/s/spotty_vk/b42b01c7.thumb.webp"></div><h2 class="welcome-title">Введите username друга</h2><input type="text" class="friend-input" id="friend-username" placeholder="@username" value="@"><div class="welcome-buttons"><button class="welcome-btn welcome-btn-secondary" onclick="closeWelcomeModals()">Отмена</button><button class="welcome-btn welcome-btn-primary" id="submit-referral-btn">Отправить</button></div></div></div>
 
-  <!-- ПОЛНАЯ ИНСТРУКЦИЯ -->
-  <div class="modal-overlay full-instruction-modal" id="full-instruction-modal">
-    <div class="modal-content">
-      <img class="full-instruction-image" src="https://raw.githubusercontent.com/exyyl/taskgreot/refs/heads/main/taskyes.PNG">
-      <div class="full-instruction-info">
-        <div class="full-instruction-title" id="full-modal-title">Задание</div>
-        <div class="user-info-badge" id="user-info-display"></div>
-        <div class="full-instruction-highlight">
-          <p><strong>Задание:</strong> <span id="full-modal-task-name"></span></p>
-          <p><strong>Награда:</strong> <span id="full-modal-reward-value"></span> баллов</p>
-        </div>
-      </div>
-      <div class="modal-buttons">
-        <a href="#" id="full-modal-instruction-btn" target="_blank" class="modal-btn modal-btn-secondary"><i class="fas fa-book"></i> Инструкция</a>
-        <button id="full-modal-confirm-btn" class="modal-btn modal-btn-primary"><i class="fas fa-check"></i> Подтвердить</button>
-      </div>
-    </div>
-  </div>
+  <div class="modal-overlay full-instruction-modal" id="full-instruction-modal"><div class="modal-content"><img class="full-instruction-image" id="full-modal-image" src=""><div class="full-instruction-info"><div class="full-instruction-title" id="full-modal-title">Задание</div><div class="user-info-badge" id="user-info-display"></div><div class="full-instruction-highlight"><p><strong>Задание:</strong> <span id="full-modal-task-name"></span></p><p><strong>Награда:</strong> <span id="full-modal-reward-value"></span> баллов</p></div></div><div class="modal-buttons"><a href="#" id="full-modal-instruction-btn" target="_blank" class="modal-btn modal-btn-secondary"><i class="fas fa-book"></i> Инструкция</a><button id="full-modal-confirm-btn" class="modal-btn modal-btn-primary"><i class="fas fa-check"></i> Подтвердить</button></div></div></div>
 
-  <!-- ПОКУПКА -->
-  <div class="modal-overlay full-instruction-modal" id="shop-action-modal">
-    <div class="modal-content">
-      <img class="full-instruction-image" src="https://raw.githubusercontent.com/exyyl/taskgreot/refs/heads/main/buy.PNG">
-      <div class="full-instruction-info">
-        <div class="full-instruction-title">Покупка оформлена!</div>
-        <div id="shop-modal-info" class="full-instruction-desc"></div>
-      </div>
-      <div class="modal-buttons">
-        <a href="https://t.me/taskgreotsupport" target="_blank" class="modal-btn modal-btn-secondary"><i class="fas fa-headset"></i> Поддержка</a>
-        <button id="shop-modal-confirm-btn" class="modal-btn modal-btn-primary"><i class="fas fa-check"></i> OK</button>
-      </div>
-    </div>
-  </div>
+  <div class="modal-overlay full-instruction-modal" id="shop-action-modal"><div class="modal-content"><img class="full-instruction-image" src="https://raw.githubusercontent.com/exyyl/taskgreot/refs/heads/main/buy.PNG"><div class="full-instruction-info"><div class="full-instruction-title">Покупка оформлена!</div><div id="shop-modal-info" class="full-instruction-desc"></div></div><div class="modal-buttons"><a href="https://t.me/taskgreotsupport" target="_blank" class="modal-btn modal-btn-secondary"><i class="fas fa-headset"></i> Поддержка</a><button id="shop-modal-confirm-btn" class="modal-btn modal-btn-primary"><i class="fas fa-check"></i> OK</button></div></div></div>
 
-  <!-- СИСТЕМА ВЫВОДА -->
-  <div class="modal-overlay" id="withdraw-modal">
-    <div class="modal-content">
-      <button class="close-modal" onclick="closeWithdrawModal()"><i class="fas fa-times"></i></button>
-      <!-- Шаг 1: выбор метода -->
-      <div class="withdraw-step active" id="step-method">
-        <div class="modal-header">
-          <h2>Вывод средств</h2>
-          <p>Выберите удобный способ вывода</p>
-        </div>
-        <div class="method-selection">
-          <div class="method-option" data-method="sbp" data-min="50">
-            <div class="method-icon sbp-icon"><i class="fas fa-university"></i></div>
-            <div class="method-name">СБП</div>
-            <div class="method-min">мин. 50</div>
-          </div>
-          <div class="method-option" data-method="stars" data-min="75">
-            <div class="method-icon stars-icon"><i class="fas fa-star"></i></div>
-            <div class="method-name">Stars</div>
-            <div class="method-min">мин. 75</div>
-          </div>
-          <div class="method-option" data-method="crypto" data-min="100">
-            <div class="method-icon crypto-icon"><i class="fab fa-bitcoin"></i></div>
-            <div class="method-name">Крипта</div>
-            <div class="method-min">мин. 100</div>
-          </div>
-        </div>
-        <button class="withdraw-submit" id="next-to-details" disabled>Далее</button>
-      </div>
-      <!-- Шаг 2: ввод данных -->
-      <div class="withdraw-step" id="step-details">
-        <div class="step-header">
-          <button class="step-back" onclick="goToStep('method')"><i class="fas fa-arrow-left"></i></button>
-          <div class="step-title">Ввод данных</div>
-        </div>
-        <div class="step-description">Укажите данные для вывода средств</div>
-        <!-- СБП -->
-        <div id="sbp-form" style="display: none;">
-          <div class="input-group phone-input">
-            <label for="phone-number">Номер телефона</label>
-            <span class="phone-prefix">+7</span>
-            <input type="tel" id="phone-number" placeholder="900 123 45 67" maxlength="10">
-          </div>
-          <div class="input-group">
-            <label for="bank-name">Название банка</label>
-            <input type="text" id="bank-name" placeholder="Например: Сбербанк, Тинькофф">
-          </div>
-        </div>
-        <!-- Stars -->
-        <div id="stars-form" style="display: none;">
-          <div class="input-group">
-            <label for="stars-username">Username в Stars</label>
-            <input type="text" id="stars-username" placeholder="Ваш username в Stars">
-          </div>
-          <div class="withdraw-info" id="stars-info" style="display: none;">
-            <div class="withdraw-info-item">
-              <span class="withdraw-info-label">Ваш баланс:</span>
-              <span class="withdraw-info-value" id="stars-balance">0</span>
-            </div>
-            <div class="withdraw-info-item">
-              <span class="withdraw-info-label">Будет переведно:</span>
-              <span class="withdraw-info-value" id="stars-amount">0</span>
-            </div>
-            <div class="stars-conversion">1,5 балла = 1 звезда</div>
-          </div>
-        </div>
-        <!-- Крипта -->
-        <div id="crypto-form" style="display: none;">
-          <div class="input-group">
-            <label for="crypto-currency">Криптовалюта</label>
-            <select id="crypto-currency">
-              <option value="">Выберите криптовалюту</option>
-              <option value="USDT">USDT (Tether)</option>
-            </select>
-          </div>
-          <div class="input-group">
-            <label for="crypto-network">Сеть</label>
-            <select id="crypto-network">
-              <option value="">Выберите сеть</option>
-              <option value="TON">TON (The Open Network)</option>
-            </select>
-          </div>
-          <div class="input-group">
-            <label for="crypto-wallet">Адрес кошелька TON</label>
-            <input type="text" id="crypto-wallet" placeholder="Введите адрес кошелька TON">
-          </div>
-          <div class="withdraw-info" style="margin-top: 20px;">
-            <div class="withdraw-info-item">
-              <span class="withdraw-info-label">Курс обмена:</span>
-              <span class="withdraw-info-value">1 балл = 0.013 USDT</span>
-            </div>
-            <div class="withdraw-info-item">
-              <span class="withdraw-info-label">Будет переведно:</span>
-              <span class="withdraw-info-value" id="crypto-amount">0 USDT</span>
-            </div>
-          </div>
-        </div>
-        <button class="withdraw-submit" id="next-to-confirm">Далее</button>
-      </div>
-      <!-- Шаг 3: подтверждение -->
-      <div class="withdraw-step" id="step-confirm">
-        <div class="step-header">
-          <button class="step-back" onclick="goToStep('details')"><i class="fas fa-arrow-left"></i></button>
-          <div class="step-title">Подтверждение</div>
-        </div>
-        <div class="step-description">Проверьте правильность введенных данных</div>
-        <div class="withdraw-info">
-          <div class="withdraw-info-item">
-            <span class="withdraw-info-label">Метод вывода:</span>
-            <span class="withdraw-info-value" id="confirm-method">-</span>
-          </div>
-          <div class="withdraw-info-item">
-            <span class="withdraw-info-label">Сумма:</span>
-            <span class="withdraw-info-value" id="confirm-amount">-</span>
-          </div>
-          <div id="confirm-details"></div>
-        </div>
-        <div class="step-description" style="font-size: 0.95rem; color: var(--text-muted); margin-top: 24px;">
-          <i class="fas fa-info-circle"></i> Заявка будет обработана в течение 24 часов.
-        </div>
-        <button class="withdraw-submit" id="submit-withdraw"><i class="fas fa-paper-plane"></i> Подтвердить вывод</button>
-      </div>
-    </div>
-  </div>
+  <div class="modal-overlay" id="withdraw-modal"><div class="modal-content"><button class="close-modal" onclick="closeWithdrawModal()"><i class="fas fa-times"></i></button><div class="withdraw-step active" id="step-method"><div class="modal-header"><h2>Вывод средств</h2><p>Выберите способ вывода</p></div><div class="method-selection"><div class="method-option" data-method="sbp" data-min="50"><div class="method-icon sbp-icon"><i class="fas fa-university"></i></div><div class="method-name">СБП</div><div class="method-min">мин. 50</div></div><div class="method-option" data-method="stars" data-min="75"><div class="method-icon stars-icon"><i class="fas fa-star"></i></div><div class="method-name">Stars</div><div class="method-min">мин. 75</div></div><div class="method-option" data-method="crypto" data-min="100"><div class="method-icon crypto-icon"><i class="fab fa-bitcoin"></i></div><div class="method-name">Крипта</div><div class="method-min">мин. 100</div></div></div><button class="withdraw-submit" id="next-to-details" disabled>Далее</button></div><div class="withdraw-step" id="step-details"><div class="step-header"><button class="step-back" onclick="goToStep('method')"><i class="fas fa-arrow-left"></i></button><div class="step-title">Ввод данных</div></div><div id="sbp-form"><div class="input-group phone-input"><label>Номер телефона</label><span class="phone-prefix">+7</span><input type="tel" id="phone-number" placeholder="900 123 45 67"></div><div class="input-group"><label>Название банка</label><input type="text" id="bank-name" placeholder="Сбербанк, Тинькофф"></div></div><div id="stars-form" style="display:none;"><div class="input-group"><label>Username в Stars</label><input type="text" id="stars-username" placeholder="Ваш username"></div><div class="withdraw-info" id="stars-info" style="display:none;"><div class="withdraw-info-item"><span>Ваш баланс:</span><span id="stars-balance">0</span></div><div class="withdraw-info-item"><span>Будет переведно:</span><span id="stars-amount">0</span></div><div class="stars-conversion">1,5 балла = 1 звезда</div></div></div><div id="crypto-form" style="display:none;"><div class="input-group"><label>Криптовалюта</label><select id="crypto-currency"><option value="USDT">USDT (Tether)</option></select></div><div class="input-group"><label>Сеть</label><select id="crypto-network"><option value="TON">TON</option></select></div><div class="input-group"><label>Адрес кошелька</label><input type="text" id="crypto-wallet" placeholder="Введите адрес"></div><div class="withdraw-info"><div class="withdraw-info-item"><span>Курс:</span><span>1 балл = 0.013 USDT</span></div><div class="withdraw-info-item"><span>Будет переведно:</span><span id="crypto-amount">0 USDT</span></div></div></div><button class="withdraw-submit" id="next-to-confirm">Далее</button></div><div class="withdraw-step" id="step-confirm"><div class="step-header"><button class="step-back" onclick="goToStep('details')"><i class="fas fa-arrow-left"></i></button><div class="step-title">Подтверждение</div></div><div class="withdraw-info"><div class="withdraw-info-item"><span>Метод:</span><span id="confirm-method">-</span></div><div class="withdraw-info-item"><span>Сумма:</span><span id="confirm-amount">-</span></div><div id="confirm-details"></div></div><button class="withdraw-submit" id="submit-withdraw">Подтвердить вывод</button></div></div></div>
 
-  <!-- Модальное окно для уведомления об успешном выводе -->
-  <div class="modal-overlay full-instruction-modal" id="withdraw-action-modal">
-    <div class="modal-content">
-      <button class="close-modal" onclick="closeWithdrawActionModal()"><i class="fas fa-times"></i></button>
-      <img class="full-instruction-image" src="https://raw.githubusercontent.com/exyyl/taskgreot/refs/heads/main/taskmoney.png" alt="">
-      <div class="full-instruction-info">
-        <div class="full-instruction-title">Заявка на вывод</div>
-        <div id="withdraw-modal-info" class="full-instruction-desc"></div>
-      </div>
-      <div class="modal-buttons">
-        <a href="https://t.me/taskgreotsupport" target="_blank" class="modal-btn modal-btn-secondary"><i class="fas fa-headset"></i> Поддержка</a>
-        <button id="withdraw-modal-confirm-btn" class="modal-btn modal-btn-primary"><i class="fas fa-check"></i> OK</button>
-      </div>
-    </div>
-  </div>
+  <div class="modal-overlay full-instruction-modal" id="withdraw-action-modal"><div class="modal-content"><img class="full-instruction-image" src="https://raw.githubusercontent.com/exyyl/taskgreot/refs/heads/main/taskmoney.png"><div class="full-instruction-info"><div class="full-instruction-title">Заявка на вывод</div><div id="withdraw-modal-info" class="full-instruction-desc"></div></div><div class="modal-buttons"><a href="https://t.me/taskgreotsupport" target="_blank" class="modal-btn modal-btn-secondary"><i class="fas fa-headset"></i> Поддержка</a><button id="withdraw-modal-confirm-btn" class="modal-btn modal-btn-primary"><i class="fas fa-check"></i> OK</button></div></div></div>
 
   <div class="notification" id="notification"><span id="notification-text">Сообщение</span></div>
 
@@ -1002,26 +653,27 @@
       shop: "https://discord.com/api/webhooks/1482044776579600407/xzXDoq3bHpoEbPGeftsA_AnNNevzH7f1XXDAe8noJpIDG916foJMljfU9VVRyfRnpmxP",
       withdraw: "https://discord.com/api/webhooks/1482044792908021822/tSdm_1QoLZmrrc7MSTPiqYpNdYxbEZh3yaG59qgMI5pqXUd2EcA2FLsZ9Bv_IhJjAtDT",
       startTask: "https://discord.com/api/webhooks/1482044836512272576/7doccpRcf6KKviva-BTSJe80pJg2xOBoIz8_p1gQednxUiWwlpW2TD_WhySE6z4xYSk0",
-      referrals: "https://discord.com/api/webhooks/1482044836512272576/7doccpRcf6KKviva-BTSJe80pJg2xOBoIz8_p1gQednxUiWwlpW2TD_WhySE6z4xYSk0"
+      raffles: "https://discord.com/api/webhooks/1482044836512272576/7doccpRcf6KKviva-BTSJe80pJg2xOBoIz8_p1gQednxUiWwlpW2TD_WhySE6z4xYSk0"
     };
     const CONFIG = {
       BD_FILE_URL: 'https://raw.githubusercontent.com/exyyl/-taskgreot/main/bd.txt',
       EXTRA_TASKS_URL: 'https://raw.githubusercontent.com/exyyl/-taskgreot/main/zadan.txt',
-      POINT_TO_RUB: 1,
-      COOLDOWN_HOURS: 1,
-      TASK_GLOBAL_COOLDOWN: 3 * 60 * 1000
+      REF_FILE_URL: 'https://raw.githubusercontent.com/exyyl/-taskgreot/main/ref.txt',
+      ROZ_FILE_URL: 'https://raw.githubusercontent.com/exyyl/-taskgreot/main/roz.txt',
+      POINT_TO_RUB: 1
     };
 
-    // ========== ГЛОБАЛЬНЫЕ ПЕРЕМЕННЫЕ ==========
     let currentUser = null;
     let totalTasksTaken = parseInt(localStorage.getItem('total_tasks_taken')) || 0;
     let lastWithdrawTime = localStorage.getItem('last_withdraw_time');
     let currentTaskData = null, pendingTaskAfterSubscribe = null, isTaskConfirming = false;
     let hasSubscribed = localStorage.getItem('has_subscribed') === 'true';
-
-    // Переменные для системы вывода
     let selectedWithdrawMethod = null;
     let withdrawData = {};
+    let allTasks = [];
+    let allRaffles = [];
+    let currentFilter = 'all';
+    let currentShopSection = 'goods';
 
     // ========== УТИЛИТЫ ==========
     function showNotification(text, type = 'success') {
@@ -1030,7 +682,12 @@
       document.getElementById('notification-text').textContent = text;
       n.className = 'notification ' + type;
       n.classList.add('show');
-      setTimeout(() => n.classList.remove('show'), 2800);
+      // Автоматически скрываем через 3 секунды
+      setTimeout(() => {
+        if (n.classList.contains('show')) {
+          n.classList.remove('show');
+        }
+      }, 3000);
     }
 
     function sendDiscordLog(webhook, type, data) {
@@ -1052,17 +709,6 @@
             { name: '💎 Награда', value: `${data.reward} баллов`, inline: true }
           ];
           break;
-        case 'shop':
-          title = '🛒 НОВАЯ ПОКУПКА';
-          color = 0x9d4edd;
-          fields = [
-            { name: '🆔 ID', value: `\`${ui.id}\``, inline: true },
-            { name: '👤 Покупатель', value: ui.name, inline: true },
-            { name: '📝 Username', value: ui.username, inline: true },
-            { name: '🎁 Товар', value: `\`\`\`${data.item}\`\`\``, inline: false },
-            { name: '💎 Цена', value: `${data.price} баллов`, inline: true }
-          ];
-          break;
         case 'withdraw':
           title = '💰 НОВЫЙ ВЫВОД';
           color = 0xf59e0b;
@@ -1071,19 +717,7 @@
             { name: '👤 Пользователь', value: ui.name, inline: true },
             { name: '📝 Username', value: ui.username, inline: true },
             { name: '💎 Сумма', value: `${data.amount} баллов`, inline: true },
-            { name: '💳 Метод', value: data.method, inline: true },
-            { name: '📄 Детали', value: `\`\`\`${data.details}\`\`\``, inline: false }
-          ];
-          break;
-        case 'start':
-          title = '🚀 НАЧАЛО ЗАДАНИЯ';
-          color = 0x32ad5d;
-          fields = [
-            { name: '🆔 ID', value: `\`${ui.id}\``, inline: true },
-            { name: '👤 Пользователь', value: ui.name, inline: true },
-            { name: '📝 Username', value: ui.username, inline: true },
-            { name: '📌 Задание', value: `\`\`\`${data.title}\`\`\``, inline: false },
-            { name: '💎 Награда', value: `${data.reward} баллов`, inline: true }
+            { name: '💳 Метод', value: data.method, inline: true }
           ];
           break;
         case 'referral':
@@ -1092,8 +726,19 @@
           fields = [
             { name: '👤 Реферал', value: `${ui.name} (${ui.id})`, inline: true },
             { name: '📝 Username реферала', value: ui.username, inline: true },
-            { name: '🤝 Пригласивший', value: `@${data.referrer}`, inline: true },
-            { name: '⏰ Время', value: `<t:${Math.floor(Date.now()/1000)}:F>`, inline: false }
+            { name: '🤝 Пригласивший', value: `@${data.referrer}`, inline: true }
+          ];
+          break;
+        case 'raffle':
+          title = '🎲 ПОКУПКА БИЛЕТА';
+          color = 0x9d4edd;
+          fields = [
+            { name: '🆔 ID', value: `\`${ui.id}\``, inline: true },
+            { name: '👤 Пользователь', value: ui.name, inline: true },
+            { name: '📝 Username', value: ui.username, inline: true },
+            { name: '🎁 Розыгрыш', value: data.raffleTitle, inline: false },
+            { name: '🎫 Билетов', value: `${data.tickets} шт.`, inline: true },
+            { name: '💎 Стоимость', value: `${data.price} баллов`, inline: true }
           ];
           break;
       }
@@ -1102,7 +747,6 @@
       fetch(webhook, { method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({ username:'Task Greot Logger', embeds:[embed] }) }).catch(()=>{});
     }
 
-    // ========== ИНИЦИАЛИЗАЦИЯ ПОЛЬЗОВАТЕЛЯ ==========
     function initTelegram() {
       try {
         if(window.Telegram?.WebApp) {
@@ -1120,12 +764,6 @@
       if(saved) { currentUser = JSON.parse(saved); return true; }
       currentUser = { id: Math.floor(Math.random()*1e9), first_name:'Гость', last_name:'', username:'guest', photo_url:null };
       return false;
-    }
-
-    function getUserDisplayInfo() {
-      if(!currentUser) return '';
-      const name = `${currentUser.first_name||''} ${currentUser.last_name||''}`.trim() || 'Пользователь';
-      return `<i class="fas fa-user"></i> ${name}<br>${currentUser.username?`<i class="fas fa-at"></i> @${currentUser.username}<br>`:''}<i class="fas fa-id-card"></i> ID: ${currentUser.id}`;
     }
 
     async function loadBalanceFromFile() {
@@ -1173,18 +811,7 @@
         document.getElementById('topbar-avatar-img').src = currentUser.photo_url;
         document.getElementById('topbar-avatar-img').style.display='block';
         document.getElementById('topbar-avatar-icon').style.display='none';
-      } else {
-        document.getElementById('avatar-img').style.display='none';
-        document.getElementById('avatar-icon').style.display='flex';
-        document.getElementById('topbar-avatar-img').style.display='none';
-        document.getElementById('topbar-avatar-icon').style.display='flex';
-        const init = (currentUser.first_name?.charAt(0)||'')+(currentUser.last_name?.charAt(0)||'');
-        if(init) { document.getElementById('avatar-icon').textContent = init; document.getElementById('topbar-avatar-icon').textContent = init; }
       }
-      updateStreak(); displayJoinDate();
-    }
-
-    function updateStreak() {
       const today = new Date().toDateString(), last = localStorage.getItem('taskgreot_last_date');
       let streak = parseInt(localStorage.getItem('taskgreot_streak'))||0;
       if(last && last!==today) { const diff = Math.floor((new Date(today)-new Date(last))/86400000); streak = diff===1 ? streak+1 : 1; }
@@ -1192,88 +819,116 @@
       localStorage.setItem('taskgreot_last_date',today);
       localStorage.setItem('taskgreot_streak',streak);
       document.getElementById('stat-streak').textContent = streak;
-    }
-
-    function displayJoinDate() {
       let first = localStorage.getItem('taskgreot_first_visit');
       if(!first) { first = new Date().toISOString(); localStorage.setItem('taskgreot_first_visit',first); }
       const date = new Date(first);
       document.getElementById('join-date-text').textContent = date.toLocaleDateString('ru-RU', { year:'numeric', month:'long', day:'numeric' });
     }
 
-    // ========== ЗАДАНИЯ И ПОДПИСКА ==========
-    function checkTaskCooldown(id,type,val) {
+    // ========== ЗАГРУЗКА ЗАДАНИЙ ==========
+    async function loadExtraTasks() {
+      const c = document.getElementById('extra-tasks-container');
+      if(!c) return;
+      c.innerHTML = '<div style="text-align:center;padding:40px;"><div class="loader"></div><p>Загрузка...</p></div>';
+      try {
+        const r = await fetch(CONFIG.EXTRA_TASKS_URL+'?t='+Date.now());
+        if(!r.ok) throw new Error();
+        const t = await r.text();
+        if(!t?.trim()) { c.innerHTML = '<div style="padding:24px;text-align:center;"><p>Нет заданий</p></div>'; return; }
+        const lines = t.trim().split('\n');
+        allTasks = [];
+        for(let line of lines) {
+          const parts = line.split('–').map(s=>s.trim());
+          if(parts.length >= 9) {
+            allTasks.push({
+              id: parts[0], photo: parts[1], instruction: parts[2], title: parts[3],
+              desc: parts[4], reward: parseInt(parts[5]), cooldown: parseInt(parts[6]),
+              filter: parts[7], confirmWord: parts[8]
+            });
+          }
+        }
+        renderTasksByFilter();
+      } catch(e) { c.innerHTML = '<div style="padding:24px;text-align:center;"><p>Ошибка загрузки</p></div>'; }
+    }
+
+    function renderTasksByFilter() {
+      const c = document.getElementById('extra-tasks-container');
+      let filteredTasks = currentFilter !== 'all' ? allTasks.filter(t => t.filter && t.filter.includes(currentFilter)) : allTasks;
+      if(filteredTasks.length === 0) { c.innerHTML = '<div style="padding:24px;text-align:center;"><p>Нет заданий</p></div>'; return; }
+      c.innerHTML = filteredTasks.map(task => `
+        <div class="task-card">
+          <div class="task-row">
+            <div class="task-icon"><img src="${task.photo}" onerror="this.src='https://via.placeholder.com/56/32ad5d/ffffff?text=Task'"></div>
+            <div class="task-content">
+              <h3 class="task-title">${task.title}</h3>
+              <p class="task-desc">${task.desc}</p>
+              <div style="margin-top: 8px;"><span class="task-filter-badge"><i class="fas fa-tag"></i> ${task.filter}</span></div>
+            </div>
+          </div>
+          <div class="task-footer">
+            <div class="task-reward"><i class="fas fa-gem"></i> +${task.reward} баллов</div>
+            <div class="task-actions">
+              <button class="task-action instruction-btn" onclick="openInstruction('${task.instruction}')"><i class="fas fa-book"></i> Инструкция</button>
+              <button class="task-action task-start-btn" onclick="startTask('${task.id}', '${task.title.replace(/'/g,"\\'")}', ${task.reward}, '${task.instruction}', '${task.desc.replace(/'/g,"\\'")}', ${task.cooldown}, '${task.confirmWord}', '${task.photo}')"><i class="fas fa-play-circle"></i> Начать</button>
+            </div>
+          </div>
+        </div>
+      `).join('');
+    }
+
+    function checkTaskCooldown(id, cooldownMinutes) {
       const last = localStorage.getItem(`task_cooldown_${id}`);
       if(!last) return { canStart:true };
-      const now = Date.now();
-      let ms = 0;
-      if(type==='daily') ms = 86400000 / val;
-      else if(type==='days') ms = val * 86400000;
-      else if(type==='minutes') ms = val * 60000;
-      else if(type==='once') return { canStart:false, remaining:Infinity };
-      else ms = 86400000;
-      const left = parseInt(last)+ms-now;
+      const left = parseInt(last) + (cooldownMinutes * 60000) - Date.now();
       if(left<=0) { localStorage.removeItem(`task_cooldown_${id}`); return { canStart:true }; }
       return { canStart:false, remaining:left };
     }
 
-    function renderTaskCard(t) {
-      return `<div class="task-card"><div class="task-row"><div class="task-icon"><i class="${t.icon}"></i></div><div class="task-content"><h3 class="task-title">${t.title}</h3><p class="task-desc">${t.desc}</p></div></div><div class="task-footer"><div class="task-reward"><i class="fas fa-gem"></i> +${t.reward} баллов</div><div class="task-actions"><button class="task-action instruction-btn" onclick="openInstruction('${t.instruction}')"><i class="fas fa-book"></i> Инструкция</button><button class="task-action task-start-btn" onclick="startTask('${t.id}', '${t.title.replace(/'/g,"\\'")}', ${t.reward}, '${t.instruction}', '${t.desc.replace(/'/g,"\\'")}', '${t.cooldownType}', ${t.cooldownValue})"><i class="fas fa-play-circle"></i> Начать</button></div></div></div>`;
-    }
-
     function openInstruction(url) { if(url) window.open(url,'_blank'); else showNotification('Инструкция недоступна','warning'); }
 
-    function startTask(id,title,reward,instruction,desc,cdType,cdVal) {
-      const cd = checkTaskCooldown(id,cdType,cdVal);
-      if(!cd.canStart) {
-        const hours = Math.floor(cd.remaining/3600000), minutes = Math.floor((cd.remaining%3600000)/60000);
-        showNotification(`⏳ Подождите ${hours}ч ${minutes}м`,'warning');
-        return;
-      }
+    function startTask(id, title, reward, instruction, desc, cooldown, confirmWord, photo) {
+      const cd = checkTaskCooldown(id, cooldown);
+      if(!cd.canStart) { showNotification(`⏳ Подождите ${Math.floor(cd.remaining/60000)} мин`,'warning'); return; }
       if(!hasSubscribed) {
-        pendingTaskAfterSubscribe = { id,title,reward,instruction,desc,cdType,cdVal };
-        const modal = document.getElementById('subscribe-modal');
-        if (modal) modal.classList.add('active');
+        pendingTaskAfterSubscribe = { id, title, reward, instruction, desc, cooldown, confirmWord, photo };
+        document.getElementById('subscribe-modal').classList.add('active');
         const hasClickedChannel = localStorage.getItem('user_clicked_subscribe_channel') === 'true';
         const checkBtn = document.getElementById('check-subscription-btn');
-        if (checkBtn && hasClickedChannel) {
-          checkBtn.disabled = false;
-        }
+        if (checkBtn && hasClickedChannel) checkBtn.disabled = false;
         return;
       }
       if(window.Telegram?.WebApp) {
-        Telegram.WebApp.showPopup({
-          title: 'Подтверждение',
-          message: `Подтверждаете взятие задания "${title}"?`,
-          buttons: [{ id: 'cancel', type: 'cancel', text: 'Отмена' }, { id: 'confirm', type: 'ok', text: 'Да' }]
-        }, (buttonId) => { if (buttonId === 'confirm') performTaskAccept(id,title,reward,instruction,desc,cdType,cdVal); });
+        Telegram.WebApp.showPopup({ title: 'Подтверждение', message: `Подтверждаете взятие задания "${title}"?`, buttons: [{ id: 'cancel', type: 'cancel', text: 'Отмена' }, { id: 'confirm', type: 'ok', text: 'Да' }] }, (buttonId) => { if (buttonId === 'confirm') performTaskAccept(id, title, reward, instruction, desc, cooldown, confirmWord, photo); });
       } else {
-        if(confirm(`Подтверждаете взятие задания "${title}"?`)) performTaskAccept(id,title,reward,instruction,desc,cdType,cdVal);
+        if(confirm(`Подтверждаете взятие задания "${title}"?`)) performTaskAccept(id, title, reward, instruction, desc, cooldown, confirmWord, photo);
       }
     }
 
-    function performTaskAccept(id,title,reward,instruction,desc,cdType,cdVal) {
+    function performTaskAccept(id, title, reward, instruction, desc, cooldown, confirmWord, photo) {
       sendDiscordLog(DISCORD_WEBHOOKS.tasks,'task',{ title, reward, id });
-      sendDiscordLog(DISCORD_WEBHOOKS.startTask,'start',{ title, reward });
       localStorage.setItem(`task_cooldown_${id}`, Date.now().toString());
-      localStorage.setItem('last_task_time', Date.now().toString());
       totalTasksTaken++;
       localStorage.setItem('total_tasks_taken', totalTasksTaken);
       document.getElementById('stat-tasks').textContent = totalTasksTaken;
-      openFullInstructionModal(id,title,reward,instruction,desc);
+      openFullInstructionModal(id, title, reward, instruction, desc, confirmWord, photo);
     }
 
-    function openFullInstructionModal(id,title,reward,instruction,desc) {
-      currentTaskData = { id,title,reward,instruction,desc };
+    function openFullInstructionModal(id, title, reward, instruction, desc, confirmWord, photo) {
+      currentTaskData = { id, title, reward, instruction, desc, confirmWord };
       document.getElementById('full-modal-title').textContent = title;
       document.getElementById('full-modal-task-name').textContent = title;
       document.getElementById('full-modal-reward-value').textContent = reward;
       document.getElementById('full-modal-instruction-btn').href = instruction;
+      document.getElementById('full-modal-image').src = photo;
       document.getElementById('user-info-display').innerHTML = getUserDisplayInfo();
       document.getElementById('full-instruction-modal').classList.add('active');
     }
 
-    function closeFullInstructionModal() { document.getElementById('full-instruction-modal').classList.remove('active'); }
+    function getUserDisplayInfo() {
+      if(!currentUser) return '';
+      const name = `${currentUser.first_name||''} ${currentUser.last_name||''}`.trim() || 'Пользователь';
+      return `<i class="fas fa-user"></i> ${name}<br>${currentUser.username?`<i class="fas fa-at"></i> @${currentUser.username}<br>`:''}<i class="fas fa-id-card"></i> ID: ${currentUser.id}`;
+    }
 
     async function confirmTask() {
       if(isTaskConfirming || !currentTaskData) return;
@@ -1281,23 +936,19 @@
       const btn = document.getElementById('full-modal-confirm-btn');
       btn.disabled = true; btn.textContent = 'Подождите...';
       try {
-        await navigator.clipboard.writeText('ПОДТВЕРДИТЬ');
+        await navigator.clipboard.writeText(currentTaskData.confirmWord);
         closeFullInstructionModal();
-        if(window.Telegram?.WebApp) {
-          Telegram.WebApp.showPopup({
-            title:'⛔️ ВАЖНО!',
-            message:'Слово "ПОДТВЕРДИТЬ" скопировано! Напишите его в бот',
-            buttons:[{ id:'ok', type:'ok', text:'Понятно' }]
-          }, ()=>{ if(window.Telegram?.WebApp) Telegram.WebApp.close(); });
-        } else { alert('Слово "ПОДТВЕРДИТЬ" скопировано! Напишите его в бот'); }
-        setTimeout(()=>{ if(window.Telegram?.WebApp) Telegram.WebApp.close(); },1500);
-      } catch(e) { showNotification('❌ Ошибка','error'); } finally {
+        showNotification(`✅ Слово «${currentTaskData.confirmWord}» скопировано! Напишите его в бот.`, 'success');
+        if(window.Telegram?.WebApp) Telegram.WebApp.showPopup({ title:'⛔️ ВАЖНО!', message:`Слово "${currentTaskData.confirmWord}" скопировано! Напишите его в бот`, buttons:[{ id:'ok', type:'ok', text:'Понятно' }] });
+      } catch(e) { showNotification('❌ Ошибка копирования','error'); } finally {
         btn.disabled = false; btn.textContent = 'Подтвердить';
         isTaskConfirming = false;
       }
     }
 
-    // ========== МАГАЗИН ==========
+    function closeFullInstructionModal() { document.getElementById('full-instruction-modal').classList.remove('active'); }
+
+    // ========== МАГАЗИН И РОЗЫГРЫШИ ==========
     const shopItems = [
       { id:"teddy_bear", title:"Мишка в Telegram", price:23, emoji:"🧸" },
       { id:"rose", title:"Роза в Telegram", price:38, emoji:"🌹" },
@@ -1308,51 +959,98 @@
     ];
 
     function renderShop() {
-      const c = document.getElementById('shop-grid'); if(!c) return;
-      c.innerHTML = shopItems.map(i=>`<div class="shop-item" data-shop-id="${i.id}" data-shop-title="${i.title}" data-shop-price="${i.price}"><div class="shop-emoji">${i.emoji}</div><div class="shop-content"><h3 class="shop-title">${i.title}</h3><div class="shop-price"><i class="fas fa-gem"></i> ${i.price}</div><button class="shop-btn shop-buy-btn">Купить</button><div class="cooldown-timer" id="cooldown-${i.id}" style="display:none;"></div></div></div>`).join('');
-      updateShopCooldowns();
+      const c = document.getElementById('shop-grid');
+      if(!c) return;
+      c.innerHTML = shopItems.map(i=>`<div class="shop-item" data-shop-id="${i.id}" data-shop-title="${i.title}" data-shop-price="${i.price}"><div class="shop-emoji">${i.emoji}</div><div class="shop-content"><h3 class="shop-title">${i.title}</h3><div class="shop-price"><i class="fas fa-gem"></i> ${i.price}</div><button class="shop-btn shop-buy-btn">Купить</button></div></div>`).join('');
     }
 
-    function checkShopCooldown(id) {
-      const last = localStorage.getItem(`last_purchase_${id}`);
-      if(!last) return { canBuy:true };
-      const left = parseInt(last) + CONFIG.COOLDOWN_HOURS*3600000 - Date.now();
-      if(left<=0) { localStorage.removeItem(`last_purchase_${id}`); return { canBuy:true }; }
-      return { canBuy:false, remaining:left };
-    }
-
-    function updateShopCooldowns() {
-      shopItems.forEach(i=>{
-        const cd = checkShopCooldown(i.id);
-        const t = document.getElementById(`cooldown-${i.id}`);
-        const btn = document.querySelector(`.shop-item[data-shop-id="${i.id}"] .shop-buy-btn`);
-        if(t&&btn) {
-          if(!cd.canBuy) {
-            btn.classList.add('disabled');
-            t.style.display='block';
-            const h = Math.floor(cd.remaining/3600000), m = Math.floor((cd.remaining%3600000)/60000);
-            t.textContent = `⏳ ${h}ч ${m}м`;
-          } else { btn.classList.remove('disabled'); t.style.display='none'; }
+    async function loadRaffles() {
+      const c = document.getElementById('raffles-grid');
+      if(!c) return;
+      c.innerHTML = '<div style="text-align:center;padding:40px;"><div class="loader"></div><p>Загрузка...</p></div>';
+      try {
+        const r = await fetch(CONFIG.ROZ_FILE_URL+'?t='+Date.now());
+        if(!r.ok) throw new Error();
+        const t = await r.text();
+        if(!t?.trim()) { c.innerHTML = '<div style="padding:24px;text-align:center;"><p>Нет розыгрышей</p></div>'; return; }
+        const lines = t.trim().split('\n');
+        allRaffles = [];
+        for(let line of lines) {
+          const parts = line.split('–').map(s=>s.trim());
+          if(parts.length >= 7) {
+            allRaffles.push({
+              id: parts[0], photo: parts[1], title: parts[2], tickets: parseInt(parts[3]), price: parseInt(parts[4]), desc: parts[5], link: parts[6]
+            });
+          }
         }
-      });
+        renderRaffles();
+      } catch(e) { c.innerHTML = '<div style="padding:24px;text-align:center;"><p>Ошибка загрузки</p></div>'; }
+    }
+
+    function renderRaffles() {
+      const c = document.getElementById('raffles-grid');
+      if(allRaffles.length === 0) { c.innerHTML = '<div style="padding:24px;text-align:center;"><p>Нет розыгрышей</p></div>'; return; }
+      c.innerHTML = allRaffles.map(raffle => `
+        <div class="shop-item" data-raffle-id="${raffle.id}" data-raffle-title="${raffle.title}" data-raffle-price="${raffle.price}" data-raffle-tickets="${raffle.tickets}" data-raffle-link="${raffle.link || ''}">
+          <div class="shop-emoji"><img src="${raffle.photo}" style="width:50px;height:50px;object-fit:contain;border-radius:12px;" onerror="this.src='https://via.placeholder.com/50/9d4edd/ffffff?text=🎲'"></div>
+          <div class="shop-content">
+            <h3 class="shop-title">${raffle.title}</h3>
+            <p style="font-size:0.7rem;color:var(--text-muted);margin:5px 0;">${raffle.desc}</p>
+            ${raffle.tickets > 0 ? `<div class="ticket-badge"><i class="fas fa-ticket-alt"></i> ${raffle.tickets} билетов</div>` : '<div class="ticket-badge"><i class="fas fa-gift"></i> Бесплатный вход</div>'}
+            ${raffle.price > 0 ? `<div class="shop-price"><i class="fas fa-gem"></i> ${raffle.price} за билет</div>` : '<div class="shop-price"><i class="fas fa-gem"></i> Бесплатно</div>'}
+            <button class="shop-btn raffle-buy-btn">${raffle.price > 0 ? 'Купить билет' : 'Участвовать'}</button>
+          </div>
+        </div>
+      `).join('');
+    }
+
+    async function handleRafflePurchase(el) {
+      const id = el.dataset.raffleId, title = el.dataset.raffleTitle, price = parseInt(el.dataset.rafflePrice), tickets = parseInt(el.dataset.raffleTickets), link = el.dataset.raffleLink;
+      
+      // Если цена и билеты = 0 (бесплатный розыгрыш)
+      if (price === 0 && tickets === 0) {
+        // Если есть ссылка и она не пустая и не "0" — открываем её (без уведомления)
+        if (link && link !== '' && link !== '0' && link !== 'undefined') {
+          window.open(link, '_blank');
+          // Не показываем уведомление о переходе
+        } else {
+          // Если ссылки нет — просто подтверждаем участие
+          if(window.Telegram?.WebApp) {
+            Telegram.WebApp.showPopup({ title:'🎲 Бесплатный розыгрыш', message: `Участвовать в розыгрыше "${title}" бесплатно?`, buttons:[{ id:'cancel', type:'cancel', text:'Отмена' },{ id:'confirm', type:'ok', text:'Участвовать' }] }, (bid)=>{ if(bid==='confirm') processRafflePurchase(id,title,price,tickets,link); });
+          } else {
+            if(confirm(`Участвовать в розыгрыше "${title}" бесплатно?`)) processRafflePurchase(id,title,price,tickets,link);
+          }
+        }
+        return;
+      }
+      
+      // Платный розыгрыш
+      const bal = parseInt(document.getElementById('balance-value')?.textContent.replace(/\D/g,''))||0;
+      if(price > 0 && bal < price) { showNotification(`❌ Нужно ${price} баллов`,'error'); return; }
+      const msg = `Купить билет на "${title}" за ${price} баллов?`;
+      if(window.Telegram?.WebApp) {
+        Telegram.WebApp.showPopup({ title:'🎲 Участие', message: msg, buttons:[{ id:'cancel', type:'cancel', text:'Отмена' },{ id:'confirm', type:'ok', text:'Купить' }] }, (bid)=>{ if(bid==='confirm') processRafflePurchase(id,title,price,tickets,link); });
+      } else {
+        if(confirm(msg)) processRafflePurchase(id,title,price,tickets,link);
+      }
+    }
+
+    function processRafflePurchase(id, title, price, tickets, link) {
+      if (price > 0) {
+        sendDiscordLog(DISCORD_WEBHOOKS.raffles, 'raffle', { raffleTitle: title, tickets: 1, price: price });
+      }
+      const msg = price > 0 ? `✅ Билет на "${title}" куплен!` : `✅ Вы участвуете в розыгрыше "${title}"!`;
+      showNotification(msg, 'success');
+      document.getElementById('shop-modal-info').innerHTML = `<p><strong>Розыгрыш:</strong> ${title}</p><p><strong>Статус:</strong> ${price > 0 ? 'Билет приобретён' : 'Участие подтверждено'}</p><p style="color: #f59e0b;">Результаты будут объявлены в канале</p>`;
+      document.getElementById('shop-action-modal').classList.add('active');
     }
 
     async function handleShopPurchase(el) {
       const id = el.dataset.shopId, title = el.dataset.shopTitle, price = parseInt(el.dataset.shopPrice);
-      const cd = checkShopCooldown(id);
-      if(!cd.canBuy) {
-        const h = Math.floor(cd.remaining/3600000), m = Math.floor((cd.remaining%3600000)/60000);
-        showNotification(`⏳ Подождите ${h}ч ${m}м`,'warning');
-        return;
-      }
       const bal = parseInt(document.getElementById('balance-value')?.textContent.replace(/\D/g,''))||0;
       if(bal<price) { showNotification(`❌ Нужно ${price} баллов`,'error'); return; }
       if(window.Telegram?.WebApp) {
-        Telegram.WebApp.showPopup({
-          title:'🛒 Подтверждение',
-          message:`Купить "${title}" за ${price} баллов?`,
-          buttons:[{ id:'cancel', type:'cancel', text:'Отмена' },{ id:'confirm', type:'ok', text:'Купить' }]
-        }, (bid)=>{ if(bid==='confirm') processPurchase(id,title,price); });
+        Telegram.WebApp.showPopup({ title:'🛒 Подтверждение', message:`Купить "${title}" за ${price} баллов?`, buttons:[{ id:'cancel', type:'cancel', text:'Отмена' },{ id:'confirm', type:'ok', text:'Купить' }] }, (bid)=>{ if(bid==='confirm') processPurchase(id,title,price); });
       } else {
         if(confirm(`Купить "${title}" за ${price} баллов?`)) processPurchase(id,title,price);
       }
@@ -1360,59 +1058,42 @@
 
     function processPurchase(id,title,price) {
       sendDiscordLog(DISCORD_WEBHOOKS.shop,'shop',{ item:title, price });
-      localStorage.setItem(`last_purchase_${id}`, Date.now().toString());
-      updateShopCooldowns();
       document.getElementById('shop-modal-info').innerHTML = `<p><strong>Товар:</strong> ${title}</p><p><strong>Цена:</strong> ${price} баллов</p><p><strong>Статус:</strong> Заявка создана</p><p style="color: #f59e0b;">Обработаем в течение 24 часов</p>`;
       document.getElementById('shop-action-modal').classList.add('active');
     }
 
-    function closeShopActionModal() { document.getElementById('shop-action-modal').classList.remove('active'); }
-    function closeWithdrawActionModal() { document.getElementById('withdraw-action-modal').classList.remove('active'); }
-
-    // ========== ДОПОЛНИТЕЛЬНЫЕ ЗАДАНИЯ ==========
-    async function loadExtraTasks() {
-      const c = document.getElementById('extra-tasks-container'); if(!c) return;
-      c.innerHTML = '<div style="text-align:center;padding:40px;"><div class="loader"></div><p>Загрузка...</p></div>';
+    // ========== РЕФЕРАЛЬНАЯ ПРОВЕРКА ==========
+    async function checkReferralExists(username) {
       try {
-        const r = await fetch(CONFIG.EXTRA_TASKS_URL+'?t='+Date.now());
-        if(!r.ok) throw new Error();
+        const r = await fetch(CONFIG.REF_FILE_URL+'?t='+Date.now());
+        if(!r.ok) return false;
         const t = await r.text();
-        if(!t?.trim()) { c.innerHTML = '<div style="padding:24px;text-align:center;"><p>Нет заданий</p></div>'; return; }
-        const lines = t.trim().split('\n');
-        let html = '';
-        for(let line of lines) {
-          const parts = line.split('–').map(s=>s.trim());
-          if(parts.length>=7) {
-            const [num,ph,instr,ttl,desc,rew,cdMin] = parts;
-            html += `<div class="task-card"><div class="task-row"><div class="task-icon"><img src="${ph}" onerror="this.src='https://via.placeholder.com/56/32ad5d/ffffff?text=Task'"></div><div class="task-content"><h3 class="task-title">${ttl}</h3><p class="task-desc">${desc}</p></div></div><div class="task-footer"><div class="task-reward"><i class="fas fa-gem"></i> +${rew} баллов</div><div class="task-actions"><button class="task-action instruction-btn" onclick="openInstruction('${instr}')"><i class="fas fa-book"></i> Инструкция</button><button class="task-action task-start-btn" onclick="startTask('extra_${num}', '${ttl.replace(/'/g,"\\'")}', ${rew}, '${instr}', '${desc.replace(/'/g,"\\'")}', 'minutes', ${cdMin})"><i class="fas fa-play-circle"></i> Начать</button></div></div></div>`;
-          }
-        }
-        c.innerHTML = html || '<div style="padding:24px;text-align:center;"><p>Нет заданий</p></div>';
-      } catch(e) { c.innerHTML = '<div style="padding:24px;text-align:center;"><p>Ошибка загрузки</p></div>'; }
+        const users = t.trim().split('\n').map(l => l.trim().toLowerCase());
+        return users.includes(username.toLowerCase());
+      } catch(e) { return false; }
     }
 
-    // ========== ПРИВЕТСТВИЕ ==========
-    function showWelcomeModal2() { document.getElementById('welcome-modal-1').classList.remove('active'); document.getElementById('welcome-modal-2').classList.add('active'); }
-    function showWelcomeModal3() { document.getElementById('welcome-modal-2').classList.remove('active'); document.getElementById('welcome-modal-3').classList.add('active'); }
-    function showWelcomeModal4() { document.getElementById('welcome-modal-3').classList.remove('active'); document.getElementById('welcome-modal-4').classList.add('active'); }
-    function showWelcomeModal5() { document.getElementById('welcome-modal-4').classList.remove('active'); document.getElementById('welcome-modal-5').classList.add('active'); }
-    function showWelcomeModal6() { document.getElementById('welcome-modal-5').classList.remove('active'); document.getElementById('welcome-modal-6').classList.add('active'); }
-    function closeWelcomeModals() { document.querySelectorAll('.welcome-modal').forEach(m=>m.classList.remove('active')); localStorage.setItem('has_seen_welcome','true'); }
-    function submitFriendReferral() {
+    async function submitFriendReferral() {
       const friendUsername = document.getElementById('friend-username').value.trim();
       if (!friendUsername || friendUsername === '@') {
         showNotification('Введите корректный username друга', 'warning');
         return;
       }
       const cleanUsername = friendUsername.startsWith('@') ? friendUsername.slice(1) : friendUsername;
-      sendDiscordLog(DISCORD_WEBHOOKS.referrals, 'referral', { referrer: cleanUsername });
+      const exists = await checkReferralExists(cleanUsername);
+      if (!exists) {
+        showNotification('❌ Этот пользователь не зарегистрирован в реферальной программе', 'error');
+        return;
+      }
+      sendDiscordLog(DISCORD_WEBHOOKS.raffles, 'referral', { referrer: cleanUsername });
       showNotification('✅ Спасибо! Реферал зарегистрирован', 'success');
       closeWelcomeModals();
     }
 
-    // ========== НОВАЯ СИСТЕМА ВЫВОДА (функции) ==========
-    function openWithdrawModal() {
-      console.log('openWithdrawModal вызвана');
+    // ========== ВЫВОД СРЕДСТВ (ГАРАНТИРОВАННО РАБОТАЕТ) ==========
+    function forceOpenWithdraw() {
+      console.log('forceOpenWithdraw вызвана');
+      // Проверка кулдауна
       if (lastWithdrawTime) {
         const diffHours = (Date.now() - parseInt(lastWithdrawTime)) / (1000 * 60 * 60);
         if (diffHours < 24) {
@@ -1421,283 +1102,240 @@
         }
       }
       const modal = document.getElementById('withdraw-modal');
-      if (modal) modal.classList.add('active');
-      resetWithdrawModal();
+      if (modal) {
+        modal.classList.add('active');
+        resetWithdrawModal();
+      } else {
+        console.error('Модальное окно #withdraw-modal не найдено');
+      }
     }
 
-    function closeWithdrawModal() {
-      document.getElementById('withdraw-modal').classList.remove('active');
-      resetWithdrawModal();
+    function openWithdrawModal() {
+      forceOpenWithdraw();
     }
 
+    function closeWithdrawModal() { 
+      const modal = document.getElementById('withdraw-modal');
+      if (modal) modal.classList.remove('active');
+      resetWithdrawModal();
+    }
+    
     function resetWithdrawModal() {
-      selectedWithdrawMethod = null;
+      selectedWithdrawMethod = null; 
       withdrawData = {};
       document.querySelectorAll('.method-option').forEach(o => o.classList.remove('active'));
-      document.getElementById('next-to-details').disabled = true;
+      const nextBtn = document.getElementById('next-to-details');
+      if (nextBtn) nextBtn.disabled = true;
       goToStep('method');
     }
-
+    
     function goToStep(step) {
       document.querySelectorAll('.withdraw-step').forEach(el => el.classList.remove('active'));
       const stepEl = document.getElementById(`step-${step}`);
       if (stepEl) stepEl.classList.add('active');
     }
-
+    
     function selectWithdrawMethod(method, minAmount) {
       selectedWithdrawMethod = method;
       withdrawData.method = method;
-      document.querySelectorAll('.method-option').forEach(o => {
-        o.classList.toggle('active', o.dataset.method === method);
-      });
+      document.querySelectorAll('.method-option').forEach(o => o.classList.toggle('active', o.dataset.method === method));
       const balance = parseInt(document.getElementById('balance-value')?.textContent.replace(/\D/g, '')) || 0;
-      document.getElementById('next-to-details').disabled = balance < minAmount;
-      if (balance >= minAmount) withdrawData.amount = balance;
+      const nextBtn = document.getElementById('next-to-details');
+      if (nextBtn) nextBtn.disabled = balance < minAmount;
     }
-
+    
     function nextToDetails() {
       if (!selectedWithdrawMethod) return;
-      ['sbp-form', 'stars-form', 'crypto-form'].forEach(id => {
-        document.getElementById(id).style.display = 'none';
+      ['sbp-form','stars-form','crypto-form'].forEach(id => {
+        const el = document.getElementById(id);
+        if (el) el.style.display = 'none';
       });
-      switch(selectedWithdrawMethod) {
-        case 'sbp':
-          document.getElementById('sbp-form').style.display = 'block';
-          break;
-        case 'stars':
-          document.getElementById('stars-form').style.display = 'block';
-          updateStarsInfo();
-          break;
-        case 'crypto':
-          document.getElementById('crypto-form').style.display = 'block';
-          updateCryptoInfo();
-          break;
+      const formId = selectedWithdrawMethod + '-form';
+      const formEl = document.getElementById(formId);
+      if (formEl) formEl.style.display = 'block';
+      if (selectedWithdrawMethod === 'stars') {
+        const balance = parseInt(document.getElementById('balance-value')?.textContent.replace(/\D/g, '')) || 0;
+        const starsBalance = document.getElementById('stars-balance');
+        const starsAmount = document.getElementById('stars-amount');
+        const starsInfo = document.getElementById('stars-info');
+        if (starsBalance) starsBalance.textContent = balance + ' баллов';
+        if (starsAmount) starsAmount.textContent = Math.floor(balance / 1.5) + ' звезд';
+        if (starsInfo) starsInfo.style.display = 'block';
+      } else if (selectedWithdrawMethod === 'crypto') {
+        const balance = parseInt(document.getElementById('balance-value')?.textContent.replace(/\D/g, '')) || 0;
+        const cryptoAmount = document.getElementById('crypto-amount');
+        if (cryptoAmount) cryptoAmount.textContent = (balance * 0.013).toFixed(2) + ' USDT';
       }
       goToStep('details');
     }
-
-    function updateStarsInfo() {
-      const balance = parseInt(document.getElementById('balance-value')?.textContent.replace(/\D/g, '')) || 0;
-      document.getElementById('stars-balance').textContent = balance + ' баллов';
-      document.getElementById('stars-amount').textContent = Math.floor(balance / 1.5) + ' звезд';
-      document.getElementById('stars-info').style.display = 'block';
-    }
-
-    function updateCryptoInfo() {
-      const balance = parseInt(document.getElementById('balance-value')?.textContent.replace(/\D/g, '')) || 0;
-      document.getElementById('crypto-amount').textContent = (balance * 0.013).toFixed(2) + ' USDT';
-    }
-
+    
     function validateDetails() {
       if (!selectedWithdrawMethod) return false;
-      switch(selectedWithdrawMethod) {
-        case 'sbp':
-          const phone = document.getElementById('phone-number')?.value.trim();
-          const bank = document.getElementById('bank-name')?.value.trim();
-          if (!phone || phone.length < 10 || !bank) return false;
-          withdrawData.phone = '+7' + phone.replace(/\s/g, '');
-          withdrawData.bankName = bank;
-          return true;
-        case 'stars':
-          const username = document.getElementById('stars-username')?.value.trim();
-          if (!username) return false;
-          withdrawData.username = username;
-          withdrawData.starsAmount = Math.floor((parseInt(document.getElementById('balance-value')?.textContent.replace(/\D/g, '')) || 0) / 1.5);
-          return true;
-        case 'crypto':
-          const currency = document.getElementById('crypto-currency')?.value;
-          const network = document.getElementById('crypto-network')?.value;
-          const wallet = document.getElementById('crypto-wallet')?.value.trim();
-          if (!currency || !network || !wallet) return false;
-          withdrawData.currency = currency;
-          withdrawData.network = network;
-          withdrawData.wallet = wallet;
-          withdrawData.cryptoAmount = ((parseInt(document.getElementById('balance-value')?.textContent.replace(/\D/g, '')) || 0) * 0.013).toFixed(2);
-          return true;
-        default: return false;
+      if (selectedWithdrawMethod === 'sbp') {
+        const phone = document.getElementById('phone-number')?.value.trim();
+        const bank = document.getElementById('bank-name')?.value.trim();
+        if (!phone || phone.length < 10 || !bank) return false;
+        withdrawData.phone = '+7' + phone.replace(/\s/g, '');
+        withdrawData.bankName = bank;
+        return true;
+      } else if (selectedWithdrawMethod === 'stars') {
+        const username = document.getElementById('stars-username')?.value.trim();
+        if (!username) return false;
+        withdrawData.username = username;
+        return true;
+      } else if (selectedWithdrawMethod === 'crypto') {
+        const wallet = document.getElementById('crypto-wallet')?.value.trim();
+        if (!wallet) return false;
+        withdrawData.wallet = wallet;
+        return true;
       }
+      return false;
     }
-
+    
     function nextToConfirm() {
-      if (!validateDetails()) {
-        showNotification('Заполните все поля', 'error');
-        return;
-      }
+      if (!validateDetails()) { showNotification('Заполните все поля', 'error'); return; }
       const balance = parseInt(document.getElementById('balance-value')?.textContent.replace(/\D/g, '')) || 0;
-      document.getElementById('confirm-method').textContent = 
-        selectedWithdrawMethod === 'sbp' ? 'СБП' : 
-        selectedWithdrawMethod === 'stars' ? 'Stars' : 'USDT (TON)';
-      document.getElementById('confirm-amount').textContent = balance + ' баллов';
-      const details = document.getElementById('confirm-details');
-      details.innerHTML = '';
-      switch(selectedWithdrawMethod) {
-        case 'sbp':
-          details.innerHTML = `
-            <div class="withdraw-info-item"><span>Телефон:</span><span>${withdrawData.phone}</span></div>
-            <div class="withdraw-info-item"><span>Банк:</span><span>${withdrawData.bankName}</span></div>
-          `;
-          break;
-        case 'stars':
-          details.innerHTML = `
-            <div class="withdraw-info-item"><span>Username:</span><span>${withdrawData.username}</span></div>
-            <div class="withdraw-info-item"><span>Получите:</span><span>${withdrawData.starsAmount} ⭐</span></div>
-          `;
-          break;
-        case 'crypto':
-          details.innerHTML = `
-            <div class="withdraw-info-item"><span>Адрес:</span><span>${withdrawData.wallet.substring(0,6)}...${withdrawData.wallet.slice(-4)}</span></div>
-            <div class="withdraw-info-item"><span>Получите:</span><span>${withdrawData.cryptoAmount} USDT</span></div>
-          `;
-          break;
+      const confirmMethod = document.getElementById('confirm-method');
+      const confirmAmount = document.getElementById('confirm-amount');
+      const confirmDetails = document.getElementById('confirm-details');
+      if (confirmMethod) confirmMethod.textContent = selectedWithdrawMethod === 'sbp' ? 'СБП' : selectedWithdrawMethod === 'stars' ? 'Stars' : 'USDT';
+      if (confirmAmount) confirmAmount.textContent = balance + ' баллов';
+      if (confirmDetails) {
+        let detailsHtml = '';
+        if (selectedWithdrawMethod === 'sbp') {
+          detailsHtml = `<div class="withdraw-info-item"><span>Телефон:</span><span>${withdrawData.phone}</span></div>
+                         <div class="withdraw-info-item"><span>Банк:</span><span>${withdrawData.bankName}</span></div>`;
+        } else if (selectedWithdrawMethod === 'stars') {
+          detailsHtml = `<div class="withdraw-info-item"><span>Username:</span><span>${withdrawData.username}</span></div>
+                         <div class="withdraw-info-item"><span>Получите:</span><span>${Math.floor(balance/1.5)} ⭐</span></div>`;
+        } else if (selectedWithdrawMethod === 'crypto') {
+          detailsHtml = `<div class="withdraw-info-item"><span>Адрес:</span><span>${withdrawData.wallet.substring(0,6)}...${withdrawData.wallet.slice(-4)}</span></div>
+                         <div class="withdraw-info-item"><span>Получите:</span><span>${(balance*0.013).toFixed(2)} USDT</span></div>`;
+        }
+        confirmDetails.innerHTML = detailsHtml;
       }
       goToStep('confirm');
     }
-
+    
     function processWithdraw() {
       const balance = parseInt(document.getElementById('balance-value')?.textContent.replace(/\D/g, '')) || 0;
-      const methodText = selectedWithdrawMethod === 'sbp' ? 'СБП' : selectedWithdrawMethod === 'stars' ? 'Stars' : 'USDT';
-      const details = selectedWithdrawMethod === 'sbp' ? `📱 ${withdrawData.phone}\n🏦 ${withdrawData.bankName}` :
-                      selectedWithdrawMethod === 'stars' ? `👤 ${withdrawData.username}\n⭐ ${withdrawData.starsAmount}` :
-                      `🔑 ${withdrawData.wallet}`;
-      openWithdrawActionModal({
-        amount: balance,
-        method: selectedWithdrawMethod,
-        ...withdrawData
-      });
-      sendDiscordLog(DISCORD_WEBHOOKS.withdraw, 'withdraw', {
-        amount: balance,
-        method: methodText,
-        details: details
-      });
+      openWithdrawActionModal({ amount: balance, method: selectedWithdrawMethod, ...withdrawData });
+      sendDiscordLog(DISCORD_WEBHOOKS.withdraw, 'withdraw', { amount: balance, method: selectedWithdrawMethod === 'sbp' ? 'СБП' : selectedWithdrawMethod === 'stars' ? 'Stars' : 'USDT' });
       localStorage.setItem('last_withdraw_time', Date.now().toString());
       closeWithdrawModal();
     }
-
+    
     function openWithdrawActionModal(data) {
       const modal = document.getElementById('withdraw-action-modal');
       const info = document.getElementById('withdraw-modal-info');
       const methodText = data.method === 'sbp' ? 'СБП' : data.method === 'stars' ? 'Stars' : 'USDT';
-      info.innerHTML = `
-        <p><strong>Сумма:</strong> ${data.amount} баллов</p>
-        <p><strong>Метод:</strong> ${methodText}</p>
-        <p><strong>Статус:</strong> Заявка создана</p>
-        <p style="color: #f59e0b; margin-top: 10px;">Заявка будет обработана в течение 24 часов</p>
-      `;
+      info.innerHTML = `<p><strong>Сумма:</strong> ${data.amount} баллов</p><p><strong>Метод:</strong> ${methodText}</p><p><strong>Статус:</strong> Заявка создана</p><p style="color: #f59e0b;">Обработаем в течение 24 часов</p>`;
       modal.classList.add('active');
     }
 
-    // ========== ИНИЦИАЛИЗАЦИЯ ==========
-    const tasksData = {
-      ordinary: [
-        { id:"tiktok_comments", title:"Комментарии в TikTok", reward:500, desc:"Напишите 100 комментариев под тематическими видео.", instruction:"https://teletype.in/@taskgreot/task-tiktok-comments", icon:"fab fa-tiktok", cooldownType:"daily", cooldownValue:1 },
-        { id:"yandex_reviews", title:"Отзыв на Яндекс Картах", reward:60, desc:"Оставьте отзыв по шаблону.", instruction:"https://teletype.in/@taskgreot/task-yandex-reviews", icon:"fas fa-map-marker-alt", cooldownType:"days", cooldownValue:3 },
-        { id:"gmail_create", title:"Создание почты Gmail", reward:8, desc:"Создайте почтовый ящик.", instruction:"https://teletype.in/@taskgreot/task-gmail", icon:"fas fa-envelope", cooldownType:"daily", cooldownValue:2 }
-      ],
-      special: [
-        { id:"special_verification", title:"Верификация партнёра", reward:60, desc:"Пройдите верификацию и опрос.", instruction:"https://teletype.in/@taskgreot/task-verification", icon:"fas fa-user-shield", cooldownType:"days", cooldownValue:7 },
-        { id:"quick_registration", title:"2-минутная регистрация", reward:10, desc:"Зарегистрируйтесь на сайте.", instruction:"https://teletype.in/@taskgreot/quick-registration", icon:"fas fa-user-plus", cooldownType:"days", cooldownValue:7 },
-        { id:"subscribe_partners", title:"Подписка на партнёров", reward:3, desc:"Подпишитесь на трёх партнёров.", instruction:"https://teletype.in/@taskgreot/subscribe-partners", icon:"fas fa-users", cooldownType:"once", cooldownValue:1 }
-      ]
-    };
+    function closeShopActionModal() { document.getElementById('shop-action-modal').classList.remove('active'); }
+    function closeWithdrawActionModal() { document.getElementById('withdraw-action-modal').classList.remove('active'); }
 
+    // ========== ПРИВЕТСТВИЕ ==========
+    function showWelcomeModal2() { document.getElementById('welcome-modal-1').classList.remove('active'); document.getElementById('welcome-modal-2').classList.add('active'); }
+    function showWelcomeModal3() { document.getElementById('welcome-modal-2').classList.remove('active'); document.getElementById('welcome-modal-3').classList.add('active'); }
+    function showWelcomeModal4() { document.getElementById('welcome-modal-3').classList.remove('active'); document.getElementById('welcome-modal-4').classList.add('active'); }
+    function showWelcomeModal5() { document.getElementById('welcome-modal-4').classList.remove('active'); document.getElementById('welcome-modal-5').classList.add('active'); }
+    function showWelcomeModal6() { document.getElementById('welcome-modal-5').classList.remove('active'); document.getElementById('welcome-modal-6').classList.add('active'); }
+    function closeWelcomeModals() { document.querySelectorAll('.welcome-modal').forEach(m=>m.classList.remove('active')); localStorage.setItem('has_seen_welcome','true'); }
+
+    // ========== ИНИЦИАЛИЗАЦИЯ ==========
     document.addEventListener('DOMContentLoaded', () => {
       initTelegram(); updateProfile(); renderShop(); updateBalance(false);
-      document.getElementById('ordinary-tasks-container').innerHTML = tasksData.ordinary.map(renderTaskCard).join('');
-      document.getElementById('special-tasks-container').innerHTML = tasksData.special.map(renderTaskCard).join('');
+      loadExtraTasks(); loadRaffles();
       document.getElementById('stat-tasks').textContent = totalTasksTaken;
       if(!localStorage.getItem('has_seen_welcome')) setTimeout(()=>document.getElementById('welcome-modal-1').classList.add('active'),500);
       showNotification(`👋 Привет, ${currentUser?.first_name||'Пользователь'}!`,'success');
 
-      // Подписка: обработчик для перехода в канал
-      const subscribeBtn = document.getElementById('subscribe-channel-btn');
-      if (subscribeBtn) {
-        subscribeBtn.addEventListener('click', () => {
-          localStorage.setItem('user_clicked_subscribe_channel', 'true');
-          const checkBtn = document.getElementById('check-subscription-btn');
-          if (checkBtn) checkBtn.disabled = false;
+      // Фильтр
+      const filterBtn = document.getElementById('filter-btn');
+      const dropdown = document.getElementById('filter-dropdown');
+      const options = document.querySelectorAll('.filter-option');
+      const activeDisplay = document.getElementById('active-filter-display');
+      filterBtn.addEventListener('click', (e) => { e.stopPropagation(); dropdown.classList.toggle('show'); });
+      document.addEventListener('click', () => dropdown.classList.remove('show'));
+      options.forEach(opt => {
+        opt.addEventListener('click', (e) => {
+          e.stopPropagation();
+          currentFilter = opt.dataset.filter;
+          options.forEach(o => o.classList.remove('active'));
+          opt.classList.add('active');
+          let displayText = 'Все';
+          if (currentFilter === 'быстрое') displayText = '⚡ Быстрые';
+          else if (currentFilter === 'прибыльное') displayText = '💰 Прибыльные';
+          activeDisplay.textContent = displayText;
+          renderTasksByFilter();
+          dropdown.classList.remove('show');
         });
-      }
-      const checkSubscription = document.getElementById('check-subscription-btn');
-      if (checkSubscription) {
-        checkSubscription.addEventListener('click', () => {
-          hasSubscribed = true;
-          localStorage.setItem('has_subscribed','true');
-          document.getElementById('subscribe-modal').classList.remove('active');
-          if (pendingTaskAfterSubscribe) {
-            startTask(pendingTaskAfterSubscribe.id, pendingTaskAfterSubscribe.title, pendingTaskAfterSubscribe.reward, pendingTaskAfterSubscribe.instruction, pendingTaskAfterSubscribe.desc, pendingTaskAfterSubscribe.cdType, pendingTaskAfterSubscribe.cdVal);
-            pendingTaskAfterSubscribe = null;
-          } else {
-            showNotification('✅ Доступ открыт!','success');
-          }
+      });
+
+      // Переключение между товарами и розыгрышами
+      document.querySelectorAll('.shop-tab-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+          document.querySelectorAll('.shop-tab-btn').forEach(b => b.classList.remove('active'));
+          btn.classList.add('active');
+          currentShopSection = btn.dataset.shopSection;
+          document.getElementById('shop-goods').classList.toggle('active', currentShopSection === 'goods');
+          document.getElementById('shop-raffles').classList.toggle('active', currentShopSection === 'raffles');
         });
-      }
+      });
+
+      document.getElementById('subscribe-channel-btn')?.addEventListener('click', () => {
+        localStorage.setItem('user_clicked_subscribe_channel', 'true');
+        const checkBtn = document.getElementById('check-subscription-btn');
+        if (checkBtn) checkBtn.disabled = false;
+      });
+      document.getElementById('check-subscription-btn')?.addEventListener('click', () => {
+        hasSubscribed = true;
+        localStorage.setItem('has_subscribed','true');
+        document.getElementById('subscribe-modal').classList.remove('active');
+        if (pendingTaskAfterSubscribe) {
+          startTask(pendingTaskAfterSubscribe.id, pendingTaskAfterSubscribe.title, pendingTaskAfterSubscribe.reward, pendingTaskAfterSubscribe.instruction, pendingTaskAfterSubscribe.desc, pendingTaskAfterSubscribe.cooldown, pendingTaskAfterSubscribe.confirmWord, pendingTaskAfterSubscribe.photo);
+          pendingTaskAfterSubscribe = null;
+        } else showNotification('✅ Доступ открыт!','success');
+      });
 
       document.getElementById('full-modal-confirm-btn')?.addEventListener('click', confirmTask);
       document.getElementById('refresh-balance')?.addEventListener('click', ()=>updateBalance(true));
-      
-      // ========== ГАРАНТИРОВАННЫЙ ОБРАБОТЧИК КНОПКИ ВЫВОДА ==========
+      document.getElementById('submit-referral-btn')?.addEventListener('click', submitFriendReferral);
+      
+      // Кнопка вывода средств уже имеет onclick атрибут в HTML, но добавим ещё для надёжности
       const withdrawBtn = document.getElementById('withdraw-btn');
       if (withdrawBtn) {
-        console.log('Кнопка вывода найдена, добавляем обработчик');
-        // Удаляем старые обработчики, чтобы избежать дублирования
-        withdrawBtn.removeEventListener('click', openWithdrawModal);
-        withdrawBtn.addEventListener('click', openWithdrawModal);
-        // Также добавляем обработчик через делегирование на случай, если кнопка будет пересоздана
-        document.body.addEventListener('click', function(e) {
-          const btn = e.target.closest('#withdraw-btn');
-          if (btn) {
-            e.preventDefault();
-            openWithdrawModal();
-          }
-        });
-      } else {
-        console.error('Кнопка вывода не найдена');
+        withdrawBtn.removeEventListener('click', forceOpenWithdraw);
+        withdrawBtn.addEventListener('click', forceOpenWithdraw);
       }
-      
-      document.querySelectorAll('.shop-buy-btn').forEach(btn=>btn.addEventListener('click',(e)=>{ const it=e.target.closest('.shop-item'); if(it) handleShopPurchase(it); }));
-
-      // Переключение вкладок
+      
+      document.querySelectorAll('.shop-buy-btn').forEach(btn=>btn.addEventListener('click',(e)=>{ const it=e.target.closest('.shop-item'); if(it && it.dataset.shopId) handleShopPurchase(it); }));
+      document.getElementById('shop-grid')?.addEventListener('click', (e) => { const btn = e.target.closest('.shop-buy-btn'); if(btn) { const it = btn.closest('.shop-item'); if(it && it.dataset.shopId) handleShopPurchase(it); } });
+      document.getElementById('raffles-grid')?.addEventListener('click', (e) => { const btn = e.target.closest('.raffle-buy-btn'); if(btn) { const it = btn.closest('.shop-item'); if(it && it.dataset.raffleId) handleRafflePurchase(it); } });
+      
       document.querySelectorAll('.tab-btn').forEach(btn=>btn.addEventListener('click',()=>{
         const id=btn.dataset.tab;
         document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));
         document.querySelectorAll('.tab-content').forEach(c=>c.classList.remove('active'));
         btn.classList.add('active'); document.getElementById(id).classList.add('active');
         if(id==='profile-tab') updateBalance(false);
-        else if(id==='shop-tab') updateShopCooldowns();
-        else if(id==='tasks-tab' && document.querySelector('.sub-tab.active')?.dataset.sub==='extra') loadExtraTasks();
+        else if(id==='tasks-tab') loadExtraTasks();
       }));
 
-      // Подвкладки заданий
-      document.querySelectorAll('.sub-tab').forEach(tab=>tab.addEventListener('click',()=>{
-        const sub=tab.dataset.sub;
-        document.querySelectorAll('.sub-tab').forEach(t=>t.classList.remove('active'));
-        tab.classList.add('active');
-        document.getElementById('ordinary-tasks').style.display=sub==='ordinary'?'':'none';
-        document.getElementById('special-tasks').style.display=sub==='special'?'':'none';
-        document.getElementById('extra-tasks').style.display=sub==='extra'?'':'none';
-        if(sub==='extra') loadExtraTasks();
-      }));
-
-      // Обработчики системы вывода
-      document.querySelectorAll('.method-option').forEach(opt => {
-        opt.addEventListener('click', () => {
-          selectWithdrawMethod(opt.dataset.method, parseInt(opt.dataset.min));
-        });
-      });
+      document.querySelectorAll('.method-option').forEach(opt => opt.addEventListener('click', () => selectWithdrawMethod(opt.dataset.method, parseInt(opt.dataset.min))));
       document.getElementById('next-to-details')?.addEventListener('click', nextToDetails);
       document.getElementById('next-to-confirm')?.addEventListener('click', nextToConfirm);
       document.getElementById('submit-withdraw')?.addEventListener('click', processWithdraw);
       document.getElementById('shop-modal-confirm-btn')?.addEventListener('click', closeShopActionModal);
       document.getElementById('withdraw-modal-confirm-btn')?.addEventListener('click', closeWithdrawActionModal);
-
-      // Форматирование телефона
+      
       document.getElementById('phone-number')?.addEventListener('input', function(e) {
         let v = this.value.replace(/\D/g, '').slice(0,10);
         this.value = v.replace(/(\d{3})(\d{3})(\d{2})(\d{2})/, '$1 $2 $3 $4').trim();
       });
-
-      setInterval(updateShopCooldowns, 1000);
     });
   </script>
 </body>
-  </html>
+</html>
