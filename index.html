@@ -194,7 +194,6 @@
     .logo img { max-width: 300px; width: 100%; height: auto; margin: 0 auto; filter: drop-shadow(0 0 20px var(--accent-purple-glow)); }
     .tagline { color: var(--text-muted); font-size: 0.85rem; max-width: 500px; margin: 0 auto; line-height: 1.4; }
 
-    /* Заголовок с фильтром */
     .tasks-header {
       display: flex;
       justify-content: space-between;
@@ -269,11 +268,12 @@
     .task-actions { display: flex; gap: 10px; flex-wrap: wrap; }
     .task-reward { color: var(--accent-green); font-weight: 700; font-size: 0.85rem; background: rgba(50,173,93,0.1); padding: 5px 12px; border-radius: 40px; display: inline-flex; align-items: center; gap: 6px; }
     .task-filter-badge { color: var(--accent-purple); font-size: 0.7rem; background: rgba(157,78,221,0.15); padding: 2px 8px; border-radius: 20px; display: inline-flex; align-items: center; gap: 4px; }
+    .task-time-badge { color: #f59e0b; font-size: 0.7rem; background: rgba(245, 158, 11, 0.15); padding: 2px 8px; border-radius: 20px; display: inline-flex; align-items: center; gap: 4px; margin-left: 8px; }
     .task-action { background: var(--gradient-green); color: white; border: none; padding: 7px 18px; border-radius: 40px; font-weight: 600; cursor: pointer; font-size: 0.8rem; display: inline-flex; align-items: center; gap: 8px; transition: all 0.15s ease; box-shadow: 0 4px 12px var(--accent-green-glow); }
+    .task-action.disabled { opacity: 0.5; cursor: not-allowed; }
     .instruction-btn { background: rgba(157,78,221,0.2); border: 1px solid rgba(157,78,221,0.3); color: var(--accent-purple); box-shadow: none; }
     .task-action:active { transform: scale(0.97); }
 
-    /* Магазин и розыгрыши */
     .shop-tabs {
       display: flex;
       gap: 12px;
@@ -501,7 +501,6 @@
     .withdraw-info-item { display: flex; justify-content: space-between; margin-bottom: 12px; font-size: 1rem; }
     .stars-conversion { color: #f59e0b; font-size: 0.9rem; text-align: center; margin-top: 12px; font-weight: 500; }
 
-    /* ИСПРАВЛЕННЫЕ УВЕДОМЛЕНИЯ - без прозрачности, автоматически исчезают */
     .notification {
       position: fixed;
       top: calc(86px + env(safe-area-inset-top));
@@ -653,7 +652,8 @@
       shop: "https://discord.com/api/webhooks/1482044776579600407/xzXDoq3bHpoEbPGeftsA_AnNNevzH7f1XXDAe8noJpIDG916foJMljfU9VVRyfRnpmxP",
       withdraw: "https://discord.com/api/webhooks/1482044792908021822/tSdm_1QoLZmrrc7MSTPiqYpNdYxbEZh3yaG59qgMI5pqXUd2EcA2FLsZ9Bv_IhJjAtDT",
       startTask: "https://discord.com/api/webhooks/1482044836512272576/7doccpRcf6KKviva-BTSJe80pJg2xOBoIz8_p1gQednxUiWwlpW2TD_WhySE6z4xYSk0",
-      raffles: "https://discord.com/api/webhooks/1482044836512272576/7doccpRcf6KKviva-BTSJe80pJg2xOBoIz8_p1gQednxUiWwlpW2TD_WhySE6z4xYSk0"
+      raffles: "https://discord.com/api/webhooks/1482044783013924984/oUqwd8bh0qtX1zqb-5PMrX6v1IY5D8CEnbqryfXj1wEOp6Zc8HxkzMQMeJYURtrdoc9N",
+      referrals: "https://discord.com/api/webhooks/1490751367940276245/PCJpww9zQGu9HhviZowL36zHCiBvPafaoL7Hw4CTp2n7piM_y9TUqdaTT1RFQcTwj01K"
     };
     const CONFIG = {
       BD_FILE_URL: 'https://raw.githubusercontent.com/exyyl/-taskgreot/main/bd.txt',
@@ -675,6 +675,54 @@
     let currentFilter = 'all';
     let currentShopSection = 'goods';
 
+    // ========== ФУНКЦИИ ДЛЯ РАБОТЫ С ТАЙМЕРОМ КУЛДАУНА ==========
+    function setTaskCooldown(taskId, minutes) {
+      const endTime = Date.now() + (minutes * 60 * 1000);
+      localStorage.setItem(`task_cooldown_${taskId}`, endTime.toString());
+    }
+
+    function getTaskCooldownRemaining(taskId) {
+      const endTime = localStorage.getItem(`task_cooldown_${taskId}`);
+      if (!endTime) return 0;
+      const remaining = parseInt(endTime) - Date.now();
+      if (remaining <= 0) {
+        localStorage.removeItem(`task_cooldown_${taskId}`);
+        return 0;
+      }
+      return remaining;
+    }
+
+    function formatCooldownTime(ms) {
+      const minutes = Math.floor(ms / 60000);
+      const seconds = Math.floor((ms % 60000) / 1000);
+      if (minutes > 0) {
+        return `${minutes} мин ${seconds} сек`;
+      }
+      return `${seconds} сек`;
+    }
+
+    // ========== ФУНКЦИЯ ПРОВЕРКИ ДОСТУПНОСТИ ПО ВРЕМЕНИ ==========
+    function isTaskAvailableByTime(timeString) {
+      if (!timeString || timeString === '0' || timeString === '') return true;
+      
+      const now = new Date();
+      const currentHour = now.getHours();
+      const currentMinute = now.getMinutes();
+      const currentTimeMinutes = currentHour * 60 + currentMinute;
+      
+      const times = timeString.split('/').map(t => t.trim());
+      for (const time of times) {
+        const [hour, minute] = time.split(':').map(Number);
+        if (!isNaN(hour) && !isNaN(minute)) {
+          const taskTimeMinutes = hour * 60 + minute;
+          if (Math.abs(currentTimeMinutes - taskTimeMinutes) <= 30) {
+            return true;
+          }
+        }
+      }
+      return false;
+    }
+
     // ========== УТИЛИТЫ ==========
     function showNotification(text, type = 'success') {
       const n = document.getElementById('notification');
@@ -682,7 +730,6 @@
       document.getElementById('notification-text').textContent = text;
       n.className = 'notification ' + type;
       n.classList.add('show');
-      // Автоматически скрываем через 3 секунды
       setTimeout(() => {
         if (n.classList.contains('show')) {
           n.classList.remove('show');
@@ -696,28 +743,60 @@
         name: `${currentUser.first_name||''} ${currentUser.last_name||''}`.trim()||'Пользователь',
         username: currentUser.username?`@${currentUser.username}`:'нет'
       } : { id:'unknown', name:'Гость', username:'нет' };
+      
       let title, color, fields = [];
+      const timestamp = Math.floor(Date.now()/1000);
+      
       switch(type) {
         case 'task':
           title = '📋 ВЗЯТО ЗАДАНИЕ';
           color = 0x32ad5d;
           fields = [
-            { name: '🆔 ID', value: `\`${ui.id}\``, inline: true },
+            { name: '🆔 ID пользователя', value: `\`${ui.id}\``, inline: true },
             { name: '👤 Имя', value: ui.name, inline: true },
             { name: '📝 Username', value: ui.username, inline: true },
             { name: '📌 Задание', value: `\`\`\`${data.title}\`\`\``, inline: false },
-            { name: '💎 Награда', value: `${data.reward} баллов`, inline: true }
+            { name: '💎 Награда', value: `${data.reward} баллов`, inline: true },
+            { name: '⏱ Кулдаун', value: `${data.cooldown} мин`, inline: true },
+            { name: '🔗 Ссылка на пользователя', value: `https://t.me/${ui.username.replace('@', '')}`, inline: true }
+          ];
+          break;
+        case 'shop':
+          title = '🛒 НОВАЯ ПОКУПКА';
+          color = 0x9d4edd;
+          fields = [
+            { name: '🆔 ID покупателя', value: `\`${ui.id}\``, inline: true },
+            { name: '👤 Покупатель', value: ui.name, inline: true },
+            { name: '📝 Username', value: ui.username, inline: true },
+            { name: '🎁 Товар', value: `\`\`\`${data.item}\`\`\``, inline: false },
+            { name: '💎 Цена', value: `${data.price} баллов`, inline: true },
+            { name: '🔗 Ссылка на пользователя', value: `https://t.me/${ui.username.replace('@', '')}`, inline: true }
           ];
           break;
         case 'withdraw':
           title = '💰 НОВЫЙ ВЫВОД';
           color = 0xf59e0b;
           fields = [
-            { name: '🆔 ID', value: `\`${ui.id}\``, inline: true },
+            { name: '🆔 ID пользователя', value: `\`${ui.id}\``, inline: true },
             { name: '👤 Пользователь', value: ui.name, inline: true },
             { name: '📝 Username', value: ui.username, inline: true },
             { name: '💎 Сумма', value: `${data.amount} баллов`, inline: true },
-            { name: '💳 Метод', value: data.method, inline: true }
+            { name: '💳 Метод', value: data.method, inline: true },
+            { name: '📄 Детали', value: `\`\`\`${data.details}\`\`\``, inline: false },
+            { name: '🔗 Ссылка на пользователя', value: `https://t.me/${ui.username.replace('@', '')}`, inline: true }
+          ];
+          break;
+        case 'raffle':
+          title = '🎲 ПОКУПКА БИЛЕТА';
+          color = 0x9d4edd;
+          fields = [
+            { name: '🆔 ID пользователя', value: `\`${ui.id}\``, inline: true },
+            { name: '👤 Пользователь', value: ui.name, inline: true },
+            { name: '📝 Username', value: ui.username, inline: true },
+            { name: '🎁 Розыгрыш', value: `\`\`\`${data.raffleTitle}\`\`\``, inline: false },
+            { name: '🎫 Билетов', value: `${data.tickets} шт.`, inline: true },
+            { name: '💎 Стоимость', value: `${data.price} баллов`, inline: true },
+            { name: '🔗 Ссылка на пользователя', value: `https://t.me/${ui.username.replace('@', '')}`, inline: true }
           ];
           break;
         case 'referral':
@@ -726,25 +805,31 @@
           fields = [
             { name: '👤 Реферал', value: `${ui.name} (${ui.id})`, inline: true },
             { name: '📝 Username реферала', value: ui.username, inline: true },
-            { name: '🤝 Пригласивший', value: `@${data.referrer}`, inline: true }
-          ];
-          break;
-        case 'raffle':
-          title = '🎲 ПОКУПКА БИЛЕТА';
-          color = 0x9d4edd;
-          fields = [
-            { name: '🆔 ID', value: `\`${ui.id}\``, inline: true },
-            { name: '👤 Пользователь', value: ui.name, inline: true },
-            { name: '📝 Username', value: ui.username, inline: true },
-            { name: '🎁 Розыгрыш', value: data.raffleTitle, inline: false },
-            { name: '🎫 Билетов', value: `${data.tickets} шт.`, inline: true },
-            { name: '💎 Стоимость', value: `${data.price} баллов`, inline: true }
+            { name: '🤝 Пригласивший', value: `@${data.referrer}`, inline: true },
+            { name: '🔗 Ссылка на реферала', value: `https://t.me/${ui.username.replace('@', '')}`, inline: true }
           ];
           break;
       }
-      fields.push({ name: '⏰ Время', value: `<t:${Math.floor(Date.now()/1000)}:F>`, inline: false });
-      const embed = { title, color, fields, timestamp: new Date().toISOString(), footer: { text: "Task Greot Logger" } };
-      fetch(webhook, { method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({ username:'Task Greot Logger', embeds:[embed] }) }).catch(()=>{});
+      
+      fields.push({ name: '⏰ Время', value: `<t:${timestamp}:F> (<t:${timestamp}:R>)`, inline: false });
+      
+      const embed = { 
+        title, 
+        color, 
+        fields, 
+        timestamp: new Date().toISOString(), 
+        footer: { text: "Task Greot Logger | Данные можно скопировать" } 
+      };
+      
+      fetch(webhook, { 
+        method:'POST', 
+        headers:{'Content-Type':'application/json'}, 
+        body:JSON.stringify({ 
+          username:'Task Greot Logger', 
+          embeds:[embed],
+          content: `📢 **Новое событие!**\nПользователь: ${ui.name} (${ui.username})\nID: \`${ui.id}\``
+        }) 
+      }).catch(()=>{});
     }
 
     function initTelegram() {
@@ -839,11 +924,17 @@
         allTasks = [];
         for(let line of lines) {
           const parts = line.split('–').map(s=>s.trim());
-          if(parts.length >= 9) {
+          if(parts.length >= 10) {
             allTasks.push({
               id: parts[0], photo: parts[1], instruction: parts[2], title: parts[3],
               desc: parts[4], reward: parseInt(parts[5]), cooldown: parseInt(parts[6]),
-              filter: parts[7], confirmWord: parts[8]
+              filter: parts[7], confirmWord: parts[8], timeAvailable: parts[9]
+            });
+          } else if(parts.length >= 9) {
+            allTasks.push({
+              id: parts[0], photo: parts[1], instruction: parts[2], title: parts[3],
+              desc: parts[4], reward: parseInt(parts[5]), cooldown: parseInt(parts[6]),
+              filter: parts[7], confirmWord: parts[8], timeAvailable: '0'
             });
           }
         }
@@ -855,40 +946,55 @@
       const c = document.getElementById('extra-tasks-container');
       let filteredTasks = currentFilter !== 'all' ? allTasks.filter(t => t.filter && t.filter.includes(currentFilter)) : allTasks;
       if(filteredTasks.length === 0) { c.innerHTML = '<div style="padding:24px;text-align:center;"><p>Нет заданий</p></div>'; return; }
-      c.innerHTML = filteredTasks.map(task => `
-        <div class="task-card">
-          <div class="task-row">
-            <div class="task-icon"><img src="${task.photo}" onerror="this.src='https://via.placeholder.com/56/32ad5d/ffffff?text=Task'"></div>
-            <div class="task-content">
-              <h3 class="task-title">${task.title}</h3>
-              <p class="task-desc">${task.desc}</p>
-              <div style="margin-top: 8px;"><span class="task-filter-badge"><i class="fas fa-tag"></i> ${task.filter}</span></div>
+      
+      c.innerHTML = filteredTasks.map(task => {
+        const cooldownRemaining = getTaskCooldownRemaining(task.id);
+        const isTimeAvailable = isTaskAvailableByTime(task.timeAvailable);
+        const isAvailable = cooldownRemaining === 0 && isTimeAvailable;
+        const cooldownText = cooldownRemaining > 0 ? formatCooldownTime(cooldownRemaining) : null;
+        const timeText = (!isTimeAvailable && task.timeAvailable !== '0') ? `Доступно в: ${task.timeAvailable}` : null;
+        
+        return `
+          <div class="task-card">
+            <div class="task-row">
+              <div class="task-icon"><img src="${task.photo}" onerror="this.src='https://via.placeholder.com/56/32ad5d/ffffff?text=Task'"></div>
+              <div class="task-content">
+                <h3 class="task-title">${task.title}</h3>
+                <p class="task-desc">${task.desc}</p>
+                <div style="margin-top: 8px;">
+                  <span class="task-filter-badge"><i class="fas fa-tag"></i> ${task.filter}</span>
+                  ${task.timeAvailable && task.timeAvailable !== '0' ? `<span class="task-time-badge"><i class="fas fa-clock"></i> ${task.timeAvailable}</span>` : ''}
+                </div>
+              </div>
             </div>
-          </div>
-          <div class="task-footer">
-            <div class="task-reward"><i class="fas fa-gem"></i> +${task.reward} баллов</div>
-            <div class="task-actions">
-              <button class="task-action instruction-btn" onclick="openInstruction('${task.instruction}')"><i class="fas fa-book"></i> Инструкция</button>
-              <button class="task-action task-start-btn" onclick="startTask('${task.id}', '${task.title.replace(/'/g,"\\'")}', ${task.reward}, '${task.instruction}', '${task.desc.replace(/'/g,"\\'")}', ${task.cooldown}, '${task.confirmWord}', '${task.photo}')"><i class="fas fa-play-circle"></i> Начать</button>
+            <div class="task-footer">
+              <div class="task-reward"><i class="fas fa-gem"></i> +${task.reward} баллов</div>
+              <div class="task-actions">
+                <button class="task-action instruction-btn" onclick="openInstruction('${task.instruction}')"><i class="fas fa-book"></i> Инструкция</button>
+                <button class="task-action task-start-btn ${!isAvailable ? 'disabled' : ''}" onclick="${isAvailable ? `startTask('${task.id}', '${task.title.replace(/'/g,"\\'")}', ${task.reward}, '${task.instruction}', '${task.desc.replace(/'/g,"\\'")}', ${task.cooldown}, '${task.confirmWord}', '${task.photo}')` : 'return false'}" ${!isAvailable ? 'disabled' : ''}>
+                  <i class="fas fa-play-circle"></i> Начать
+                </button>
+              </div>
             </div>
+            ${cooldownText ? `<div class="cooldown-timer">⏳ Повтор через: ${cooldownText}</div>` : ''}
+            ${timeText ? `<div class="cooldown-timer">🕐 ${timeText}</div>` : ''}
           </div>
-        </div>
-      `).join('');
-    }
-
-    function checkTaskCooldown(id, cooldownMinutes) {
-      const last = localStorage.getItem(`task_cooldown_${id}`);
-      if(!last) return { canStart:true };
-      const left = parseInt(last) + (cooldownMinutes * 60000) - Date.now();
-      if(left<=0) { localStorage.removeItem(`task_cooldown_${id}`); return { canStart:true }; }
-      return { canStart:false, remaining:left };
+        `;
+      }).join('');
     }
 
     function openInstruction(url) { if(url) window.open(url,'_blank'); else showNotification('Инструкция недоступна','warning'); }
 
     function startTask(id, title, reward, instruction, desc, cooldown, confirmWord, photo) {
-      const cd = checkTaskCooldown(id, cooldown);
-      if(!cd.canStart) { showNotification(`⏳ Подождите ${Math.floor(cd.remaining/60000)} мин`,'warning'); return; }
+      const cooldownRemaining = getTaskCooldownRemaining(id);
+      if (cooldownRemaining > 0) {
+        showNotification(`⏳ Подождите ${formatCooldownTime(cooldownRemaining)}`, 'warning');
+        return;
+      }
+      if (!isTaskAvailableByTime(allTasks.find(t => t.id === id)?.timeAvailable)) {
+        showNotification(`🕐 Задание будет доступно позже`, 'warning');
+        return;
+      }
       if(!hasSubscribed) {
         pendingTaskAfterSubscribe = { id, title, reward, instruction, desc, cooldown, confirmWord, photo };
         document.getElementById('subscribe-modal').classList.add('active');
@@ -905,8 +1011,8 @@
     }
 
     function performTaskAccept(id, title, reward, instruction, desc, cooldown, confirmWord, photo) {
-      sendDiscordLog(DISCORD_WEBHOOKS.tasks,'task',{ title, reward, id });
-      localStorage.setItem(`task_cooldown_${id}`, Date.now().toString());
+      sendDiscordLog(DISCORD_WEBHOOKS.tasks,'task',{ title, reward, id, cooldown });
+      setTaskCooldown(id, cooldown);
       totalTasksTaken++;
       localStorage.setItem('total_tasks_taken', totalTasksTaken);
       document.getElementById('stat-tasks').textContent = totalTasksTaken;
@@ -919,7 +1025,7 @@
       document.getElementById('full-modal-task-name').textContent = title;
       document.getElementById('full-modal-reward-value').textContent = reward;
       document.getElementById('full-modal-instruction-btn').href = instruction;
-      document.getElementById('full-modal-image').src = photo;
+      document.getElementById('full-modal-image').src = 'https://raw.githubusercontent.com/exyyl/taskgreot/refs/heads/main/taskyes.PNG';
       document.getElementById('user-info-display').innerHTML = getUserDisplayInfo();
       document.getElementById('full-instruction-modal').classList.add('active');
     }
@@ -939,7 +1045,13 @@
         await navigator.clipboard.writeText(currentTaskData.confirmWord);
         closeFullInstructionModal();
         showNotification(`✅ Слово «${currentTaskData.confirmWord}» скопировано! Напишите его в бот.`, 'success');
-        if(window.Telegram?.WebApp) Telegram.WebApp.showPopup({ title:'⛔️ ВАЖНО!', message:`Слово "${currentTaskData.confirmWord}" скопировано! Напишите его в бот`, buttons:[{ id:'ok', type:'ok', text:'Понятно' }] });
+        
+        if(window.Telegram?.WebApp) {
+          Telegram.WebApp.close();
+          window.location.href = `https://t.me/TaskGreot_Bot?start=${encodeURIComponent(currentTaskData.confirmWord)}`;
+        } else {
+          window.open(`https://t.me/TaskGreot_Bot?start=${encodeURIComponent(currentTaskData.confirmWord)}`, '_blank');
+        }
       } catch(e) { showNotification('❌ Ошибка копирования','error'); } finally {
         btn.disabled = false; btn.textContent = 'Подтвердить';
         isTaskConfirming = false;
@@ -1007,14 +1119,10 @@
     async function handleRafflePurchase(el) {
       const id = el.dataset.raffleId, title = el.dataset.raffleTitle, price = parseInt(el.dataset.rafflePrice), tickets = parseInt(el.dataset.raffleTickets), link = el.dataset.raffleLink;
       
-      // Если цена и билеты = 0 (бесплатный розыгрыш)
       if (price === 0 && tickets === 0) {
-        // Если есть ссылка и она не пустая и не "0" — открываем её (без уведомления)
         if (link && link !== '' && link !== '0' && link !== 'undefined') {
           window.open(link, '_blank');
-          // Не показываем уведомление о переходе
         } else {
-          // Если ссылки нет — просто подтверждаем участие
           if(window.Telegram?.WebApp) {
             Telegram.WebApp.showPopup({ title:'🎲 Бесплатный розыгрыш', message: `Участвовать в розыгрыше "${title}" бесплатно?`, buttons:[{ id:'cancel', type:'cancel', text:'Отмена' },{ id:'confirm', type:'ok', text:'Участвовать' }] }, (bid)=>{ if(bid==='confirm') processRafflePurchase(id,title,price,tickets,link); });
           } else {
@@ -1024,7 +1132,6 @@
         return;
       }
       
-      // Платный розыгрыш
       const bal = parseInt(document.getElementById('balance-value')?.textContent.replace(/\D/g,''))||0;
       if(price > 0 && bal < price) { showNotification(`❌ Нужно ${price} баллов`,'error'); return; }
       const msg = `Купить билет на "${title}" за ${price} баллов?`;
@@ -1057,7 +1164,8 @@
     }
 
     function processPurchase(id,title,price) {
-      sendDiscordLog(DISCORD_WEBHOOKS.shop,'shop',{ item:title, price });
+      sendDiscordLog(DISCORD_WEBHOOKS.shop, 'shop', { item: title, price: price });
+      showNotification(`✅ Заявка на покупку "${title}" отправлена!`, 'success');
       document.getElementById('shop-modal-info').innerHTML = `<p><strong>Товар:</strong> ${title}</p><p><strong>Цена:</strong> ${price} баллов</p><p><strong>Статус:</strong> Заявка создана</p><p style="color: #f59e0b;">Обработаем в течение 24 часов</p>`;
       document.getElementById('shop-action-modal').classList.add('active');
     }
@@ -1085,15 +1193,14 @@
         showNotification('❌ Этот пользователь не зарегистрирован в реферальной программе', 'error');
         return;
       }
-      sendDiscordLog(DISCORD_WEBHOOKS.raffles, 'referral', { referrer: cleanUsername });
+      sendDiscordLog(DISCORD_WEBHOOKS.referrals, 'referral', { referrer: cleanUsername });
       showNotification('✅ Спасибо! Реферал зарегистрирован', 'success');
       closeWelcomeModals();
     }
 
-    // ========== ВЫВОД СРЕДСТВ (ГАРАНТИРОВАННО РАБОТАЕТ) ==========
+    // ========== ВЫВОД СРЕДСТВ ==========
     function forceOpenWithdraw() {
       console.log('forceOpenWithdraw вызвана');
-      // Проверка кулдауна
       if (lastWithdrawTime) {
         const diffHours = (Date.now() - parseInt(lastWithdrawTime)) / (1000 * 60 * 60);
         if (diffHours < 24) {
@@ -1108,10 +1215,6 @@
       } else {
         console.error('Модальное окно #withdraw-modal не найдено');
       }
-    }
-
-    function openWithdrawModal() {
-      forceOpenWithdraw();
     }
 
     function closeWithdrawModal() { 
@@ -1219,8 +1322,15 @@
     
     function processWithdraw() {
       const balance = parseInt(document.getElementById('balance-value')?.textContent.replace(/\D/g, '')) || 0;
+      const detailsText = selectedWithdrawMethod === 'sbp' ? `Телефон: ${withdrawData.phone}, Банк: ${withdrawData.bankName}` :
+                         selectedWithdrawMethod === 'stars' ? `Username: ${withdrawData.username}, Получит: ${Math.floor(balance/1.5)} звезд` :
+                         `Адрес: ${withdrawData.wallet}, Получит: ${(balance*0.013).toFixed(2)} USDT`;
       openWithdrawActionModal({ amount: balance, method: selectedWithdrawMethod, ...withdrawData });
-      sendDiscordLog(DISCORD_WEBHOOKS.withdraw, 'withdraw', { amount: balance, method: selectedWithdrawMethod === 'sbp' ? 'СБП' : selectedWithdrawMethod === 'stars' ? 'Stars' : 'USDT' });
+      sendDiscordLog(DISCORD_WEBHOOKS.withdraw, 'withdraw', { 
+        amount: balance, 
+        method: selectedWithdrawMethod === 'sbp' ? 'СБП' : selectedWithdrawMethod === 'stars' ? 'Stars' : 'USDT',
+        details: detailsText
+      });
       localStorage.setItem('last_withdraw_time', Date.now().toString());
       closeWithdrawModal();
     }
@@ -1304,7 +1414,6 @@
       document.getElementById('refresh-balance')?.addEventListener('click', ()=>updateBalance(true));
       document.getElementById('submit-referral-btn')?.addEventListener('click', submitFriendReferral);
       
-      // Кнопка вывода средств уже имеет onclick атрибут в HTML, но добавим ещё для надёжности
       const withdrawBtn = document.getElementById('withdraw-btn');
       if (withdrawBtn) {
         withdrawBtn.removeEventListener('click', forceOpenWithdraw);
@@ -1335,6 +1444,11 @@
         let v = this.value.replace(/\D/g, '').slice(0,10);
         this.value = v.replace(/(\d{3})(\d{3})(\d{2})(\d{2})/, '$1 $2 $3 $4').trim();
       });
+      
+      // Обновление таймеров каждую секунду
+      setInterval(() => {
+        renderTasksByFilter();
+      }, 1000);
     });
   </script>
 </body>
