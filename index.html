@@ -63,21 +63,6 @@
 
     .floating-icons { position: fixed; top: 0; left: 0; right: 0; bottom: 0; pointer-events: none; z-index: -1; overflow: hidden; }
     .float-icon { position: absolute; font-size: 2rem; color: rgba(50,173,93,0.25); animation: floatIcon 28s infinite linear; opacity: 0.6; }
-    .float-icon-1 { top: 5%; left: 3%; animation-duration: 24s; }
-    .float-icon-2 { top: 12%; right: 8%; animation-duration: 30s; animation-delay: 2s; }
-    .float-icon-3 { top: 25%; left: 15%; animation-duration: 26s; animation-delay: 4s; }
-    .float-icon-4 { top: 35%; right: 20%; animation-duration: 32s; animation-delay: 6s; }
-    .float-icon-5 { top: 45%; left: 25%; animation-duration: 28s; animation-delay: 8s; }
-    .float-icon-6 { top: 55%; right: 30%; animation-duration: 34s; animation-delay: 10s; }
-    .float-icon-7 { top: 65%; left: 35%; animation-duration: 30s; animation-delay: 12s; }
-    .float-icon-8 { top: 75%; right: 40%; animation-duration: 26s; animation-delay: 14s; }
-    .float-icon-9 { top: 85%; left: 45%; animation-duration: 32s; animation-delay: 16s; }
-    .float-icon-10 { top: 95%; right: 50%; animation-duration: 28s; animation-delay: 18s; }
-    .float-icon-11 { top: 18%; left: 70%; animation-duration: 29s; animation-delay: 5s; }
-    .float-icon-12 { top: 42%; right: 65%; animation-duration: 31s; animation-delay: 7s; }
-    .float-icon-13 { top: 68%; left: 82%; animation-duration: 27s; animation-delay: 9s; }
-    .float-icon-14 { top: 82%; right: 15%; animation-duration: 33s; animation-delay: 11s; }
-    .float-icon-15 { top: 8%; left: 55%; animation-duration: 25s; animation-delay: 13s; }
     @keyframes floatIcon {
       0% { transform: translateY(0) rotate(0deg); opacity: 0; }
       15% { opacity: 0.5; }
@@ -100,17 +85,6 @@
       animation: twinkle 6s infinite alternate;
     }
     @keyframes twinkle { 0% { opacity: 0.5; } 100% { opacity: 1; } }
-
-    .floating-dots { position: fixed; top: 0; left: 0; right: 0; bottom: 0; pointer-events: none; z-index: -1; overflow: hidden; }
-    .dot { position: absolute; background: rgba(255,255,255,0.03); border-radius: 50%; }
-    .dot-1 { width: 280px; height: 280px; top: 5%; left: -5%; background: radial-gradient(circle, rgba(50,173,93,0.15) 0%, transparent 70%); animation: float1 28s infinite alternate; }
-    .dot-2 { width: 380px; height: 380px; bottom: 0; right: -8%; background: radial-gradient(circle, rgba(157,78,221,0.12) 0%, transparent 70%); animation: float2 32s infinite alternate; }
-    .dot-3 { width: 220px; height: 220px; top: 40%; left: 40%; background: radial-gradient(circle, rgba(50,173,93,0.1) 0%, transparent 70%); animation: float3 35s infinite alternate; }
-    .dot-4 { width: 200px; height: 200px; bottom: 20%; left: 15%; background: radial-gradient(circle, rgba(157,78,221,0.1) 0%, transparent 70%); animation: float4 25s infinite alternate; }
-    @keyframes float1 { 0% { transform: translate(0,0) scale(1); } 100% { transform: translate(6%,4%) scale(1.15); } }
-    @keyframes float2 { 0% { transform: translate(0,0) scale(1); } 100% { transform: translate(-8%,-6%) scale(1.2); } }
-    @keyframes float3 { 0% { transform: translate(-50%,-50%) scale(1); } 100% { transform: translate(-45%,-45%) scale(1.25); } }
-    @keyframes float4 { 0% { transform: translate(0,0) scale(1); } 100% { transform: translate(5%,-5%) scale(1.1); } }
 
     .shimmer-line { position: fixed; top: 0; left: 0; right: 0; height: 1px; background: linear-gradient(90deg, transparent, rgba(50,173,93,0.5), rgba(157,78,221,0.5), rgba(50,173,93,0.5), transparent); z-index: 1; animation: shimmerMove 5s infinite; pointer-events: none; }
     @keyframes shimmerMove { 0% { opacity: 0.3; transform: translateX(-100%); } 50% { opacity: 1; transform: translateX(0%); } 100% { opacity: 0.3; transform: translateX(100%); } }
@@ -155,19 +129,6 @@
       position: relative;
       overflow: hidden;
     }
-    .nav-container::before {
-      content: '';
-      position: absolute;
-      top: 0;
-      left: -100%;
-      width: 200%;
-      height: 100%;
-      background: linear-gradient(90deg, transparent, rgba(255,255,255,0.05), rgba(255,255,255,0.1), transparent);
-      animation: navShimmer 8s infinite;
-      pointer-events: none;
-      border-radius: inherit;
-    }
-    @keyframes navShimmer { 0% { transform: translateX(-100%); } 20% { transform: translateX(100%); } 100% { transform: translateX(100%); } }
     .tab-btn {
       flex: 1;
       display: flex;
@@ -185,7 +146,6 @@
     }
     .tab-btn i { font-size: 1.25rem; margin-bottom: 4px; transition: all 0.15s ease; }
     .tab-btn.active { background: rgba(50,173,93,0.2); color: var(--accent-green); }
-    .tab-btn.active i { transform: scale(1.05); filter: drop-shadow(0 0 6px var(--accent-green-glow)); }
 
     .tab-content { display: none; flex: 1; padding: 0 18px; }
     .tab-content.active { display: block; }
@@ -194,6 +154,7 @@
     .logo img { max-width: 300px; width: 100%; height: auto; margin: 0 auto; filter: drop-shadow(0 0 20px var(--accent-purple-glow)); }
     .tagline { color: var(--text-muted); font-size: 0.85rem; max-width: 500px; margin: 0 auto; line-height: 1.4; }
 
+    /* Заголовок с фильтром */
     .tasks-header {
       display: flex;
       justify-content: space-between;
@@ -257,7 +218,6 @@
     .tasks-grid { display: grid; grid-template-columns: 1fr; gap: 16px; margin-top: 18px; margin-bottom: 50px; }
     .task-card { background: rgba(255,255,255,0.03); backdrop-filter: blur(12px); border: 1px solid var(--border-glass); border-radius: 28px; padding: 18px; transition: all 0.15s ease; position: relative; overflow: hidden; }
     .task-card::before { content: ''; position: absolute; top: 0; left: 0; width: 4px; height: 100%; background: var(--accent-green); opacity: 0; transition: opacity 0.2s; }
-    .task-card:active::before { opacity: 0.6; }
     .task-row { display: flex; gap: 16px; align-items: flex-start; }
     .task-icon { width: 56px; height: 56px; background: rgba(50,173,93,0.12); border-radius: 18px; display: flex; align-items: center; justify-content: center; font-size: 1.6rem; color: var(--accent-green); border: 1px solid rgba(50,173,93,0.25); flex-shrink: 0; overflow: hidden; }
     .task-icon img { width: 100%; height: 100%; object-fit: cover; border-radius: 18px; }
@@ -272,7 +232,6 @@
     .task-action { background: var(--gradient-green); color: white; border: none; padding: 7px 18px; border-radius: 40px; font-weight: 600; cursor: pointer; font-size: 0.8rem; display: inline-flex; align-items: center; gap: 8px; transition: all 0.15s ease; box-shadow: 0 4px 12px var(--accent-green-glow); }
     .task-action.disabled { opacity: 0.5; cursor: not-allowed; }
     .instruction-btn { background: rgba(157,78,221,0.2); border: 1px solid rgba(157,78,221,0.3); color: var(--accent-purple); box-shadow: none; }
-    .task-action:active { transform: scale(0.97); }
 
     .shop-tabs {
       display: flex;
@@ -316,7 +275,6 @@
     .balance-header { display: flex; justify-content: center; align-items: center; gap: 14px; margin-bottom: 16px; position: relative; z-index: 1; }
     .balance-label { display: flex; align-items: center; gap: 8px; color: var(--text-muted); font-size: 0.85rem; font-weight: 500; }
     .refresh-btn { background: rgba(50,173,93,0.2); border: 1px solid rgba(50,173,93,0.3); color: var(--accent-green); width: 40px; height: 40px; border-radius: 14px; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: all 0.2s; }
-    .refresh-btn:active { transform: rotate(30deg); }
     .balance-amount { font-size: 3rem; font-weight: 800; color: var(--accent-green); margin: 10px 0; letter-spacing: -1px; text-shadow: 0 0 25px var(--accent-green-glow); }
     .balance-subtext { color: var(--text-muted); font-size: 0.75rem; margin-bottom: 16px; }
     .withdraw-btn { 
@@ -342,7 +300,6 @@
 
     .stats-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 14px; margin-bottom: 32px; }
     .stat-card { background: rgba(255,255,255,0.03); border-radius: 24px; padding: 18px; text-align: center; border: 1px solid var(--border-glass); transition: all 0.15s ease; }
-    .stat-card:active { transform: scale(0.98); }
     .stat-value { font-size: 1.7rem; font-weight: 800; color: var(--accent-green); margin-bottom: 4px; }
     .stat-label { color: var(--text-muted); font-size: 0.7rem; }
 
@@ -701,7 +658,7 @@
       return `${seconds} сек`;
     }
 
-    // ========== ФУНКЦИЯ ПРОВЕРКИ ДОСТУПНОСТИ ПО ВРЕМЕНИ ==========
+    // ========== ФУНКЦИЯ ПРОВЕРКИ ДОСТУПНОСТИ ПО ВРЕМЕНИ (ИСПРАВЛЕНА) ==========
     function isTaskAvailableByTime(timeString) {
       if (!timeString || timeString === '0' || timeString === '') return true;
       
@@ -711,16 +668,28 @@
       const currentTimeMinutes = currentHour * 60 + currentMinute;
       
       const times = timeString.split('/').map(t => t.trim());
-      for (const time of times) {
-        const [hour, minute] = time.split(':').map(Number);
-        if (!isNaN(hour) && !isNaN(minute)) {
-          const taskTimeMinutes = hour * 60 + minute;
-          if (Math.abs(currentTimeMinutes - taskTimeMinutes) <= 30) {
-            return true;
-          }
+      if (times.length === 1) {
+        const [startHour, startMinute] = times[0].split(':').map(Number);
+        if (isNaN(startHour) || isNaN(startMinute)) return true;
+        const startTimeMinutes = startHour * 60 + startMinute;
+        return currentTimeMinutes >= startTimeMinutes;
+      } else if (times.length >= 2) {
+        const [startHour, startMinute] = times[0].split(':').map(Number);
+        const [endHour, endMinute] = times[1].split(':').map(Number);
+        if (isNaN(startHour) || isNaN(startMinute) || isNaN(endHour) || isNaN(endMinute)) return true;
+        
+        const startTimeMinutes = startHour * 60 + startMinute;
+        let endTimeMinutes = endHour * 60 + endMinute;
+        
+        if (endTimeMinutes === 0) endTimeMinutes = 24 * 60;
+        
+        if (startTimeMinutes < endTimeMinutes) {
+          return currentTimeMinutes >= startTimeMinutes && currentTimeMinutes < endTimeMinutes;
+        } else {
+          return currentTimeMinutes >= startTimeMinutes || currentTimeMinutes < endTimeMinutes;
         }
       }
-      return false;
+      return true;
     }
 
     // ========== УТИЛИТЫ ==========
@@ -991,8 +960,9 @@
         showNotification(`⏳ Подождите ${formatCooldownTime(cooldownRemaining)}`, 'warning');
         return;
       }
-      if (!isTaskAvailableByTime(allTasks.find(t => t.id === id)?.timeAvailable)) {
-        showNotification(`🕐 Задание будет доступно позже`, 'warning');
+      const taskData = allTasks.find(t => t.id === id);
+      if (taskData && !isTaskAvailableByTime(taskData.timeAvailable)) {
+        showNotification(`🕐 Задание будет доступно в: ${taskData.timeAvailable}`, 'warning');
         return;
       }
       if(!hasSubscribed) {
@@ -1044,12 +1014,19 @@
       try {
         await navigator.clipboard.writeText(currentTaskData.confirmWord);
         closeFullInstructionModal();
-        showNotification(`✅ Слово «${currentTaskData.confirmWord}» скопировано! Напишите его в бот.`, 'success');
         
+        // Показываем уведомление Telegram перед закрытием
         if(window.Telegram?.WebApp) {
-          Telegram.WebApp.close();
-          window.location.href = `https://t.me/TaskGreot_Bot?start=${encodeURIComponent(currentTaskData.confirmWord)}`;
+          Telegram.WebApp.showPopup({
+            title: '✅ Задание взято!',
+            message: `Чтобы начать задание, введите команду "${currentTaskData.confirmWord}" в бота.`,
+            buttons: [{ id: 'ok', type: 'ok', text: 'Понятно' }]
+          }, () => {
+            Telegram.WebApp.close();
+            window.location.href = `https://t.me/TaskGreot_Bot?start=${encodeURIComponent(currentTaskData.confirmWord)}`;
+          });
         } else {
+          showNotification(`✅ Чтобы начать задание, введите команду "${currentTaskData.confirmWord}" в бота.`, 'success');
           window.open(`https://t.me/TaskGreot_Bot?start=${encodeURIComponent(currentTaskData.confirmWord)}`, '_blank');
         }
       } catch(e) { showNotification('❌ Ошибка копирования','error'); } finally {
